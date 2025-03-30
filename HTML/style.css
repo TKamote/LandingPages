@@ -89,31 +89,22 @@ header nav ul li a:hover {
 
 /* Templates Showcase Section */
 .templates-showcase {
+  padding: 2rem 1rem;
   width: 100%;
-  padding: .5rem;
-  padding-top: 4rem;
-  padding-bottom: 2rem;
-  background-color: #f3c478;
-}
-.templates-header {
   text-align: center;
-  margin-bottom: 2rem;
+  background-color: #edd79e;
 }
-.templates-header h2 {
+
+.templates-showcase h2 {
   font-size: 2rem;
-  margin-bottom: 1rem;
-}
-.templates-container {
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping to the next row */
-  justify-content: center; /* Add space between cards */
-  gap: 2rem; /* Add spacing between cards */
+  margin-bottom: 1.5rem;
 }
 
 .template-item {
-  display: flex;
-  flex-direction: column; /* Stack the image and content vertically */
-  width: 30%; /* Each card takes 30% of the row */
+  display: inline-block;
+  width: 30%;
+  margin: 1rem;
+  text-align: left;
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -122,40 +113,27 @@ header nav ul li a:hover {
 
 .template-item img {
   width: 100%;
-  height: auto; /* Ensure the image occupies the top */
+  height: auto;
 }
 
-.template-content {
-  display: flex;
-  justify-content: space-between; /* Align text and arrow horizontally */
-  align-items: center; /* Vertically align items */
-  padding: 1rem;
-}
-
-.text-content {
-  flex: 1; /* Allow text to take up available space */
-}
-
-.text-content h3 {
+.template-item h3 {
   font-size: 1.5rem;
-  margin: 0.5rem 0;
+  margin: 0.5rem;
 }
 
-.text-content p {
+.template-item p {
   font-size: 1rem;
-  margin: 0.5rem 0;
+  margin: 0.5rem;
   color: #555;
 }
-
-.forward-icon {
-  font-size: 1.5rem; /* Adjust icon size */
-  text-decoration: none;
-  color: #333; /* Default color */
-  margin-left: 1rem; /* Add spacing between text and icon */
+.template-item .template-content {
+  padding: .3rem;
+  display: flex;
+  justify-content: space-between;
 }
-
-.forward-icon:hover {
-  color: #007bff; /* Change color on hover */
+.template-item a {
+  text-decoration: none;
+  padding-right: 10px;
 }
 
 /* Footer Section */
@@ -215,13 +193,13 @@ footer p {
     font-size: 1rem;
   }
 
-  .templates-container {
+  .templates-showcase {
     padding: 1rem;
   }
 
   .template-item {
-    width: 45%; /* Two cards per row on medium screens */
-    margin: 1rem auto; /* Center cards */
+    width: 100%;
+    margin: 1rem 0;
   }
 
   footer {
@@ -241,11 +219,6 @@ footer p {
   .cta-button {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
-  }
-
-  .template-item {
-    width: 100%; /* One card per row on small screens */
-    margin: 1rem 0;
   }
 
   .template-item h3 {
