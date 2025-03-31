@@ -20,12 +20,16 @@ body {
 header {
   background-color: #333;
   color: #fff;
-  padding: 1rem 0;
+  padding: 1.5rem 0;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 header nav ul {
@@ -141,7 +145,7 @@ header nav ul li a:hover {
 footer {
   width: 100%;
   text-align: center;
-  padding: 2rem;
+  padding: 1rem;
   background-color: #264653;
   color: #fff;
 }
@@ -228,6 +232,14 @@ footer p {
   }
 
   .template-item p {
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 440px) {
+  .hero h1 {
+    font-size: 1.2rem;
+  }
+  .hero p {
     font-size: 0.9rem;
   }
 }
