@@ -1,0 +1,132 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Header Icons */
+.header-icons {
+  display: flex;
+  gap: 1rem; /* Space between the buttons */
+  justify-content: center; /* Center the icons horizontally */
+  align-items: center;
+}
+
+.icon-btn {
+  background-color: white; /* White background for the buttons */
+  color: #2a9d8f; /* Text color */
+  border: 2px solid #2a9d8f; /* Border color matching the text */
+  border-radius: 5px; /* Rounded corners */
+  padding: 0.5rem 1rem; /* Padding for the buttons */
+  font-size: 1rem; /* Font size */
+  font-weight: bold; /* Bold text */
+  cursor: pointer; /* Pointer cursor on hover */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Space between the icon and text */
+  text-decoration: none; /* Remove underline for links */
+  transition: all 0.3s ease; /* Smooth hover effect */
+}
+
+.icon-btn i {
+  font-size: 1.2rem; /* Adjust icon size */
+}
+
+.icon-btn:hover {
+  background-color: #2a9d8f; /* Change background color on hover */
+  color: white; /* Change text color on hover */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+
+.photo-container {
+  position: relative;
+  text-align: center;
+}
+
+.photo-input {
+  display: block; /* Make the file input visible */
+  margin: 0 auto 0.5rem; /* Center the input and add spacing below */
+  font-size: 1rem; /* Adjust font size for better visibility */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
+.photo-preview {
+  width: 80%; /* Adjust the size as needed */
+  padding-top: 80%; /* Maintain a 1:1 aspect ratio */
+  background-color: #f0f0f0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 auto 0.5rem; /* Center the preview and add spacing below */
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.delete-btn {
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+  background-color: #d62828;
+}
+
+/* Add Card Button */
+.add-btn {
+  display: block;
+  margin: 1rem auto; /* Center the button horizontally */
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.add-btn:hover {
+  background-color: #21867a;
+}
