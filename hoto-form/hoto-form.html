@@ -3,72 +3,116 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inspection</title>
-    <link rel="stylesheet" href="Inspection.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
+    <title>HOTO Checklist</title>
+    <link rel="stylesheet" href="hoto-form.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       rel="stylesheet"
     />
   </head>
   <body>
-    <header class="header">
-      <a class="back-btn" href="../index.html">
-        <i class="fas fa-circle-arrow-left"></i>Back
-      </a>
-      <div class="header-icons">
-        <button id="upload-btn" class="icon-btn">
-          <i class="fas fa-upload"></i>Export
-        </button>
-        <button id="reset-btn" class="icon-btn">
-          <i class="fas fa-redo"></i>Reset
-        </button>
-      </div>
-    </header>
-
-    <main class="container">
-      <div id="card-container">
-        <!-- Initial Card -->
-        <div class="card">
-          <label>
-            Serial Number:
-            <input
-              type="text"
-              class="input-field"
-              placeholder="Enter Serial Number"
-            />
-          </label>
-          <label>
-            Location:
-            <input
-              type="text"
-              class="input-field"
-              placeholder="Enter Location"
-            />
-          </label>
-          <label>
-            Comments:
-            <textarea
-              class="input-field"
-              placeholder="Enter Comments"
-            ></textarea>
-          </label>
-          <label>
-            Image:
-            <input
-              type="file"
-              class="input-field image-input"
-              accept="image/*"
-              capture="camera"
-            />
-            <div class="image-preview"></div>
-          </label>
-          <button class="delete-btn">Delete</button>
+    <a class="back-btn" href="../index.html">
+      <i class="fas fa-circle-arrow-left"></i> Back
+    </a>
+    <h1>HOTO Checklist</h1>
+    <form id="hoto-form">
+      <div class="checklist-item">
+        <div class="checklist-item-group">
+          <span>Construction Certificates and Licenses</span>
+          <div class="checkbox-group">
+            <label>
+              <span>NA</span>
+              <input type="radio" name="construction-certificates" value="na" />
+            </label>
+            <label>
+              <span>𐄂</span>
+              <input
+                type="radio"
+                name="construction-certificates"
+                value="not-present"
+              />
+            </label>
+            <label>
+              <span>✓</span>
+              <input
+                type="radio"
+                name="construction-certificates"
+                value="present"
+              />
+            </label>
+          </div>
+        </div>
+        <div class="image-upload hidden">
+          <input type="file" class="image-input" accept="image/*" />
+          <div class="image-preview"></div>
         </div>
       </div>
-      <button id="add-btn" class="add-btn">ADD</button>
-    </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
-    <script src="inspection.js"></script>
+      <div class="checklist-item">
+        <div class="checklist-item-group">
+          <span>Certificate of Occupation Permits</span>
+          <div class="checkbox-group">
+            <label>
+              <span>NA</span>
+              <input type="radio" name="construction-certificates" value="na" />
+            </label>
+            <label>
+              <span>𐄂</span>
+              <input
+                type="radio"
+                name="construction-certificates"
+                value="not-present"
+              />
+            </label>
+            <label>
+              <span>✓</span>
+              <input
+                type="radio"
+                name="construction-certificates"
+                value="present"
+              />
+            </label>
+          </div>
+        </div>
+        <div class="image-upload hidden">
+          <input type="file" class="image-input" accept="image/*" />
+          <div class="image-preview"></div>
+        </div>
+      </div>
+      <div class="checklist-item">
+        <div class="checklist-item-group">
+          <span>License for the dangerous goods store (storage of diesel etc.,)</span>
+          <div class="checkbox-group">
+            <label>
+              <span>NA</span>
+              <input type="radio" name="construction-certificates" value="na" />
+            </label>
+            <label>
+              <span>𐄂</span>
+              <input
+                type="radio"
+                name="construction-certificates"
+                value="not-present"
+              />
+            </label>
+            <label>
+              <span>✓</span>
+              <input
+                type="radio"
+                name="construction-certificates"
+                value="present"
+              />
+            </label>
+          </div>
+        </div>
+        <div class="image-upload hidden">
+          <input type="file" class="image-input" accept="image/*" />
+          <div class="image-preview"></div>
+        </div>
+      </div>
+
+
+      <!-- Add more checklist items as needed -->
+    </form>
+    <script src="hoto-form.js"></script>
   </body>
 </html>

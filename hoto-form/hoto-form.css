@@ -7,88 +7,97 @@
 
 body {
   font-family: Arial, sans-serif;
+  padding: 1rem;
   background-color: #f9f9f9;
   color: #333;
-  padding: 1rem;
+  width: 480px;
+  margin: 0 auto;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+h1 {
+  text-align: center;
   margin-bottom: 1rem;
-  padding: 1rem;
-}
-.header .header-icons {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
 }
 
-.back-btn,
-.icon-btn {
+
+.back-btn {
+  display: inline-block;
+  margin-bottom: 1rem;
   text-decoration: none;
-  color: #45a59d;
+  color: #2a9d8f;
   font-weight: bold;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  gap: 0.2rem;
 }
-button {
-    background-color: tomato;
-    padding: 5px 10px;
-    text-align: center;
-    color: white;
-    border-radius: 10px;
+
+.back-btn i {
+  margin-right: 0.5rem;
 }
-button i .fas {
-    color: white;
+i .fas {
+  color: white;
 }
 
 .icon-btn:hover {
   color: #21867a;
 }
 
-/* Container */
-.container {
+/* Checklist Item */
+.checklist-item {
+  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-/* Card */
-.card {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  width: 100%;
   padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  position: relative;
+  background-color: #fff;
+  border-radius: 8px;
 }
-
-.card label {
+.checklist-item-group {
   display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
   gap: 0.5rem;
 }
-
-.input-field {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.checklist-item-group label {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
   font-size: 1rem;
+}
+
+.checkbox-group {
+  display: flex; /* Align items horizontally */
+  gap: 1rem; /* Add spacing between the options */
+  align-items: center; /* Align radio buttons and labels vertically */
+}
+
+.checkbox-group label {
+  display: flex; /* Use Flexbox for each label */
+  align-items: center; /* Align the radio button and text vertically */
+  gap: 0.5rem; /* Add spacing between the radio button and the text */
+  font-size: 1rem; /* Adjust font size for better readability */
+  cursor: pointer; /* Make the label clickable */
+}
+
+.checkbox-group input[type="radio"] {
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
 }
 
 .image-input {
   padding: 0;
   display: block;
   margin-top: 0.5rem;
+  cursor: pointer;
+  width: 100%;
 }
 
 /* Image Input and Preview */
@@ -101,37 +110,4 @@ button i .fas {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-top: 0.5rem;
-}
-
-.delete-btn {
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  background-color: #e63946;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.delete-btn:hover {
-  background-color: #d62828;
-}
-
-/* Add Button */
-.add-btn {
-  margin-top: 1rem;
-  background-color: #2a9d8f;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.add-btn:hover {
-  background-color: #21867a;
 }
