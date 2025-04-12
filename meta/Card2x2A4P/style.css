@@ -6,21 +6,13 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #cddaee;
+    background-color: #c7d5eb;
     padding: 1rem;
     font-size: medium;
 }
-i .fas {
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 1em; /* Preferred icon size */
-    text-decoration: inherit;
-    font-size: 50px;
-}
 
 .card {
-    background: white;
+    background: rgb(219, 164, 164);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1rem;
@@ -36,14 +28,28 @@ i .fas {
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #eee;
 }
-
+.card-header .header-btn {
+    display: flex;
+    align-items: center;
+}
 .card-header button {
+    display: flex;
+    flex-direction: row;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     color: #666;
 }
+.card-header button .fa-upload,
+.fa-redo, p
+ {
+    font-size: 20px;
+    padding: 6px;
+    background-color: #08131f;
+    color: white;
+}
+
 
 .card-header button:hover {
     color: #333;
