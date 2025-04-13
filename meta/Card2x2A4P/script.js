@@ -60,9 +60,47 @@ function handleImageSelect(input) {
   if (file) {
     const reader = new FileReader();
     reader.onload = function (e) {
-      const preview =
-        input.previousElementSibling.querySelector(".image-preview");
-      preview.src = e.target.result;
+      const img = new Image();
+      img.src = e.target.result;
+
+      img.onload = function () {
+        // Use Exif.js to read the orientation
+        EXIF.getData(file, function () {
+          const orientation = EXIF.getTag(this, "Orientation");
+
+          // Create a canvas to fix the orientation
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set canvas dimensions
+          if (orientation === 6 || orientation === 8) {
+            canvas.width = img.height;
+            canvas.height = img.width;
+          } else {
+            canvas.width = img.width;
+            canvas.height = img.height;
+          }
+
+          // Rotate the image based on orientation
+          if (orientation === 6) {
+            ctx.rotate((90 * Math.PI) / 180);
+            ctx.translate(0, -canvas.width);
+          } else if (orientation === 8) {
+            ctx.rotate((-90 * Math.PI) / 180);
+            ctx.translate(-canvas.height, 0);
+          } else if (orientation === 3) {
+            ctx.rotate(Math.PI);
+            ctx.translate(-canvas.width, -canvas.height);
+          }
+
+          ctx.drawImage(img, 0, 0);
+
+          // Update the preview image
+          const preview =
+            input.previousElementSibling.querySelector(".image-preview");
+          preview.src = canvas.toDataURL("image/jpeg");
+        });
+      };
     };
     reader.readAsDataURL(file);
   }
