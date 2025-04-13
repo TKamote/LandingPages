@@ -209,7 +209,7 @@ function generatePDF() {
     const pdf = new jsPDF("portrait", "mm", "a4"); // A4 portrait mode
     const pageWidth = 210; // A4 width in mm
     const pageHeight = 297; // A4 height in mm
-    const topMargin = 20; // Added 30px (10mm) space at the top for a heading
+    const topMargin = 20; // Space below the heading
     const sideMargin = 10; // Equal left and right margins
     const cardWidth = (pageWidth - sideMargin * 2) / 2 - 5; // Adjusted width to ensure even spacing
     const cardHeight = pageHeight / 2 - 20; // Reduced height to minimize bottom space
@@ -218,6 +218,11 @@ function generatePDF() {
     // Set the background color of the PDF to light gray
     pdf.setFillColor(240, 240, 240); // Light gray color
     pdf.rect(0, 0, pageWidth, pageHeight, "F"); // Fill the entire page with the background color
+
+    // Add the heading "Inspection Form" at the top
+    pdf.setFontSize(16); // Set font size for the heading
+    pdf.setTextColor(0, 0, 0); // Black text color
+    pdf.text("Inspection Form", pageWidth / 2, 15, { align: "center" }); // Centered at the top
 
     // Get all cards
     const cards = document.querySelectorAll(".card");
@@ -286,6 +291,12 @@ function generatePDF() {
         pdf.addPage();
         pdf.setFillColor(240, 240, 240); // Light gray background for the new page
         pdf.rect(0, 0, pageWidth, pageHeight, "F"); // Fill the new page with the background color
+
+        // Add the heading "Inspection Form" at the top of the new page
+        pdf.setFontSize(16);
+        pdf.setTextColor(0, 0, 0);
+        pdf.text("Inspection Form", pageWidth / 2, 15, { align: "center" });
+
         x = sideMargin;
         y = topMargin; // Reset Y to include the top margin for the next page
       }
