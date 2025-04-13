@@ -81,25 +81,64 @@ function resetCard(button) {
 function handleImageSelect(input) {
   const file = input.files[0];
   if (!file) return;
-  
+
   console.log("Image selected:", file.name);
-  
+
   const reader = new FileReader();
-  reader.onload = function(e) {
-    // Store original image data
-    input.dataset.originalImage = e.target.result;
-    input.dataset.currentRotation = "0"; // Initialize rotation angle
-    
-    // Update the preview image
-    const preview = input.previousElementSibling.previousElementSibling.querySelector(".image-preview");
-    preview.src = e.target.result;
-    
-    // Store the image data for the PDF
-    input.dataset.correctedImage = e.target.result;
-    
-    // Show rotation controls
-    const rotationControls = input.previousElementSibling;
-    rotationControls.style.display = "block";
+  reader.onload = function (e) {
+    const img = new Image();
+    img.src = e.target.result;
+
+    img.onload = function () {
+      // Use Exif.js to read the orientation
+      EXIF.getData(file, function () {
+        const orientation = EXIF.getTag(this, "Orientation");
+
+        // Create a canvas to fix the orientation
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set canvas dimensions based on orientation
+        if (orientation === 6 || orientation === 8) {
+          canvas.width = img.height;
+          canvas.height = img.width;
+        } else {
+          canvas.width = img.width;
+          canvas.height = img.height;
+        }
+
+        // Rotate the image based on orientation
+        if (orientation === 6) {
+          ctx.rotate((90 * Math.PI) / 180);
+          ctx.translate(0, -canvas.width);
+        } else if (orientation === 8) {
+          ctx.rotate((-90 * Math.PI) / 180);
+          ctx.translate(-canvas.height, 0);
+        } else if (orientation === 3) {
+          ctx.rotate(Math.PI);
+          ctx.translate(-canvas.width, -canvas.height);
+        }
+
+        ctx.drawImage(img, 0, 0);
+
+        // Update the preview image
+        const preview = input
+          .closest(".form-group-image")
+          .querySelector(".image-preview");
+        preview.src = canvas.toDataURL("image/jpeg");
+
+        // Store the corrected image data for the PDF
+        input.dataset.correctedImage = canvas.toDataURL("image/jpeg");
+
+        // Show rotation controls
+        const rotationControls = input
+          .closest(".form-group-image")
+          .querySelector(".rotation-controls");
+        if (rotationControls) {
+          rotationControls.style.display = "block";
+        }
+      });
+    };
   };
   reader.readAsDataURL(file);
 }

@@ -140,8 +140,8 @@ header nav ul li a:hover {
   padding: 10px;
   font-size: 1.5rem;
 }
-.template-item .template-content a i .fa-circle-arrow-right {
-  padding-right: 25px;
+.fa-circle-arrow-right {
+  padding-right: 35px;
 }
 
 /* Footer Section */
