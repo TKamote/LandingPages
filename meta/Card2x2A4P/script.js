@@ -52,96 +52,162 @@ function resetCard(button) {
   });
   const preview = card.querySelector(".image-preview");
   preview.src = "/api/placeholder/400/533";
+  
+  // Clear any stored image data
+  const fileInput = card.querySelector("input[type='file']");
+  if (fileInput) {
+    fileInput.value = "";
+    delete fileInput.dataset.correctedImage;
+  }
+}
+
+// Helper function to get image orientation from ArrayBuffer
+function getOrientation(arrayBuffer) {
+  const view = new DataView(arrayBuffer);
+  if (view.getUint16(0, false) !== 0xFFD8) return -2;
+  
+  const length = view.byteLength;
+  let offset = 2;
+  
+  while (offset < length) {
+    const marker = view.getUint16(offset, false);
+    offset += 2;
+    
+    if (marker === 0xFFE1) {
+      if (view.getUint32(offset += 2, false) !== 0x45786966) return -1;
+      
+      const little = view.getUint16(offset += 6, false) === 0x4949;
+      offset += view.getUint32(offset + 4, little);
+      
+      const tags = view.getUint16(offset, little);
+      offset += 2;
+      
+      for (let i = 0; i < tags; i++) {
+        if (view.getUint16(offset + (i * 12), little) === 0x0112) {
+          return view.getUint16(offset + (i * 12) + 8, little);
+        }
+      }
+    } else if ((marker & 0xFF00) !== 0xFF00) {
+      break;
+    } else {
+      offset += view.getUint16(offset, false);
+    }
+  }
+  
+  return -1;
 }
 
 // Function to handle image selection and preview with fixed orientation
 function handleImageSelect(input) {
   const file = input.files[0];
-  if (file) {
-    console.log("Image selected:", file.name);
-    const reader = new FileReader();
-    reader.onload = function (e) {
+  if (!file) return;
+  
+  console.log("Image selected:", file.name);
+  
+  // First approach: Get the file as ArrayBuffer to read EXIF manually
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const arrayBuffer = e.target.result;
+    let orientation = 1;
+    
+    try {
+      // Try to get orientation from ArrayBuffer
+      orientation = getOrientation(arrayBuffer);
+      if (orientation <= 0) orientation = 1; // Default to 1 if can't determine
+    } catch (err) {
+      console.warn("Error reading EXIF orientation from ArrayBuffer:", err);
+    }
+    
+    // Now create an image from the same file
+    const blobReader = new FileReader();
+    blobReader.onload = function(e) {
       const img = new Image();
-      img.onload = function () {
-        // Use Exif.js to read the orientation
-        EXIF.getData(file, function () {
-          const orientation = EXIF.getTag(this, "Orientation") || 1;
-          
-          // Create a canvas to fix the orientation
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-          
-          // Set proper dimensions based on orientation
-          let width = img.width;
-          let height = img.height;
-          
-          // Handle rotation cases
-          if (orientation > 4 && orientation < 9) {
-            // Swap dimensions for orientations that require 90° or 270° rotation
-            canvas.width = height;
-            canvas.height = width;
-          } else {
-            canvas.width = width;
-            canvas.height = height;
-          }
-          
-          // Apply transformations based on EXIF orientation
-          switch (orientation) {
-            case 2: // horizontal flip
-              ctx.translate(width, 0);
-              ctx.scale(-1, 1);
-              break;
-              
-            case 3: // 180° rotation
-              ctx.translate(width, height);
-              ctx.rotate(Math.PI);
-              break;
-              
-            case 4: // vertical flip
-              ctx.translate(0, height);
-              ctx.scale(1, -1);
-              break;
-              
-            case 5: // vertical flip + 90° rotation clockwise
-              ctx.rotate(0.5 * Math.PI);
-              ctx.scale(1, -1);
-              break;
-              
-            case 6: // 90° rotation clockwise
-              ctx.translate(height, 0);
-              ctx.rotate(0.5 * Math.PI);
-              break;
-              
-            case 7: // horizontal flip + 90° rotation clockwise
-              ctx.rotate(0.5 * Math.PI);
-              ctx.translate(height, -width);
-              ctx.scale(-1, 1);
-              break;
-              
-            case 8: // 90° rotation counter-clockwise
-              ctx.translate(0, width);
-              ctx.rotate(-0.5 * Math.PI);
-              break;
-              
-            default: // default orientation, do nothing
-              break;
-          }
-          
-          // Draw the image with the proper orientation
-          ctx.drawImage(img, 0, 0);
-          
-          // Update the preview image
-          const preview = input.previousElementSibling.querySelector(".image-preview");
-          preview.src = canvas.toDataURL("image/jpeg");
-          
-          // Store the corrected image data for the PDF
-          input.dataset.correctedImage = canvas.toDataURL("image/jpeg");
-        });
+      
+      img.onload = function() {
+        console.log("Original dimensions:", img.width, "x", img.height);
+        console.log("Detected orientation:", orientation);
+        
+        // Create canvas for processing
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        
+        // Set dimensions based on orientation
+        let width = img.width;
+        let height = img.height;
+        
+        if (orientation > 4 && orientation < 9) {
+          // Swap dimensions for orientations that require 90° or 270° rotation
+          canvas.width = height;
+          canvas.height = width;
+        } else {
+          canvas.width = width;
+          canvas.height = height;
+        }
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Apply transformations based on orientation
+        switch (orientation) {
+          case 2: // horizontal flip
+            ctx.translate(width, 0);
+            ctx.scale(-1, 1);
+            break;
+            
+          case 3: // 180° rotation
+            ctx.translate(width, height);
+            ctx.rotate(Math.PI);
+            break;
+            
+          case 4: // vertical flip
+            ctx.translate(0, height);
+            ctx.scale(1, -1);
+            break;
+            
+          case 5: // vertical flip + 90° rotation clockwise
+            ctx.rotate(0.5 * Math.PI);
+            ctx.scale(1, -1);
+            break;
+            
+          case 6: // 90° rotation clockwise
+            ctx.translate(height, 0);
+            ctx.rotate(0.5 * Math.PI);
+            break;
+            
+          case 7: // horizontal flip + 90° rotation clockwise
+            ctx.rotate(0.5 * Math.PI);
+            ctx.translate(height, -width);
+            ctx.scale(-1, 1);
+            break;
+            
+          case 8: // 90° rotation counter-clockwise
+            ctx.translate(0, width);
+            ctx.rotate(-0.5 * Math.PI);
+            break;
+            
+          default: // default orientation, do nothing
+            break;
+        }
+        
+        // Draw the image with the proper orientation
+        ctx.drawImage(img, 0, 0, width, height);
+        console.log("Processed canvas dimensions:", canvas.width, "x", canvas.height);
+        
+        // Update the preview image
+        const preview = input.previousElementSibling.querySelector(".image-preview");
+        preview.src = canvas.toDataURL("image/jpeg", 0.9);
+        
+        // Store the corrected image data for the PDF
+        input.dataset.correctedImage = canvas.toDataURL("image/jpeg", 0.9);
       };
+      
       img.src = e.target.result;
     };
-    reader.readAsDataURL(file);
-  }
+    
+    blobReader.readAsDataURL(file);
+  };
+  
+  reader.readAsArrayBuffer(file);
 }
 
 // Function to generate and download the PDF
