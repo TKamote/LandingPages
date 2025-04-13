@@ -58,6 +58,7 @@ function resetCard(button) {
 function handleImageSelect(input) {
   const file = input.files[0];
   if (file) {
+    console.log("Image selected:", file.name);
     const reader = new FileReader();
     reader.onload = function (e) {
       const img = new Image();
