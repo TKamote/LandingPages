@@ -30,7 +30,7 @@ function addCard() {
             <div class="image-container">
                 <img class="image-preview" src="/api/placeholder/400/533" alt="Preview">
             </div>
-            <input type="file" accept="image/*" capture="environment" onchange="handleImageSelect(this)">
+            <input type="file" accept="image/*" onchange="handleImageSelect(this)">
         </div>
     `;
 
@@ -54,7 +54,7 @@ function resetCard(button) {
   preview.src = "/api/placeholder/400/533";
 }
 
-// Function to handle image selection and preview
+// Function to handle image selection and preview with fixed orientation
 function handleImageSelect(input) {
   const file = input.files[0];
   if (file) {
@@ -62,49 +62,83 @@ function handleImageSelect(input) {
     const reader = new FileReader();
     reader.onload = function (e) {
       const img = new Image();
-      img.src = e.target.result;
-
       img.onload = function () {
         // Use Exif.js to read the orientation
         EXIF.getData(file, function () {
-          const orientation = EXIF.getTag(this, "Orientation");
-
+          const orientation = EXIF.getTag(this, "Orientation") || 1;
+          
           // Create a canvas to fix the orientation
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-
-          // Set canvas dimensions
-          if (orientation === 6 || orientation === 8) {
-            canvas.width = img.height;
-            canvas.height = img.width;
+          
+          // Set proper dimensions based on orientation
+          let width = img.width;
+          let height = img.height;
+          
+          // Handle rotation cases
+          if (orientation > 4 && orientation < 9) {
+            // Swap dimensions for orientations that require 90° or 270° rotation
+            canvas.width = height;
+            canvas.height = width;
           } else {
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = width;
+            canvas.height = height;
           }
-
-          // Rotate the image based on orientation
-          if (orientation === 6) {
-            ctx.rotate((90 * Math.PI) / 180);
-            ctx.translate(0, -canvas.width);
-          } else if (orientation === 8) {
-            ctx.rotate((-90 * Math.PI) / 180);
-            ctx.translate(-canvas.height, 0);
-          } else if (orientation === 3) {
-            ctx.rotate(Math.PI);
-            ctx.translate(-canvas.width, -canvas.height);
+          
+          // Apply transformations based on EXIF orientation
+          switch (orientation) {
+            case 2: // horizontal flip
+              ctx.translate(width, 0);
+              ctx.scale(-1, 1);
+              break;
+              
+            case 3: // 180° rotation
+              ctx.translate(width, height);
+              ctx.rotate(Math.PI);
+              break;
+              
+            case 4: // vertical flip
+              ctx.translate(0, height);
+              ctx.scale(1, -1);
+              break;
+              
+            case 5: // vertical flip + 90° rotation clockwise
+              ctx.rotate(0.5 * Math.PI);
+              ctx.scale(1, -1);
+              break;
+              
+            case 6: // 90° rotation clockwise
+              ctx.translate(height, 0);
+              ctx.rotate(0.5 * Math.PI);
+              break;
+              
+            case 7: // horizontal flip + 90° rotation clockwise
+              ctx.rotate(0.5 * Math.PI);
+              ctx.translate(height, -width);
+              ctx.scale(-1, 1);
+              break;
+              
+            case 8: // 90° rotation counter-clockwise
+              ctx.translate(0, width);
+              ctx.rotate(-0.5 * Math.PI);
+              break;
+              
+            default: // default orientation, do nothing
+              break;
           }
-
+          
+          // Draw the image with the proper orientation
           ctx.drawImage(img, 0, 0);
-
+          
           // Update the preview image
-          const preview =
-            input.previousElementSibling.querySelector(".image-preview");
+          const preview = input.previousElementSibling.querySelector(".image-preview");
           preview.src = canvas.toDataURL("image/jpeg");
-
+          
           // Store the corrected image data for the PDF
           input.dataset.correctedImage = canvas.toDataURL("image/jpeg");
         });
       };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
