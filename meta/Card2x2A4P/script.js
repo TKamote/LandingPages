@@ -99,6 +99,9 @@ function handleImageSelect(input) {
           const preview =
             input.previousElementSibling.querySelector(".image-preview");
           preview.src = canvas.toDataURL("image/jpeg");
+
+          // Store the corrected image data for the PDF
+          input.dataset.correctedImage = canvas.toDataURL("image/jpeg");
         });
       };
     };
@@ -143,8 +146,8 @@ function generatePDF() {
         card.querySelector("input[name='location']").value || "N/A";
       const comments =
         card.querySelector("textarea[name='comments']").value || "N/A";
-      const imageElement = card.querySelector(".image-preview");
-      const imageSrc = imageElement.src;
+      const imageInput = card.querySelector("input[type='file']");
+      const correctedImage = imageInput.dataset.correctedImage;
 
       // Add a box shadow effect for the card
       pdf.setDrawColor(222, 222, 222); // Light gray shadow color
@@ -163,11 +166,11 @@ function generatePDF() {
       pdf.text(`Comments: ${comments}`, x + 5, y + 28);
 
       // Add image to the card (if available)
-      if (imageSrc && imageSrc !== "/api/placeholder/400/533") {
+      if (correctedImage) {
         const imageHeight = cardHeight - 50; // Keep the image height unchanged
         const imageWidth = cardWidth - 10; // Keep the image width unchanged
         pdf.addImage(
-          imageSrc,
+          correctedImage,
           "JPEG",
           x + 5,
           y + 40, // Position the image below the text

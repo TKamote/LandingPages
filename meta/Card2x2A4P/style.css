@@ -57,6 +57,10 @@ body {
 .fas {
   margin: 0 8px;
 }
+.delete-button .fa-trash {
+  color: #180b0d;
+  font-size: larger;
+}
 
 .card-header button:hover {
   color: #333;
