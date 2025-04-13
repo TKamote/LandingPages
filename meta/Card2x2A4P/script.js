@@ -219,10 +219,10 @@ function generatePDF() {
     pdf.setFillColor(240, 240, 240); // Light gray color
     pdf.rect(0, 0, pageWidth, pageHeight, "F"); // Fill the entire page with the background color
 
-    // Add the heading "Inspection Form" at the top
+    // Add the heading "Inspection Form" at the top left
     pdf.setFontSize(16); // Set font size for the heading
     pdf.setTextColor(0, 0, 0); // Black text color
-    pdf.text("Inspection Form", pageWidth / 2, 15, { align: "center" }); // Centered at the top
+    pdf.text("Inspection Form", sideMargin, 15); // Align to the left at x = sideMargin
 
     // Get all cards
     const cards = document.querySelectorAll(".card");
@@ -292,10 +292,10 @@ function generatePDF() {
         pdf.setFillColor(240, 240, 240); // Light gray background for the new page
         pdf.rect(0, 0, pageWidth, pageHeight, "F"); // Fill the new page with the background color
 
-        // Add the heading "Inspection Form" at the top of the new page
+        // Add the heading "Inspection Form" at the top left of the new page
         pdf.setFontSize(16);
         pdf.setTextColor(0, 0, 0);
-        pdf.text("Inspection Form", pageWidth / 2, 15, { align: "center" });
+        pdf.text("Inspection Form", sideMargin, 15); // Align to the left at x = sideMargin
 
         x = sideMargin;
         y = topMargin; // Reset Y to include the top margin for the next page
