@@ -127,8 +127,9 @@ function handleImageSelect(input) {
           .querySelector(".image-preview");
         preview.src = canvas.toDataURL("image/jpeg");
 
-        // Store the corrected image data for the PDF
-        input.dataset.correctedImage = canvas.toDataURL("image/jpeg");
+        // Store the original and corrected image data
+        input.dataset.originalImage = e.target.result; // Original image
+        input.dataset.correctedImage = canvas.toDataURL("image/jpeg"); // Corrected image
 
         // Show rotation controls
         const rotationControls = input
@@ -148,24 +149,27 @@ function rotateImage(button, angleDelta) {
   const card = button.closest(".card");
   const fileInput = card.querySelector("input[type='file']");
   const preview = card.querySelector(".image-preview");
-  
-  if (!fileInput.dataset.originalImage) return;
-  
+
+  if (!fileInput.dataset.originalImage) {
+    console.error("Original image not found for rotation.");
+    return;
+  }
+
   // Get current rotation and add the new angle
   let currentRotation = parseInt(fileInput.dataset.currentRotation || "0");
   currentRotation = (currentRotation + angleDelta) % 360;
   if (currentRotation < 0) currentRotation += 360;
-  
+
   // Store the new rotation angle
   fileInput.dataset.currentRotation = currentRotation.toString();
-  
+
   // Load the original image to a new image object
   const img = new Image();
-  img.onload = function() {
+  img.onload = function () {
     // Create a canvas to apply rotation
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    
+
     // Set canvas dimensions based on rotation
     if (currentRotation === 90 || currentRotation === 270) {
       // Swap dimensions for 90° and 270° rotations
@@ -175,26 +179,26 @@ function rotateImage(button, angleDelta) {
       canvas.width = img.width;
       canvas.height = img.height;
     }
-    
+
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     // Move to the center of the canvas
     ctx.translate(canvas.width / 2, canvas.height / 2);
-    
+
     // Rotate the canvas context
     ctx.rotate((currentRotation * Math.PI) / 180);
-    
+
     // Draw the image centered on the canvas
     ctx.drawImage(img, -img.width / 2, -img.height / 2);
-    
+
     // Update the preview with the rotated image
     preview.src = canvas.toDataURL("image/jpeg", 0.92);
-    
+
     // Store the rotated image for the PDF
     fileInput.dataset.correctedImage = canvas.toDataURL("image/jpeg", 0.92);
   };
-  
+
   img.src = fileInput.dataset.originalImage;
 }
 
