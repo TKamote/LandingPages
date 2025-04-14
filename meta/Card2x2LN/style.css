@@ -1,168 +1,195 @@
+/* Reset styles */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+/* Body background color */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
-    padding: 1rem;
-    font-size: medium;
-}
-.fa-upload {
-    font-size: large;
-}
-.fa-redo {
-    font-size: large;
+  background-color: #f9f9f9; /* Very light gray background */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  max-width: 680px;
+  margin: auto;
 }
 
+/* Card header styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-items: center;
+  margin-bottom: 5px;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  background-color: rgb(244, 237, 237);
+}
+.header .header-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header button {
+  display: flex;
+  flex-direction: row;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 20px;
+  padding: 6px;
+  background-color: #08131f;
+  color: white;
+  margin: 0 10px;
+  border-radius: 5px;
+}
+.fas {
+  margin: 0 8px;
+}
+.delete-button .fa-trash {
+  color: #180b0d;
+  font-size: larger;
+}
+.header button:hover {
+  color: #333;
+}
+/* Card styling */
 .card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    margin-bottom: 1rem;
-    position: relative;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
 }
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #eee;
-}
-
-.card-header button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    color: #666;
-}
-
-.card-header button:hover {
-    color: #333;
-}
-
 .form-group {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #333;
-    font-weight: bold;
-    width: 30%;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: bold;
+  width: 30%;
 }
 .form-group.textarea {
-    width: 50%;
-    align-self: flex-end;
-    place-self: end;
+  width: 50%;
+  align-self: flex-end;
+  place-self: end;
 }
 
 .form-group input[type="text"],
 .form-group textarea {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 .form-group textarea {
-    min-height: 60px;
-    resize: vertical;
+  min-height: 60px;
+  resize: vertical;
 }
 
 .image-container {
-    position: relative;
-    width: 100%;
-    padding-top: 100%; /* 1 aspect ratio */
-    margin-bottom: 1rem;
+  position: relative;
+  width: 80%;
+  padding-top: 100%; /* 1 aspect ratio */
+  margin-bottom: 1rem;
+  margin: auto;
+  aspect-ratio: 1 / 1;
 }
 
 .image-preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-    background-color: #f8f9fa;
-    border: 1px dashed #ddd;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  border: 1px dashed #ddd;
 }
 .form-group-image {
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .add-card-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 1rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.5rem;
-    margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 }
 
 .add-card-button:hover {
-    background: #0056b3;
+  background: #0056b3;
 }
 
+/* Delete button styling */
 .delete-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: #dc3545;
-    cursor: pointer;
-    padding: 0.5rem;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-button i {
+  margin-right: 5px;
 }
 
 .delete-button:hover {
-    color: #c82333;
+  background-color: #e60000;
 }
 
 @media print {
-    @page {
-        size: A4 portrait;
-        margin: 1cm;
-    }
+  @page {
+    size: A4 portrait;
+    margin: 1cm;
+  }
 
-    body {
-        padding: 0;
-        background: white;
-    }
+  body {
+    padding: 0;
+    background: white;
+  }
 
-    .card {
-        break-inside: avoid;
-        width: 50%;
-        float: left;
-        page-break-inside: avoid;
-        margin: 0;
-        padding: 0.5cm;
-        box-shadow: none;
-    }
+  .card {
+    break-inside: avoid;
+    width: 50%;
+    float: left;
+    page-break-inside: avoid;
+    margin: 0;
+    padding: 0.5cm;
+    box-shadow: none;
+  }
 
-    .add-card-button,
-    .delete-button {
-        display: none;
-    }
+  .add-card-button,
+  .delete-button {
+    display: none;
+  }
 }
