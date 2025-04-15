@@ -293,91 +293,89 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Create a Word-compatible HTML content
     let content = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Defects Inspection Report</title>
-                <style>
-                    @page {
-                        size: A4 portrait;
-                        margin: 1cm;
-                    }
-                    body {
-                        font-family: Arial, sans-serif;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    .page {
-                        page-break-after: always;
-                    }
-                    .grid {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr; /* 2 columns */
-                        grid-template-rows: 1fr 1fr; /* 2 rows */
-                        gap: 10px;
-                        height: 100%; /* Full page height */
-                    }
-                    .card {
-                        border: 1px solid #ddd;
-                        padding: 10px;
-                        box-sizing: border-box;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
-                    }
-                    .photo-container {
-                        width: 100%;
-                        height: 0;
-                        padding-bottom: 75%; /* 3:4 aspect ratio */
-                        overflow: hidden;
-                        position: relative;
-                    }
-                    .photo {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                    }
-                    .no-photo {
-                        width: 100%;
-                        height: 0;
-                        padding-bottom: 75%; /* 3:4 aspect ratio */
-                        background-color: #eee;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: #777;
-                    }
-                    .card-info {
-                        margin-top: 10px;
-                        font-size: 12px;
-                    }
-                    .card-info p {
-                        margin: 5px 0;
-                    }
-                    .comments {
-                        margin-top: 10px;
-                        font-size: 12px;
-                        border-top: 1px solid #eee;
-                        padding-top: 10px;
-                    }
-                    h1 {
-                        text-align: center;
-                        font-size: 16px;
-                        margin: 10px 0;
-                    }
-                </style>
-            </head>
-            <body>
-                <h1>Defects Inspection Report - ${new Date().toLocaleDateString()}</h1>
-        `;
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Defects Inspection Report</title>
+        <style>
+          @page {
+            size: A4 portrait;
+            margin: 1cm;
+          }
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+          }
+          .page {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 columns */
+            grid-template-rows: 1fr 1fr; /* 2 rows */
+            gap: 10px;
+            height: 100%; /* Full page height */
+            page-break-after: always;
+          }
+          .card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .photo-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 75%; /* 3:4 aspect ratio */
+            overflow: hidden;
+            position: relative;
+          }
+          .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+          .no-photo {
+            width: 100%;
+            height: 0;
+            padding-bottom: 75%; /* 3:4 aspect ratio */
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+          }
+          .card-info {
+            margin-top: 10px;
+            font-size: 12px;
+          }
+          .card-info p {
+            margin: 5px 0;
+          }
+          .comments {
+            margin-top: 10px;
+            font-size: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+          }
+          h1 {
+            text-align: center;
+            font-size: 16px;
+            margin: 10px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Defects Inspection Report - ${new Date().toLocaleDateString()}</h1>
+    `;
 
     // Add cards in 2x2 grid per page
     for (let i = 0; i < cards.length; i += 4) {
-      content += '<div class="page"><div class="grid">';
+      content += '<div class="page">';
 
       // Add up to 4 cards per page
       for (let j = i; j < i + 4 && j < cards.length; j++) {
@@ -387,30 +385,28 @@ document.addEventListener("DOMContentLoaded", function () {
           : "No timestamp";
 
         content += `
-                    <div class="card">
-                        <div class="photo-container">
-                            ${
-                              card.photoUrl
-                                ? `<img class="photo" src="${card.photoUrl}" alt="Inspection photo">`
-                                : '<div class="no-photo">No photo</div>'
-                            }
-                        </div>
-                        <div class="card-info">
-                            <p><strong>Serial:</strong> ${
-                              card.serialNumber || "N/A"
-                            }</p>
-                            <p><strong>Time:</strong> ${timestamp}</p>
-                            <p><strong>Location:</strong> ${
-                              card.location || "No location provided"
-                            }</p>
-                        </div>
-                        <div class="comments">
-                            <p><strong>Comments:</strong> ${
-                              card.comments || "No comments"
-                            }</p>
-                        </div>
-                    </div>
-                `;
+          <div class="card">
+            <div class="photo-container">
+              ${
+                card.photoUrl
+                  ? `<img class="photo" src="${card.photoUrl}" alt="Inspection photo">`
+                  : '<div class="no-photo">No photo</div>'
+              }
+            </div>
+            <div class="card-info">
+              <p><strong>Serial:</strong> ${card.serialNumber || "N/A"}</p>
+              <p><strong>Time:</strong> ${timestamp}</p>
+              <p><strong>Location:</strong> ${
+                card.location || "No location provided"
+              }</p>
+            </div>
+            <div class="comments">
+              <p><strong>Comments:</strong> ${
+                card.comments || "No comments"
+              }</p>
+            </div>
+          </div>
+        `;
       }
 
       // Fill remaining slots with empty divs to maintain grid layout
@@ -420,7 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      content += "</div></div>";
+      content += "</div>";
     }
 
     content += "</body></html>";
