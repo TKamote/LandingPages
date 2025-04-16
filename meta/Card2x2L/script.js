@@ -258,21 +258,22 @@ document.addEventListener("DOMContentLoaded", function () {
           .card {
             border: 1px solid #ddd;
             padding: 10px;
+            width: 80mm;
+            height: 114mm;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
           }
           .photo-container {
-            width: 100%;
-            height: 0;
+            width: 80mm;
             padding-bottom: 75%; /* 3:4 aspect ratio */
             overflow: hidden;
             position: relative;
           }
           .photo {
-            width: 100%;
-            height: 100%;
+            width: 80mm;
+            height: auto;
             object-fit: cover;
             position: absolute;
             top: 0;
