@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // State
   let cards = JSON.parse(localStorage.getItem("inspectionCards")) || [];
-  let nextSerialNumber = getNextSerialNumber();
 
   // Initialize the app
   function init() {
@@ -25,30 +24,26 @@ document.addEventListener("DOMContentLoaded", function () {
     exportBtn.addEventListener("click", exportToWord);
   }
 
-  // Generate next serial number (YYYYMMDD-001 format)
-  function getNextSerialNumber() {
-    const today = new Date();
-    const dateStr =
-      today.getFullYear() +
-      String(today.getMonth() + 1).padStart(2, "0") +
-      String(today.getDate()).padStart(2, "0");
+  // Add a new card
+  function addNewCard() {
+    const newCard = {
+      timestamp: new Date().toISOString(),
+      comments: "",
+    };
 
-    // Find existing serial numbers from today
-    const todayCards = cards.filter(
-      (card) => card.serialNumber && card.serialNumber.startsWith(dateStr)
-    );
+    cards.push(newCard);
+    saveCards();
 
-    if (todayCards.length > 0) {
-      // Get the highest sequence number
-      const sequences = todayCards.map((card) => {
-        const parts = card.serialNumber.split("-");
-        return parts.length > 1 ? parseInt(parts[1]) : 0;
+    // Render just the new card
+    renderCard(newCard, cards.length - 1);
+
+    // Scroll to the new card
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
       });
-      const maxSeq = Math.max(...sequences);
-      return `${dateStr}-${String(maxSeq + 1).padStart(3, "0")}`;
-    }
-
-    return `${dateStr}-001`;
+    }, 100);
   }
 
   // Render a single card
@@ -75,25 +70,20 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="card-body">
                 <div class="form-group">
-                    <label for="serial-${index}">Serial Number</label>
-                    <input type="text" id="serial-${index}" value="${
-      cardData.serialNumber || ""
-    }" placeholder="Auto-generated serial number">
+                    <label>Serial Number</label>
+                    <input type="text" 
+                           class="serial-input" 
+                           placeholder="Enter serial number"
+                           value="${cardData.serialNumber || ""}"
+                    >
                 </div>
                 <div class="form-group">
                     <label>Location</label>
-                    <div id="location-${index}" class="location-data">
-                        ${
-                          cardData.location
-                            ? `<span class="location-label">Lat:</span> ${cardData.location.latitude.toFixed(
-                                6
-                              )}, 
-                             <span class="location-label">Long:</span> ${cardData.location.longitude.toFixed(
-                               6
-                             )}`
-                            : "Fetching location..."
-                        }
-                    </div>
+                    <input type="text" 
+                           class="location-input" 
+                           placeholder="Enter location"
+                           value="${cardData.location || ""}"
+                    >
                 </div>
                 <div class="form-group">
                     <label for="comments-${index}">Comments</label>
@@ -114,11 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const photoPlaceholder = card.querySelector(".photo-placeholder");
     const photoElement = card.querySelector(".photo");
     const cameraInput = card.querySelector(".camera-input");
-    const serialInput = card.querySelector(`#serial-${index}`);
+    const serialInput = card.querySelector(".serial-input");
+    const locationInput = card.querySelector(".location-input");
     const commentsInput = card.querySelector(`#comments-${index}`);
     const takePhotoBtn = card.querySelector(".take-photo-btn");
     const deleteBtn = card.querySelector(".delete-button");
-    const locationElement = card.querySelector(`#location-${index}`);
 
     // Show photo if available
     if (cardData.photoUrl) {
@@ -162,25 +152,19 @@ document.addEventListener("DOMContentLoaded", function () {
       saveCards();
     });
 
+    locationInput.addEventListener("input", function (e) {
+      cards[index].location = e.target.value; // Store as plain text
+      saveCards();
+    });
+
     commentsInput.addEventListener("input", function (e) {
       cards[index].comments = e.target.value;
       saveCards();
     });
 
     deleteBtn.addEventListener("click", function () {
-      if (cards.length > 1) {
-        cards.splice(index, 1);
-        saveCards();
-        renderAllCards();
-      } else {
-        showToast("Cannot delete the last card. Reset all instead.");
-      }
+      deleteCard(deleteBtn);
     });
-
-    // Get location if not already available
-    if (!cardData.location) {
-      getLocation(index, locationElement);
-    }
   }
 
   // Render all cards
@@ -191,91 +175,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Add a new card
-  function addNewCard() {
-    const newCard = {
-      serialNumber: nextSerialNumber,
-      timestamp: new Date().toISOString(),
-      comments: "",
-    };
-
-    cards.push(newCard);
-    nextSerialNumber = getNextSerialNumber();
-    saveCards();
-
-    // Render just the new card
-    renderCard(newCard, cards.length - 1);
-
-    // Scroll to the new card
-    setTimeout(() => {
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    }, 100);
-  }
-
   // Reset all cards
   function resetAllCards() {
-    if (
-      confirm(
-        "Are you sure you want to reset all cards? This will delete all current data."
-      )
-    ) {
-      cards = [];
-      localStorage.removeItem("inspectionCards");
-      nextSerialNumber = getNextSerialNumber();
-      addNewCard();
-      showToast("All cards have been reset");
-    }
+    // Clear the cards array
+    cards = [];
+
+    // Clear localStorage
+    localStorage.removeItem("inspectionCards");
+
+    // Clear all cards from the container
+    cardsContainer.innerHTML = "";
+
+    // Add a fresh card
+    addNewCard();
+
+    showToast("All cards reset");
   }
 
-  // Get current location
-  function getLocation(cardIndex, locationElement) {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        // Success
-        function (position) {
-          const location = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          };
+  // Function to delete a card
+  function deleteCard(button) {
+    const card = button.closest(".card");
+    const index = parseInt(card.dataset.index);
 
-          // Update card data
-          cards[cardIndex].location = location;
-          saveCards();
+    // Remove the card from the array
+    cards.splice(index, 1);
 
-          // Update UI
-          locationElement.innerHTML = `
-                        <span class="location-label">Lat:</span> ${location.latitude.toFixed(
-                          6
-                        )}, 
-                        <span class="location-label">Long:</span> ${location.longitude.toFixed(
-                          6
-                        )}
-                    `;
-        },
-        // Error
-        function (error) {
-          let errorMessage;
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              errorMessage = "Location access denied";
-              break;
-            case error.POSITION_UNAVAILABLE:
-              errorMessage = "Location unavailable";
-              break;
-            case error.TIMEOUT:
-              errorMessage = "Location request timed out";
-              break;
-            default:
-              errorMessage = "Unknown location error";
-          }
-          locationElement.textContent = errorMessage;
-        }
-      );
-    } else {
-      locationElement.textContent = "Geolocation not supported";
+    // Remove the card element from DOM
+    card.remove();
+
+    // Update indexes of remaining cards
+    const remainingCards = cardsContainer.querySelectorAll(".card");
+    remainingCards.forEach((card, idx) => {
+      card.dataset.index = idx;
+    });
+
+    // Save the updated cards
+    saveCards();
+
+    // If all cards are deleted, add a new empty one
+    if (cards.length === 0) {
+      addNewCard();
     }
   }
 
