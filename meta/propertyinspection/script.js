@@ -25,13 +25,18 @@ function createCard() {
             <label for="comments" class="form-label">Comments:</label>
             <textarea placeholder="Enter Comments" class="comments"></textarea>
         </div>
-        <p style="text-align: center; color: #888;">Click below to upload photo</p> 
-        <div class="photo-container" style="display: flex; align-items: center; justify-content: center; width: 280px; height: 280px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background-color: #f9f9f9;">  
-        <img class="photo" src="placeholder.jpg" alt="Click to upload photo" 
-                 style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" />
+        <div class="photo-container" style="
+            position: relative; 
+            width: 260px; 
+            height: 260px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            background-color: #f9f9f9;">
+            <img class="photo" src="placeholder.jpg" alt="Click to upload photo" 
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" />
             <input type="file" accept="image/*" class="image-input" style="display: none;" />
         </div>
-        
         <button class="delete-btn" style="
             position: absolute; 
             bottom: 10px; 

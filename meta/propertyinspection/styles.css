@@ -14,9 +14,10 @@ body {
   overflow: auto; /* Allow scrolling for the page */
 }
 .container {
+  margin-top: 10px;
   width: 90mm;
   height: 100vh; /* Set a height relative to the viewport */
-  padding: 10px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   gap: 15px; /* Add spacing between cards */
@@ -52,7 +53,7 @@ h3 {
   padding: 0;
   font-size: 12px;
   text-align: left;
-  color: #333;
+  color: #000;
   width: 30%;
 }
 
@@ -95,12 +96,13 @@ h3 {
 .add-btn {
   background-color: green;
   color: white;
+  font-size: larger;
   border: none;
-  padding: 10px 15px;
-  border-radius: 50%;
+  padding: 8px 35px;
+  border-radius: 5px;
   cursor: pointer;
   position: absolute; /* Position it relative to the container */
-  bottom: 10px; /* Center vertically */
+  bottom: 5px; /* Center vertically */
   left: 50%; /* Center horizontally */
   transform: translate(-50%, -50%); /* Adjust for the button's size */
   z-index: 1000; /* Ensure it appears above other elements */
