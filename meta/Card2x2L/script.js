@@ -226,99 +226,79 @@ document.addEventListener("DOMContentLoaded", function () {
   // Export to Word document
   function exportToWord() {
     if (cards.length === 0) {
-      showToast("No cards to export");
+      alert("No cards to export");
       return;
     }
 
-    // Create a Word-compatible HTML content
     let content = `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="UTF-8">
-        <title>Defects Inspection Report</title>
+        <title>Inspection Report</title>
         <style>
-          @page {
+          @page { 
             size: A4 portrait;
-            margin: 1cm;
+            margin: 1cm; 
           }
-          body {
-            font-family: Arial, sans-serif;
+          body { 
             margin: 0;
             padding: 0;
           }
-          .page {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 columns */
-            grid-template-rows: 1fr 1fr; /* 2 rows */
-            gap: 10px;
-            height: 100%; /* Full page height */
+          .cards-container {
+            width: 19cm;
+            padding: 1cm;
+          }
+          .cards-page {
+            width: 19cm;
+            min-height: 27.7cm;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-content: flex-start;
+            gap: 1cm;
             page-break-after: always;
           }
           .card {
+            width: 9cm;
+            height: 13cm;
             border: 1px solid #ddd;
-            padding: 10px;
-            width: 80mm;
-            height: 114mm;
+            padding: 0.5cm;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
           }
           .photo-container {
-            width: 80mm;
-            padding-bottom: 75%; /* 3:4 aspect ratio */
-            overflow: hidden;
-            position: relative;
+            width: 8cm;
+            height: 6cm;
+            margin-bottom: 0.3cm;
           }
           .photo {
-            width: 80mm;
-            height: auto;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-          }
-          .no-photo {
             width: 100%;
-            height: 0;
-            padding-bottom: 75%; /* 3:4 aspect ratio */
-            background-color: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #777;
+            height: 100%;
+            object-fit: contain;
           }
           .card-info {
-            margin-top: 10px;
-            font-size: 12px;
-          }
-          .card-info p {
-            margin: 5px 0;
+            font-size: 10pt;
+            margin-bottom: 0.3cm;
           }
           .comments {
-            margin-top: 10px;
-            font-size: 12px;
-            border-top: 1px solid #eee;
-            padding-top: 10px;
-          }
-          h1 {
-            text-align: center;
-            font-size: 16px;
-            margin: 10px 0;
+            font-size: 10pt;
+            border-top: 1px solid #ddd;
+            padding-top: 0.2cm;
           }
         </style>
       </head>
       <body>
-        <h1>Defects Inspection Report - ${new Date().toLocaleDateString()}</h1>
+        <div class="cards-container">
     `;
 
-    // Add cards in 2x2 grid per page
+    // Add cards in groups of 4
     for (let i = 0; i < cards.length; i += 4) {
-      content += '<div class="page">';
+      content += '<div class="cards-page">';
 
       // Add up to 4 cards per page
-      for (let j = i; j < i + 4 && j < cards.length; j++) {
+      for (let j = i; j < Math.min(i + 4, cards.length); j++) {
         const card = cards[j];
         const timestamp = card.timestamp
           ? new Date(card.timestamp).toLocaleString()
@@ -329,16 +309,15 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="photo-container">
               ${
                 card.photoUrl
-                  ? `<img class="photo" src="${card.photoUrl}" alt="Inspection photo">`
+                  ? `<img class="photo" src="${card.photoUrl}" alt="Photo">`
                   : '<div class="no-photo">No photo</div>'
               }
             </div>
             <div class="card-info">
-              <p><strong>Serial:</strong> ${card.serialNumber || "N/A"}</p>
-              <p><strong>Time:</strong> ${timestamp}</p>
               <p><strong>Location:</strong> ${
-                card.location || "No location provided"
+                card.location || "No location"
               }</p>
+              <p><strong>Time:</strong> ${timestamp}</p>
             </div>
             <div class="comments">
               <p><strong>Comments:</strong> ${
@@ -349,19 +328,12 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
       }
 
-      // Fill remaining slots with empty divs to maintain grid layout
-      for (let j = cards.length; j < i + 4; j++) {
-        if (j >= i) {
-          content += '<div class="card" style="visibility: hidden;"></div>';
-        }
-      }
-
       content += "</div>";
     }
 
-    content += "</body></html>";
+    content += "</div></body></html>";
 
-    // Create a Blob with the Word HTML content
+    // Create and trigger download
     const blob = new Blob([content], { type: "application/msword" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -369,8 +341,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .toLocaleDateString()
       .replace(/\//g, "-")}.doc`;
     link.click();
-
-    showToast("Report exported successfully");
   }
 
   // Show toast message

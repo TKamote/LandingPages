@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Checklist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button id="backBtn" class="header-btn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button id="downloadBtn" class="header-btn">
+                <i class="fas fa-download"></i>
+            </button>
+            <button id="resetBtn" class="header-btn">
+                <i class="fas fa-redo"></i>
+            </button>
+        </header>
+
+        <div id="cardsContainer">
+            <div class="card">
+                <div class="input-group">
+                    <label for="serialNumber-0">Serial Number:</label>
+                    <input type="text" id="serialNumber-0" class="serial-number">
+                </div>
+                <div class="input-group">
+                    <label for="location-0">Location:</label>
+                    <input type="text" id="location-0" class="location">
+                </div>
+                <div class="input-group">
+                    <label for="comments-0">Comments:</label>
+                    <textarea id="comments-0" class="comments"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="image-0">Image:</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="image-0" class="image-input" accept="image/*" capture="environment">
+                        <div class="image-preview"></div>
+                        <div class="image-buttons">
+                            <button class="camera-btn">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <button class="gallery-btn">
+                                <i class="fas fa-images"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button class="delete-btn">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <button id="addCardBtn">
+            <i class="fas fa-plus"></i> Add Card
+        </button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/docx.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
