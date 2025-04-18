@@ -26,9 +26,12 @@ function createCard() {
             <textarea placeholder="Enter Comments" class="comments"></textarea>
         </div>
         <div class="photo-container" style="
+             display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative; 
-            width: 260px; 
-            height: 260px; 
+            width: 280px; 
+            height: 280px; 
             border: 1px solid #ccc; 
             border-radius: 4px; 
             cursor: pointer; 

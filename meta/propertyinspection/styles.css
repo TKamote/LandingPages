@@ -140,7 +140,7 @@ img {
 .form-label {
   font-weight: bold;
   font-size: 0.9rem; /* Smaller font size */
-  margin-right: 0.5rem;
+  /* margin-right: 0.5rem; */
   white-space: normal; /* Allow wrapping */
   flex: 0 0 30%; /* Occupy 30% of the total width */
   word-wrap: break-word; /* Break long words if necessary */
