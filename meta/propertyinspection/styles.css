@@ -1,0 +1,134 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3e5e5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items at the top */
+    overflow: auto; /* Allow scrolling for the page */
+}
+.container {
+    width: 90mm;
+    height: 100vh; /* Set a height relative to the viewport */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Add spacing between cards */
+    background-color: #fff;
+    border: solid 2px #ccc;
+    border-radius: 10px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    position: relative;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f4f4f4;
+    width: 100%;
+    position: sticky;
+    top: 0;
+}
+.icon-back {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(6, 0, 128);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Adjust icon size */
+}
+h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    text-align: left;
+    color: #333;
+    width: 30%;
+}
+
+.icon {
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Adjust icon size */
+}
+
+.icon i {
+    margin: 0; /* Remove any default margin around the icon */
+}
+
+.card {
+    width: 100%;
+    height: 130mm; /* Set a fixed height to enable scrolling */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    position: relative;
+}
+.card textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.card .image-input {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+/* Position the fa-trash icon at the top-right corner of each card */
+
+/* Center the Add button inside the container */
+.add-btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute; /* Position it relative to the container */
+    bottom: 10px; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for the button's size */
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.delete-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

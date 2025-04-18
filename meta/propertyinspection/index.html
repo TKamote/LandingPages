@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>Property Inspection</title>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <header class="header">
+       
+        <button class="icon-back" id="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h3 class="title">Property Inspection</h3>
+        <button class="icon" id="download-btn">
+          <i class="fas fa-download"></i>
+        </button>
+        <button class="icon" id="reset-btn"><i class="fas fa-redo"></i></button>
+      </header>
+      <div class="card">
+        <input type="text" placeholder="Serial Number" class="serial-number" />
+        <input type="text" placeholder="Location" class="location" />
+        <textarea placeholder="Comments" class="comments"></textarea>
+        <input type="file" accept="image/*" class="image-input" />
+        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  
+    <button id="add-btn" class="add-btn"><i class="fas fa-plus"></i></button>
+    <script src="script.js"></script>
+  </body>
+</html>
