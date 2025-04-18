@@ -123,79 +123,202 @@ resetBtn.addEventListener("click", () => {
   cardsContainer.appendChild(firstCard);
 });
 
+// Function to resize an image using a canvas
+const resizeImage = (imgElement, width, height) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(imgElement, 0, 0, width, height);
+  return canvas.toDataURL("image/png");
+};
+
 // Add event listener to the "Download" button
 const downloadBtn = document.getElementById("download-btn");
 
 downloadBtn.addEventListener("click", () => {
-  console.log("Download button clicked"); // Add this inside the event listener
-  console.log("htmlDocx available:", window.htmlDocx); // Check if html-docx-js is loaded
-  console.log("saveAs available:", typeof saveAs); // Check if FileSaver.js is loaded
-
-  // Select all .card elements
   const cards = document.querySelectorAll(".card");
+  if (!cards.length) {
+    alert("No cards to export!");
+    return;
+  }
 
-  // Create a container for the Word document content
   const wordContainer = document.createElement("div");
-  wordContainer.style.width = "210mm"; // A4 width
-  wordContainer.style.margin = "0 auto"; // Center the content
-  wordContainer.style.fontFamily = "Arial, sans-serif"; // Optional: Set font
-
-  // Group cards into pages (4 cards per page)
-  let page = document.createElement("div");
-  page.style.display = "grid";
-  page.style.gridTemplateColumns = "1fr 1fr"; // 2 columns
-  page.style.gridGap = "10mm"; // Spacing between cards
-  page.style.marginBottom = "20mm"; // Space between pages
-
-  cards.forEach((card, index) => {
-    // Clone the card and remove the delete button
-    const cardClone = card.cloneNode(true);
-    const deleteBtn = cardClone.querySelector(".delete-btn");
-    if (deleteBtn) deleteBtn.remove();
-
-    // Add the card to the current page
-    page.appendChild(cardClone);
-
-    // If 4 cards are added, start a new page
-    if ((index + 1) % 4 === 0 || index === cards.length - 1) {
-      wordContainer.appendChild(page);
-      page = document.createElement("div");
-      page.style.display = "grid";
-      page.style.gridTemplateColumns = "1fr 1fr";
-      page.style.gridGap = "10mm";
-      page.style.marginBottom = "20mm";
-    }
+  Object.assign(wordContainer.style, {
+    width: "210mm",
+    height: "297mm",
+    margin: "0",
+    padding: "15mm",
+    boxSizing: "border-box",
   });
 
-  console.log("Generated HTML for Word document:", wordContainer.innerHTML);
+  // Calculate number of pages needed
+  const totalCards = cards.length;
+  const cardsPerPage = 4;
+  const numPages = Math.ceil(totalCards / cardsPerPage);
 
-  // Convert the content to a Word document
+  // Create pages
+  for (let pageNum = 0; pageNum < numPages; pageNum++) {
+    const table = document.createElement("table");
+    Object.assign(table.style, {
+      width: "180mm",
+      height: "200mm",
+      borderCollapse: "separate",
+      borderSpacing: "10mm",
+      tableLayout: "fixed",
+      margin: "0 auto",
+      pageBreakAfter: pageNum < numPages - 1 ? "always" : "auto",
+    });
+
+    const tbody = document.createElement("tbody");
+    const row1 = document.createElement("tr");
+    const row2 = document.createElement("tr");
+
+    // Create cells for this page
+    const cells = [];
+    for (let i = 0; i < 4; i++) {
+      const cell = document.createElement("td");
+      Object.assign(cell.style, {
+        width: "85mm",
+        height: "95mm",
+        padding: "0",
+        verticalAlign: "top",
+      });
+      cells.push(cell);
+    }
+
+    // Build table structure
+    row1.appendChild(cells[0]);
+    row1.appendChild(cells[1]);
+    row2.appendChild(cells[2]);
+    row2.appendChild(cells[3]);
+    tbody.appendChild(row1);
+    tbody.appendChild(row2);
+    table.appendChild(tbody);
+
+    // Process cards for this page
+    for (let i = 0; i < cardsPerPage; i++) {
+      const cardIndex = pageNum * cardsPerPage + i;
+      if (cardIndex >= totalCards) break; // Skip if no more cards
+
+      const card = cards[cardIndex];
+      const cardClone = card.cloneNode(true);
+
+      // Force strict card dimensions
+      Object.assign(cardClone.style, {
+        width: "85mm",
+        height: "95mm",
+        padding: "5mm",
+        margin: "0",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        border: "1px solid #ccc",
+        borderRadius: "2mm",
+      });
+
+      // Remove delete button
+      const deleteBtn = cardClone.querySelector(".delete-btn");
+      if (deleteBtn) deleteBtn.remove();
+
+      // Convert inputs to text
+      const formGroups = cardClone.querySelectorAll(".form-group");
+      formGroups.forEach((group) => {
+        const label = group.querySelector("label").textContent;
+        const input = group.querySelector("input, textarea");
+        const value = input ? input.value : "";
+
+        const textDiv = document.createElement("div");
+        textDiv.innerHTML = `<strong>${label}</strong> ${value}`;
+        group.replaceWith(textDiv);
+      });
+
+      // Handle photo
+      const photo = cardClone.querySelector(".photo");
+      if (photo && photo.src !== window.location.href + "placeholder.jpg") {
+        const resizedPhoto = resizeImage(photo, 250, 250); // Increased and made square
+        const newPhoto = document.createElement("img");
+        newPhoto.src = resizedPhoto;
+        Object.assign(newPhoto.style, {
+          width: "80mm", // Increased from 65mm (~25% larger)
+          height: "80mm", // Made square
+          objectFit: "contain",
+        });
+
+        const photoContainer = cardClone.querySelector(".photo-container");
+        Object.assign(photoContainer.style, {
+          width: "80mm", // Match img width
+          height: "80mm", // Match img height
+          marginTop: "3mm",
+          border: "1px solid #ccc",
+          borderRadius: "2mm",
+        });
+        photoContainer.innerHTML = "";
+        photoContainer.appendChild(newPhoto);
+      }
+
+      cells[i].appendChild(cardClone);
+    }
+
+    wordContainer.appendChild(table);
+  }
+
+  // Update the HTML template with page break support
   const html = `
     <html>
       <head>
         <style>
+          @page { 
+            size: A4 portrait; 
+            margin: 0; 
+          }
           body {
             width: 210mm;
-            margin: 0 auto;
+            height: 297mm;
+            margin: 0;
+            padding: 15mm;
+            box-sizing: border-box;
+            background: white;
             font-family: Arial, sans-serif;
+            font-size: 10pt !important;
+          }
+          table {
+            width: 180mm !important;
+            height: 200mm !important;
+            border-collapse: separate !important;
+            border-spacing: 10mm !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
+            page-break-after: always !important;
+          }
+          table:last-of-type {
+            page-break-after: auto !important;
           }
           .card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 1rem;
-            box-sizing: border-box;
+            width: 85mm !important;
+            height: 95mm !important;
+            padding: 5mm !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+            border: 1px solid #ccc !important;
           }
           .photo-container {
-            width: 100%;
-            height: 150px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            overflow: hidden;
+            width: 80mm !important;
+            height: 80mm !important;
+            margin-top: 3mm !important;
+            border: 1px solid #ccc !important;
           }
-          .photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+          img {
+            width: 80mm !important;
+            height: 80mm !important;
+            object-fit: contain !important;
+          }
+          .card div {
+            font-size: 10pt !important;
+            line-height: 12pt !important;
+            margin-bottom: 2mm !important;
+          }
+          strong {
+            font-size: 10pt !important;
           }
         </style>
       </head>
@@ -203,6 +326,19 @@ downloadBtn.addEventListener("click", () => {
     </html>
   `;
 
-  const blob = window.htmlDocx.asBlob(html);
-  saveAs(blob, "PropertyInspection.docx");
+  if (!wordContainer.innerHTML.trim()) {
+    console.error("No content generated!");
+    return;
+  }
+
+  try {
+    const blob = window.htmlDocx.asBlob(html);
+    if (blob.size < 1000) {
+      console.error("Generated document is too small!");
+      return;
+    }
+    saveAs(blob, "PropertyInspection.docx");
+  } catch (error) {
+    console.error("Error generating document:", error);
+  }
 });
