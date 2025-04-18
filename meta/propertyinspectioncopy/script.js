@@ -1,5 +1,3 @@
-// using html-docx.js to download a word document
-
 const cardsContainer = document.getElementById("cards-container");
 const addBtn = document.getElementById("add-btn");
 const resetBtn = document.getElementById("reset-btn");
@@ -121,82 +119,4 @@ resetBtn.addEventListener("click", () => {
   // Add a single default card
   const firstCard = createCard();
   cardsContainer.appendChild(firstCard);
-});
-
-// Add event listener to the "Download" button
-const downloadBtn = document.getElementById("download-btn");
-
-downloadBtn.addEventListener("click", () => {
-  // Select all .card elements
-  const cards = document.querySelectorAll(".card");
-
-  // Create a container for the Word document content
-  const wordContainer = document.createElement("div");
-  wordContainer.style.width = "210mm"; // A4 width
-  wordContainer.style.margin = "0 auto"; // Center the content
-  wordContainer.style.fontFamily = "Arial, sans-serif"; // Optional: Set font
-
-  // Group cards into pages (4 cards per page)
-  let page = document.createElement("div");
-  page.style.display = "grid";
-  page.style.gridTemplateColumns = "1fr 1fr"; // 2 columns
-  page.style.gridGap = "10mm"; // Spacing between cards
-  page.style.marginBottom = "20mm"; // Space between pages
-
-  cards.forEach((card, index) => {
-    // Clone the card and remove the delete button
-    const cardClone = card.cloneNode(true);
-    const deleteBtn = cardClone.querySelector(".delete-btn");
-    if (deleteBtn) deleteBtn.remove();
-
-    // Add the card to the current page
-    page.appendChild(cardClone);
-
-    // If 4 cards are added, start a new page
-    if ((index + 1) % 4 === 0 || index === cards.length - 1) {
-      wordContainer.appendChild(page);
-      page = document.createElement("div");
-      page.style.display = "grid";
-      page.style.gridTemplateColumns = "1fr 1fr";
-      page.style.gridGap = "10mm";
-      page.style.marginBottom = "20mm";
-    }
-  });
-
-  // Convert the content to a Word document
-  const html = `
-    <html>
-      <head>
-        <style>
-          body {
-            width: 210mm;
-            margin: 0 auto;
-            font-family: Arial, sans-serif;
-          }
-          .card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 1rem;
-            box-sizing: border-box;
-          }
-          .photo-container {
-            width: 100%;
-            height: 150px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            overflow: hidden;
-          }
-          .photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        </style>
-      </head>
-      <body>${wordContainer.innerHTML}</body>
-    </html>
-  `;
-
-  const blob = window.htmlDocx.asBlob(html);
-  saveAs(blob, "PropertyInspection.docx");
 });
