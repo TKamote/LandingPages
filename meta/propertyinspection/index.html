@@ -13,7 +13,6 @@
   <body>
     <div class="container" id="container">
       <header class="header">
-       
         <button class="icon-back" id="back-btn">
           <i class="fas fa-arrow-left"></i>
         </button>
@@ -21,17 +20,16 @@
         <button class="icon" id="download-btn">
           <i class="fas fa-download"></i>
         </button>
-        <button class="icon" id="reset-btn"><i class="fas fa-redo"></i></button>
+        <button class="icon" id="reset-btn">
+          <i class="fas fa-redo"></i>
+        </button>
       </header>
-      <div class="card">
-        <input type="text" placeholder="Serial Number" class="serial-number" />
-        <input type="text" placeholder="Location" class="location" />
-        <textarea placeholder="Comments" class="comments"></textarea>
-        <input type="file" accept="image/*" class="image-input" />
-        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+      <div id="cards-container">
+        <!-- Cards will be dynamically added here -->
       </div>
     </div>
-  
+
+    <!-- Delete button outside the card -->
     <button id="add-btn" class="add-btn"><i class="fas fa-plus"></i></button>
     <script src="script.js"></script>
   </body>
