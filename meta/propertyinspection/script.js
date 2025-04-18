@@ -127,6 +127,10 @@ resetBtn.addEventListener("click", () => {
 const downloadBtn = document.getElementById("download-btn");
 
 downloadBtn.addEventListener("click", () => {
+  console.log("Download button clicked"); // Add this inside the event listener
+  console.log("htmlDocx available:", window.htmlDocx); // Check if html-docx-js is loaded
+  console.log("saveAs available:", typeof saveAs); // Check if FileSaver.js is loaded
+
   // Select all .card elements
   const cards = document.querySelectorAll(".card");
 
@@ -162,6 +166,8 @@ downloadBtn.addEventListener("click", () => {
       page.style.marginBottom = "20mm";
     }
   });
+
+  console.log("Generated HTML for Word document:", wordContainer.innerHTML);
 
   // Convert the content to a Word document
   const html = `
