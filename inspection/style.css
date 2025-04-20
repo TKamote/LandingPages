@@ -58,19 +58,19 @@ body {
 .card-header button {
   display: flex;
   flex-direction: row;
-  background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
-  color: #666;
-}
-.card-header button {
   font-size: 20px;
   padding: 6px;
   background-color: #08131f;
   color: white;
   margin: 0 10px;
   border-radius: 5px;
+}
+
+.icon-back a i {
+  color: #fff;
+  font-size: 20px;
 }
 .fas {
   margin: 0 8px;
