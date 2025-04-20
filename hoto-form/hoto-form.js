@@ -1,43 +1,31 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Add functionality for radio buttons to show/hide the image upload section
-  const radioButtons = document.querySelectorAll("input[type='radio']");
-
-  radioButtons.forEach((radio) => {
-    radio.addEventListener("change", (event) => {
-      const checklistItem = event.target.closest(".checklist-item");
-      const imageUpload = checklistItem.querySelector(".image-upload");
-
-      if (event.target.value === "present") {
-        // Show the image upload section when ✓ is selected
-        imageUpload.classList.remove("hidden");
-      } else {
-        // Hide the image upload section for NA or 𐄂
-        imageUpload.classList.add("hidden");
-        const imagePreview = imageUpload.querySelector(".image-preview");
-        imagePreview.style.backgroundImage = ""; // Clear the image preview
+document.addEventListener('DOMContentLoaded', function() {
+  // Set today's date as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('date').value = today;
+  
+  // Form submission handler
+  document.getElementById('inspectionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Collect form data
+      const formData = new FormData(this);
+      const inspectionData = {};
+      
+      for (const [key, value] of formData.entries()) {
+          inspectionData[key] = value;
       }
-    });
-  });
-
-  // Add functionality for image upload and preview
-  const imageInputs = document.querySelectorAll(".image-input");
-
-  imageInputs.forEach((input) => {
-    input.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      const imagePreview = event.target.nextElementSibling;
-
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          // Display the uploaded image in the preview box
-          imagePreview.style.backgroundImage = `url(${e.target.result})`;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        // Clear the preview if no file is selected
-        imagePreview.style.backgroundImage = "";
-      }
-    });
+      
+      // In a real application, you would send this data to a server
+      console.log('Inspection Data:', inspectionData);
+      
+      // Show success message
+      const statusMessage = document.getElementById('statusMessage');
+      statusMessage.style.display = 'block';
+      statusMessage.textContent = 'Inspection saved successfully!';
+      
+      // In a real application, you might redirect or clear the form
+      setTimeout(() => {
+          statusMessage.style.display = 'none';
+      }, 3000);
   });
 });
