@@ -1,176 +1,168 @@
-:root {
-    --primary-color: #007bff;
-    --danger-color: #dc3545;
-    --gray-color: #6c757d;
-    --light-gray: #f8f9fa;
-    --border-color: #dee2e6;
-}
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.6;
-    background-color: #f0f2f5;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f3e5e5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align items at the top */
+  overflow: auto; /* Allow scrolling for the page */
 }
-
 .container {
-    max-width: 600px;
-    margin: 0 auto;
+  margin-top: 10px;
+  width: 90mm;
+  height: 100vh; /* Set a height relative to the viewport */
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Add spacing between cards */
+  background-color: #fff;
+  border: solid 2px #ccc;
+  border-radius: 10px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  position: relative;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f4f4f4;
+  width: 100%;
+  position: sticky;
+  top: 0;
+}
+.icon-back {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(6, 0, 128);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Adjust icon size */
+}
+.icon-back a {
+    text-decoration: none;
+    color: white; /* Ensure the link text is white */
+} 
+h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  text-align: left;
+  color: #000;
+  width: 30%;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.icon {
+  padding: 5px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px; /* Adjust icon size */
 }
 
-.header-btn {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: var(--gray-color);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.header-btn:hover {
-    background-color: var(--light-gray);
+.icon i {
+  margin: 0; /* Remove any default margin around the icon */
 }
 
 .card {
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #f9f9f9;
 }
-
-.input-group {
-    margin-bottom: 15px;
+.card textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--gray-color);
-    font-weight: 500;
+.card .image-input {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
+/* Position the fa-trash icon at the top-right corner of each card */
 
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 1rem;
+/* Center the Add button inside the container */
+.add-btn {
+  background-color: green;
+  color: white;
+  font-size: larger;
+  border: none;
+  padding: 8px 35px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute; /* Position it relative to the container */
+  bottom: 5px; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for the button's size */
+  z-index: 1000; /* Ensure it appears above other elements */
 }
-
-textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.image-upload-container {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1;
-    border: 2px dashed var(--border-color);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.image-input {
-    opacity: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.image-preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-}
-
-.image-buttons {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    gap: 10px;
-    z-index: 1;
-}
-
-.camera-btn,
-.gallery-btn {
-    background-color: rgba(255, 255, 255, 0.9);
-    border: none;
-    padding: 8px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
 
 .delete-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: var(--danger-color);
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.delete-btn:hover {
-    background-color: #c82333;
+/* Style for the form group */
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-#addCardBtn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+/* Style for the label */
+.form-label {
+  font-weight: bold;
+  font-size: 0.9rem; /* Smaller font size */
+  /* margin-right: 0.5rem; */
+  white-space: normal; /* Allow wrapping */
+  flex: 0 0 30%; /* Occupy 30% of the total width */
+  word-wrap: break-word; /* Break long words if necessary */
 }
 
-#addCardBtn:hover {
-    background-color: #0056b3;
+/* Style for the inputs */
+.serial-number,
+.location,
+.comments {
+  flex: 1; /* Allow the input/textarea to take up remaining space */
+  padding: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-    
-    .card {
-        padding: 15px;
-    }
+/* Style for the textarea */
+.comments {
+  resize: vertical; /* Allow vertical resizing only */
+  height: 100px; /* Default height for the textarea */
 }
