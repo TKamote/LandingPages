@@ -178,8 +178,19 @@ body {
 .delete-button:hover {
   color: #c82333;
 }
+@media screen and (min-width: 468px) {
+body {
+  max-width: 460px;
+}
+  .container {
+    max-width: 390px;
+    width: 100%;
+    padding: 0 1rem;
+  }
 
-@media print {
+}
+
+/* @media print {
   @page {
     size: A4 portrait;
     margin: 1cm;
@@ -192,7 +203,7 @@ body {
 
   .card {
     break-inside: avoid;
-    width: 50%;
+    width: 100%;
     float: left;
     page-break-inside: avoid;
     margin: 0;
@@ -204,4 +215,4 @@ body {
   .delete-button {
     display: none;
   }
-}
+} */
