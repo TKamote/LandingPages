@@ -1,0 +1,177 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f2f2;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 90mm;
+  margin: 0 auto;
+  background-color: #11264c;
+}
+.container h3 {
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  margin: .3rem 0;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.icon-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+  color: white;
+  cursor: pointer;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  background-color:#000 ;
+}
+
+.icon-btn i {
+  font-size: 1rem;
+}
+
+.icon-btn span {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.back-btn {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.inspection-card {
+  background: white;
+  width: 90mm;
+  height: 130mm;
+  padding: 0.75rem; /* Reduced from 1rem */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem; /* Reduced from 0.5rem */
+}
+
+.input-group {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem; /* Reduced from 0.25rem */
+}
+
+.input-group label {
+  width: 30%;
+  font-size: 0.85rem; /* Slightly smaller */
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 2px; /* Pull inputs closer to labels */
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.4rem; /* Reduced from 0.5rem */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  height: 28px; /* Reduced from 32px */
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.4rem; /* Reduced from 0.5rem */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  min-height: 50px; /* Reduced from 60px */
+  max-height: 70px; /* Reduced from 80px */
+  resize: vertical;
+}
+.image-upload-group {
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+
+  flex-direction: column;
+  gap: 0.5rem; /* Reduced from 0.75rem */
+}
+.image-upload-container {
+  width: 80%;
+  margin: auto;
+  aspect-ratio: 1/1;
+  border: 1px dashed #ddd; /* Changed from 2px */
+  border-radius: 4px;
+  padding: 0.5rem; /* Reduced from 1rem */
+}
+
+.image-preview {
+  width: 100%;
+  aspect-ratio: 1/1;
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.add-btn {
+    width: 100%;
+    background-color: #338d48;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .inspection-card {
+    width: 100%;
+    height: auto;
+    min-height: 130mm;
+  }
+}
