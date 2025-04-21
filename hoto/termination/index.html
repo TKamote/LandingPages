@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tenancy Termination Form</title>
+</head>
+<body>
+    <div class="form-container">
+        <h1>TENANCY TERMINATION</h1>
+        
+        <form id="terminationForm">
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-label">Company's Name:</div>
+                    <div class="form-input">
+                        <input type="text" name="companyName" id="companyName">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">Address:</div>
+                    <div class="form-input">
+                        <input type="text" name="address" id="address">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">Block/location:</div>
+                    <div class="form-input">
+                        <input type="text" name="blockLocation" id="blockLocation">
+                    </div>
+                    <div class="form-label">Property Executive:</div>
+                    <div class="form-input">
+                        <input type="text" name="propertyExecutive" id="propertyExecutive">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">Type of Building:</div>
+                    <div class="form-input">
+                        <input type="text" name="buildingType" id="buildingType">
+                    </div>
+                    <div class="form-label">RO/Team Lead:</div>
+                    <div class="form-input">
+                        <input type="text" name="teamLead" id="teamLead">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">Date of Inspection:</div>
+                    <div class="form-input">
+                        <input type="date" name="inspectionDate" id="inspectionDate">
+                    </div>
+                    <div class="form-label">CE Officer:</div>
+                    <div class="form-input">
+                        <input type="text" name="ceOfficer" id="ceOfficer">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-label">Date of Termination:</div>
+                    <div class="form-input">
+                        <input type="date" name="terminationDate" id="terminationDate">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checklist-header">Reinstatement Checklist for Termination</div>
+            
+            <div class="deferment-case">
+                <div class="form-label">Is this a deferment case?</div>
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="radio" id="deferment-yes" name="defermentCase" value="yes">
+                        <label for="deferment-yes">Yes</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="radio" id="deferment-no" name="defermentCase" value="no">
+                        <label for="deferment-no">No</label>
+                    </div>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th class="item-number">Item No</th>
+                        <th class="item-description">Particulars of Reinstatement Works</th>
+                        <th class="inspection-column">First Inspection</th>
+                        <th class="inspection-column">Final Inspection</th>
+                        <th class="remarks-column">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="item-number">1.0</td>
+                        <td class="item-description"><strong>Internal</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="item-number">1.1</td>
+                        <td class="item-description">
+                            Painting to walls, columns, door frames, pipes etc. to be of a tenantable condition and in a colour that is accepted to JTC. To restore and make good any defective finishes and/or surfaces.
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.1-first-required" name="1.1-first" value="required">
+                                <label for="1.1-first-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.1-first-not-required" name="1.1-first" value="not-required">
+                                <label for="1.1-first-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.1-first-na" name="1.1-first" value="na">
+                                <label for="1.1-first-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.1-final-required" name="1.1-final" value="required">
+                                <label for="1.1-final-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.1-final-not-required" name="1.1-final" value="not-required">
+                                <label for="1.1-final-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.1-final-na" name="1.1-final" value="na">
+                                <label for="1.1-final-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea name="remarks-1.1" rows="3"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item-number">1.2</td>
+                        <td class="item-description">
+                            Reinstate all ceiling finishes and/or ceiling boards to their original condition and restore any defective finishes and surfaces.
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.2-first-required" name="1.2-first" value="required">
+                                <label for="1.2-first-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.2-first-not-required" name="1.2-first" value="not-required">
+                                <label for="1.2-first-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.2-first-na" name="1.2-first" value="na">
+                                <label for="1.2-first-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.2-final-required" name="1.2-final" value="required">
+                                <label for="1.2-final-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.2-final-not-required" name="1.2-final" value="not-required">
+                                <label for="1.2-final-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.2-final-na" name="1.2-final" value="na">
+                                <label for="1.2-final-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea name="remarks-1.2" rows="3"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item-number">1.3</td>
+                        <td class="item-description">
+                            Reinstate all floor finishes to their original condition and restore any defective finishes.
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.3-first-required" name="1.3-first" value="required">
+                                <label for="1.3-first-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.3-first-not-required" name="1.3-first" value="not-required">
+                                <label for="1.3-first-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.3-first-na" name="1.3-first" value="na">
+                                <label for="1.3-first-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.3-final-required" name="1.3-final" value="required">
+                                <label for="1.3-final-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.3-final-not-required" name="1.3-final" value="not-required">
+                                <label for="1.3-final-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.3-final-na" name="1.3-final" value="na">
+                                <label for="1.3-final-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea name="remarks-1.3" rows="3"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item-number">1.4</td>
+                        <td class="item-description">
+                            Reinstate/replace all damaged doors, windows and fixtures to their original condition.
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.4-first-required" name="1.4-first" value="required">
+                                <label for="1.4-first-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.4-first-not-required" name="1.4-first" value="not-required">
+                                <label for="1.4-first-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.4-first-na" name="1.4-first" value="na">
+                                <label for="1.4-first-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="1.4-final-required" name="1.4-final" value="required">
+                                <label for="1.4-final-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.4-final-not-required" name="1.4-final" value="not-required">
+                                <label for="1.4-final-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1.4-final-na" name="1.4-final" value="na">
+                                <label for="1.4-final-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea name="remarks-1.4" rows="3"></textarea>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="item-number">2.0</td>
+                        <td class="item-description"><strong>External</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="item-number">2.1</td>
+                        <td class="item-description">
+                            Remove all external signage, decals, or tenant identification elements.
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="2.1-first-required" name="2.1-first" value="required">
+                                <label for="2.1-first-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="2.1-first-not-required" name="2.1-first" value="not-required">
+                                <label for="2.1-first-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="2.1-first-na" name="2.1-first" value="na">
+                                <label for="2.1-first-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="2.1-final-required" name="2.1-final" value="required">
+                                <label for="2.1-final-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="2.1-final-not-required" name="2.1-final" value="not-required">
+                                <label for="2.1-final-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="2.1-final-na" name="2.1-final" value="na">
+                                <label for="2.1-final-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea name="remarks-2.1" rows="3"></textarea>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="item-number">3.0</td>
+                        <td class="item-description"><strong>M&E Services</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="item-number">3.1</td>
+                        <td class="item-description">
+                            Reinstate/remove all M&E installations to the original condition, including electrical, plumbing, and HVAC systems.
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="3.1-first-required" name="3.1-first" value="required">
+                                <label for="3.1-first-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="3.1-first-not-required" name="3.1-first" value="not-required">
+                                <label for="3.1-first-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="3.1-first-na" name="3.1-first" value="na">
+                                <label for="3.1-first-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="radio-option">
+                                <input type="radio" id="3.1-final-required" name="3.1-final" value="required">
+                                <label for="3.1-final-required">Required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="3.1-final-not-required" name="3.1-final" value="not-required">
+                                <label for="3.1-final-not-required">No required</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="3.1-final-na" name="3.1-final" value="na">
+                                <label for="3.1-final-na">Not Applicable</label>
+                            </div>
+                        </td>
+                        <td>
+                            <textarea name="remarks-3.1" rows="3"></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-label">Additional Notes:</div>
+                </div>
+                <div class="form-row">
+                    <textarea name="additionalNotes" id="additionalNotes" rows="4" style="width: 100%;"></textarea>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-label">Inspected By:</div>
+                    <div class="form-input">
+                        <input type="text" name="inspectedBy" id="inspectedBy">
+                    </div>
+                    <div class="form-label">Signature:</div>
+                    <div class="form-input">
+                        <input type="text" name="signature" id="signature">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="submit-row">
+                <button type="submit" class="submit-button">Submit Form</button>
+                <button type="button" id="printButton" class="submit-button" style="background-color: #007bff; margin-left: 10px;">Print Form</button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="statusMessage" class="status-message success"></div>
+    
+   <script src=""></script>
+</body>
+</html>
