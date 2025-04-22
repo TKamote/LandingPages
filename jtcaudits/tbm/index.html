@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    rel="stylesheet"
+  />
+    <title>Daily Tool Box Meeting</title>
+  
+</head>
+<body>
+  <div class="form-header">
+    <a class="back-btn" href="../index.html"><i class="fa-solid fa-circle-arrow-left"></i>Back</a>
+    <h1>Daily Toolbox Meeting for JTC-W2</h1>
+  </div>
+  
+  <div class="form-section">
+    <div class="input-group">
+      <label for="site">Site:</label>
+      <input type="text" id="site" name="site">
+    </div>
+    
+    <div class="input-group">
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date">
+    </div>
+  </div>
+  
+  <div class="form-section">
+    <h2>Briefing Conducted By:</h2>
+    <div class="input-group">
+      <label for="conductor">Name:</label>
+      <input type="text" id="conductor" name="conductor">
+      
+      <label for="designation" style="margin-left: 20px;">Designation:</label>
+      <input type="text" id="designation" name="designation">
+    </div>
+    
+    <div class="input-group">
+      <label for="signature">Signature:</label>
+      <div class="signature-box" id="conductor-signature"></div>
+    </div>
+  </div>
+  
+  <div class="form-section">
+    <h2>Attendees</h2>
+    <table id="attendees-table">
+      <thead>
+        <tr>
+          <th>S/N</th>
+          <th>Name</th>
+          <th>WP /S-Pass/NRIC (****XXXX)</th>
+          <th>Signature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><input type="text" name="attendee-name[]"></td>
+          <td><input type="text" name="attendee-id[]"></td>
+          <td><div class="signature-box"></div></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input type="text" name="attendee-name[]"></td>
+          <td><input type="text" name="attendee-id[]"></td>
+          <td><div class="signature-box"></div></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><input type="text" name="attendee-name[]"></td>
+          <td><input type="text" name="attendee-id[]"></td>
+          <td><div class="signature-box"></div></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="add-row-btn" onclick="addAttendeeRow()">Add Row</button>
+  </div>
+  
+  <div class="form-section">
+    <h2>Topic Discussed</h2>
+    <table class="topic-table">
+      <thead>
+        <tr>
+          <th>Main topic</th>
+          <th>Specific item to discuss</th>
+          <th>Check if discussed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Slips, Trips, and Falls -->
+        <tr class="topic-header">
+          <td rowspan="3">Slips, Trips, and Falls</td>
+          <td class="first-row">Clean up spills immediately.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Use warning signs for wet floors.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Keep walkways clear of clutter.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        
+        <!-- Personal Protective Equipment (PPE) -->
+        <tr class="topic-header">
+          <td rowspan="4">Personal Protective Equipment (PPE)</td>
+          <td>Wear N95 mask for dusty works</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Wear anticult gloves for works that has rough surface and / or with sharp edges</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Wear safety shoes</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Wear any other PPE as per RA of specific work</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        
+        <!-- Electrical Safety -->
+        <tr class="topic-header">
+          <td rowspan="4">Electrical Safety</td>
+          <td>Check that extension cords have no damage.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Avoid overloading electrical outlets by using hi jet or pressure washer on ordinary power points (13A).</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Use ELCB when plugging drills, power tools etc..</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Keep electrical equipment away from water.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        
+        <!-- Fire Prevention and Preparedness -->
+        <tr class="topic-header">
+          <td rowspan="3">Fire Prevention and Preparedness</td>
+          <td>Know the emergency evacuation route.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Keep flammable materials away from heat sources.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Ensure you know your role in case of emergency. On 1st alarm be on standby, on 2nd alarm evacuate or as default.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        
+        <!-- Work at Height -->
+        <tr class="topic-header">
+          <td rowspan="4">Work at Height</td>
+          <td>Be aware of any contractors that are doing WAH to ask them if they applied ePTW. If no ePTW ask to stop and feedback supervisor</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Ensure ladders are securely positioned.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Maintain three points of contact on ladders.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Ensure to use ladders that are EN 131 standard. Look for the sticker at the ladder to confirm.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        
+        <!-- Machinery Safety -->
+        <tr class="topic-header">
+          <td rowspan="2">Machinery Safety</td>
+          <td>Follow lockout/tagout procedures during maintenance.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Wear personal protective equipment (PPE) specific to the machine.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        
+        <!-- Mental Well-being -->
+        <tr class="topic-header">
+          <td rowspan="3">Mental Well-being</td>
+          <td>Take regular breaks to reduce stress.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Stay hydrated throughout the workday.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+        <tr>
+          <td>Report concerns about mental health to supervisors.</td>
+          <td><input type="checkbox" name="topic-check"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="form-section image-upload">
+    <h2>Photo</h2>
+    <input type="file" id="image-upload" accept="image/*">
+    <div class="image-preview" id="image-preview">
+      <span>Upload an image (4:3 aspect ratio preferred)</span>
+    </div>
+  </div>
+  
+  <button onclick="printForm()">Print Form</button>
+  
+  <script src="script.js"></script>
+</body>
+</html>
