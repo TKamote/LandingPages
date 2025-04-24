@@ -1,0 +1,106 @@
+/* Reset Styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default styles */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+}
+
+/* Basic list reset */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Link reset and basic style */
+a {
+  text-decoration: none;
+  color: inherit;
+  
+}
+ul li a {
+    font-size: 20px;
+}
+
+/* Basic Typography */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 2rem;
+}
+h2 {
+  font-size: 1.75rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Basic spacing */
+p,
+ul,
+ol {
+  margin-bottom: 1rem;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Basic button style */
+button {
+  cursor: pointer;
+  padding: 0.5em 1em;
+  background-color: rgb(142, 142, 227);
+  margin: 10px;
+  border-radius: 20px;
+  width: 250px;
+  font-weight: 800;
+  color: white;
+}
+
+/* Basic input style */
+input,
+textarea {
+  padding: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
