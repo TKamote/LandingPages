@@ -9,6 +9,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    <!-- Add the html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </head>
   <body>
     <div id="form-container">
@@ -16,7 +18,7 @@
         <i class="fas fa-arrow-left"></i>Back
       </a>
 
-      <h2>Daily Toolbox Meeting for JTC-W2</h2>
+      <h3>Daily Toolbox Meeting for Summit</h3>
 
       <!-- Form Header Section -->
       <div class="form-section">
@@ -57,7 +59,13 @@
         <div class="attendee-group">
           <div class="input-group">
             <label>S/N:</label>
-            <span class="serial-number">1</span>
+            <input
+              type="text"
+              id="serial-1"
+              class="form-input"
+              value="1"
+              readonly
+            />
           </div>
           <div class="input-group">
             <label for="attendee-name-1">Name:</label>
@@ -79,14 +87,80 @@
           </div>
         </div>
 
-        <button type="button" class="add-btn" onclick="addAttendeeGroup()">
+        <!-- Attendee 2 -->
+        <div class="attendee-group">
+          <div class="input-group">
+            <label>S/N:</label>
+            <input
+              type="text"
+              id="serial-2"
+              class="form-input"
+              value="2"
+              readonly
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-name-2">Name:</label>
+            <input
+              type="text"
+              id="attendee-name-2"
+              name="attendee-name[]"
+              class="form-input"
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-id-2">ID:</label>
+            <input
+              type="text"
+              id="attendee-id-2"
+              name="attendee-id[]"
+              class="form-input"
+            />
+          </div>
+        </div>
+        <!-- Attendee 3 -->
+        <div class="attendee-group">
+          <div class="input-group">
+            <label>S/N:</label>
+            <input
+              type="text"
+              id="serial-3"
+              class="form-input"
+              value="3"
+              readonly
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-name-3">Name:</label>
+            <input
+              type="text"
+              id="attendee-name-3"
+              name="attendee-name[]"
+              class="form-input"
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-id-3">ID:</label>
+            <input
+              type="text"
+              id="attendee-id-3"
+              name="attendee-id[]"
+              class="form-input"
+            />
+          </div>
+        </div>
+
+        <!-- Add Attendee Button -->
+        <!-- <button type="button" class="add-attendee-btn" onclick="addAttendee()">
           <i class="fas fa-plus"></i> Add Attendee
         </button>
-      </div>
+      </div> -->
 
       <!-- Topics Section -->
       <div class="form-section">
         <div class="section-title">Topics Discussed</div>
+
+        <!-- Slips, Trips, and Falls -->
         <div class="topic-group">
           <div class="topic-header">Slips, Trips, and Falls</div>
           <div class="topic-items">
@@ -99,32 +173,110 @@
               <input type="radio" name="stf2" />
             </div>
             <div class="topic-item">
-              <span>Keep walkways clear of clutter</span>
+              <span>Keep walkways clear of obstacles</span>
               <input type="radio" name="stf3" />
             </div>
           </div>
         </div>
 
-        <!-- Continue with other topic groups in the same pattern -->
+        <!-- PPE -->
         <div class="topic-group">
-          <div class="topic-header">PPE</div>
+          <div class="topic-header">Personal Protective Equipment</div>
           <div class="topic-items">
             <div class="topic-item">
-              <span>Wear appropriate PPE for the task</span>
+              <span>Wear appropriate PPE for tasks</span>
               <input type="radio" name="ppe1" />
             </div>
             <div class="topic-item">
               <span>Inspect PPE before use</span>
               <input type="radio" name="ppe2" />
             </div>
+            <div class="topic-item">
+              <span>Report damaged PPE immediately</span>
+              <input type="radio" name="ppe3" />
+            </div>
           </div>
         </div>
 
-        <!-- Add more topic groups as needed -->
+        <!-- Fire Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Fire Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Know emergency evacuation routes</span>
+              <input type="radio" name="fire1" />
+            </div>
+            <div class="topic-item">
+              <span>Keep fire exits clear</span>
+              <input type="radio" name="fire2" />
+            </div>
+            <div class="topic-item">
+              <span>Location of fire extinguishers</span>
+              <input type="radio" name="fire3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Electrical Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Electrical Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Check cords for damage</span>
+              <input type="radio" name="elec1" />
+            </div>
+            <div class="topic-item">
+              <span>Use proper lockout/tagout procedures</span>
+              <input type="radio" name="elec2" />
+            </div>
+            <div class="topic-item">
+              <span>Report electrical hazards</span>
+              <input type="radio" name="elec3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Health Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Proper lifting techniques</span>
+              <input type="radio" name="health1" />
+            </div>
+            <div class="topic-item">
+              <span>Report any injuries immediately</span>
+              <input type="radio" name="health2" />
+            </div>
+            <div class="topic-item">
+              <span>Maintain good housekeeping</span>
+              <input type="radio" name="health3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Machine Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Machine Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Check machine guards before use</span>
+              <input type="radio" name="machine1" />
+            </div>
+            <div class="topic-item">
+              <span>Follow lockout procedures</span>
+              <input type="radio" name="machine2" />
+            </div>
+            <div class="topic-item">
+              <span>Report machine malfunctions</span>
+              <input type="radio" name="machine3" />
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Image Upload Section -->
-      <div class="form-section">
+      <div class="form-section no-pdf">
         <div class="section-title">Photo Evidence</div>
         <div class="image-upload">
           <input type="file" id="image-upload" accept="image/*" />
