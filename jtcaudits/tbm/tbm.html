@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Toolbox Meeting for JTC-W2</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1, h2, h3 {
+      color: #333;
+    }
+    
+    .form-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #333;
+    }
+    
+    .form-section {
+      margin-bottom: 30px;
+    }
+    
+    .input-group {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .input-group label {
+      flex: 0 0 150px;
+      font-weight: bold;
+    }
+    
+    input[type="text"], input[type="date"], select {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 10px;
+      flex: 1;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f4f4f4;
+    }
+    
+    .signature-box {
+      border: 1px solid #ddd;
+      height: 60px;
+      width: 150px;
+      background-color: #f9f9f9;
+    }
+    
+    .topic-table th:nth-child(1) {
+      width: 20%;
+    }
+    
+    .topic-table th:nth-child(2) {
+      width: 60%;
+    }
+    
+    .topic-table th:nth-child(3) {
+      width: 20%;
+      text-align: center;
+    }
+    
+    .topic-table td:last-child {
+      text-align: center;
+    }
+    
+    .topic-header {
+      background-color: #e7e7e7;
+      font-weight: bold;
+    }
+    
+    .image-upload {
+      margin-top: 20px;
+    }
+    
+    .image-preview {
+      max-width: 100%;
+      height: 300px;
+      border: 1px dashed #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      position: relative;
+    }
+    
+    .image-preview img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    .timestamp {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+    
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    .add-row-btn {
+      background-color: #2196F3;
+      margin-top: 10px;
+    }
+    
+    .add-row-btn:hover {
+      background-color: #0b7dda;
+    }
+    
+    .download-btn {
+      background-color: #f44336;
+    }
+    
+    .download-btn:hover {
+      background-color: #d32f2f;
+    }
+    
+    /* PDF styles to be applied when downloading */
+    .pdf-content {
+      font-size: 10px;
+    }
+    
+    .pdf-content h1 {
+      font-size: 12px;
+      color: #000;
+      margin-bottom: 10px;
+    }
+    
+    .pdf-content h2 {
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+    
+    .pdf-content table {
+      font-size: 8px;
+    }
+    
+    .pdf-content .topic-header td:first-child {
+      background-color: #ddd;
+      font-weight: bold;
+    }
+    
+    .pdf-content .topic-table td,
+    .pdf-content .topic-table th {
+      padding: 4px;
+    }
+    
+    /* Mobile view styles */
+    @media screen and (max-width: 768px) {
+      .input-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .input-group label {
+        margin-bottom: 5px;
+      }
+      
+      input[type="text"], input[type="date"], select {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      
+      table {
+        font-size: 14px;
+      }
+      
+      td input[type="text"] {
+        width: 100%;
+      }
+      
+      .signature-box {
+        width: 100%;
+      }
+    }
+    
+    /* Don't include in PDF download */
+    .no-pdf {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="form-container">
+    <div class="form-header">
+      <h1>Daily Toolbox Meeting for JTC-W2</h1>
+    </div>
+    
+    <div class="form-section">
+      <div class="input-group">
+        <label for="site">Site:</label>
+        <select id="site" name="site">
+          <option value="">Select Site</option>
+          <option value="JTC Building">JTC Building</option>
+          <option value="JTC Complex A">JTC Complex A</option>
+          <option value="JTC Complex B">JTC Complex B</option>
+          <option value="JTC Tower">JTC Tower</option>
+          <option value="JTC Factory 1">JTC Factory 1</option>
+          <option value="JTC Factory 2">JTC Factory 2</option>
+        </select>
+      </div>
+      
+      <div class="input-group">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date">
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Briefing Conducted By:</h2>
+      <div class="input-group">
+        <label for="conductor">Name:</label>
+        <input type="text" id="conductor" name="conductor">
+      </div>
+      <div class="input-group">
+        <label for="designation">Designation:</label>
+        <input type="text" id="designation" name="designation">
+      </div>
+      
+      <div class="input-group">
+        <label for="signature">Signature:</label>
+        <div class="signature-box" id="signature-pad">
+          <canvas id="signature-canvas"></canvas>
+        </div>
+        <button type="button" id="clear-sig" style="margin-left: 10px;">Clear</button>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Attendees</h2>
+      <table id="attendees-table">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Name</th>
+            <th>WP /S-Pass/NRIC (****XXXX)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><input type="text" name="attendee-name[]"></td>
+            <td><input type="text" name="attendee-id[]"></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><input type="text" name="attendee-name[]"></td>
+            <td><input type="text" name="attendee-id[]"></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><input type="text" name="attendee-name[]"></td>
+            <td><input type="text" name="attendee-id[]"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="add-row-btn" onclick="addAttendeeRow()">Add Row</button>
+    </div>
+    
+    <div class="form-section">
+      <h2>Topic Discussed</h2>
+      <table class="topic-table">
+        <thead>
+          <tr>
+            <th>Main topic</th>
+            <th>Specific item to discuss</th>
+            <th>Check if discussed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Slips, Trips, and Falls -->
+          <tr class="topic-header">
+            <td rowspan="3">Slips, Trips, and Falls</td>
+            <td>Clean up spills immediately.</td>
+            <td><input type="radio" name="topic-check-1"></td>
+          </tr>
+          <tr>
+            <td>Use warning signs for wet floors.</td>
+            <td><input type="radio" name="topic-check-2"></td>
+          </tr>
+          <tr>
+            <td>Keep walkways clear of clutter.</td>
+            <td><input type="radio" name="topic-check-3"></td>
+          </tr>
+          
+          <!-- Personal Protective Equipment (PPE) -->
+          <tr class="topic-header">
+            <td rowspan="4">Personal Protective Equipment (PPE)</td>
+            <td>Wear N95 mask for dusty works</td>
+            <td><input type="radio" name="topic-check-4"></td>
+          </tr>
+          <tr>
+            <td>Wear anticult gloves for works that has rough surface and / or with sharp edges</td>
+            <td><input type="radio" name="topic-check-5"></td>
+          </tr>
+          <tr>
+            <td>Wear safety shoes</td>
+            <td><input type="radio" name="topic-check-6"></td>
+          </tr>
+          <tr>
+            <td>Wear any other PPE as per RA of specific work</td>
+            <td><input type="radio" name="topic-check-7"></td>
+          </tr>
+          
+          <!-- Electrical Safety -->
+          <tr class="topic-header">
+            <td rowspan="4">Electrical Safety</td>
+            <td>Check that extension cords have no damage.</td>
+            <td><input type="radio" name="topic-check-8"></td>
+          </tr>
+          <tr>
+            <td>Avoid overloading electrical outlets by using hi jet or pressure washer on ordinary power points (13A).</td>
+            <td><input type="radio" name="topic-check-9"></td>
+          </tr>
+          <tr>
+            <td>Use ELCB when plugging drills, power tools etc..</td>
+            <td><input type="radio" name="topic-check-10"></td>
+          </tr>
+          <tr>
+            <td>Keep electrical equipment away from water.</td>
+            <td><input type="radio" name="topic-check-11"></td>
+          </tr>
+          
+          <!-- Fire Prevention and Preparedness -->
+          <tr class="topic-header">
+            <td rowspan="3">Fire Prevention and Preparedness</td>
+            <td>Know the emergency evacuation route.</td>
+            <td><input type="radio" name="topic-check-12"></td>
+          </tr>
+          <tr>
+            <td>Keep flammable materials away from heat sources.</td>
+            <td><input type="radio" name="topic-check-13"></td>
+          </tr>
+          <tr>
+            <td>Ensure you know your role in case of emergency. On 1st alarm be on standby, on 2nd alarm evacuate or as default.</td>
+            <td><input type="radio" name="topic-check-14"></td>
+          </tr>
+          
+          <!-- Work at Height -->
+          <tr class="topic-header">
+            <td rowspan="4">Work at Height</td>
+            <td>Be aware of any contractors that are doing WAH to ask them if they applied ePTW. If no ePTW ask to stop and feedback supervisor</td>
+            <td><input type="radio" name="topic-check-15"></td>
+          </tr>
+          <tr>
+            <td>Ensure ladders are securely positioned.</td>
+            <td><input type="radio" name="topic-check-16"></td>
+          </tr>
+          <tr>
+            <td>Maintain three points of contact on ladders.</td>
+            <td><input type="radio" name="topic-check-17"></td>
+          </tr>
+          <tr>
+            <td>Ensure to use ladders that are EN 131 standard. Look for the sticker at the ladder to confirm.</td>
+            <td><input type="radio" name="topic-check-18"></td>
+          </tr>
+          
+          <!-- Machinery Safety -->
+          <tr class="topic-header">
+            <td rowspan="2">Machinery Safety</td>
+            <td>Follow lockout/tagout procedures during maintenance.</td>
+            <td><input type="radio" name="topic-check-19"></td>
+          </tr>
+          <tr>
+            <td>Wear personal protective equipment (PPE) specific to the machine.</td>
+            <td><input type="radio" name="topic-check-20"></td>
+          </tr>
+          
+          <!-- Mental Well-being -->
+          <tr class="topic-header">
+            <td rowspan="3">Mental Well-being</td>
+            <td>Take regular breaks to reduce stress.</td>
+            <td><input type="radio" name="topic-check-21"></td>
+          </tr>
+          <tr>
+            <td>Stay hydrated throughout the workday.</td>
+            <td><input type="radio" name="topic-check-22"></td>
+          </tr>
+          <tr>
+            <td>Report concerns about mental health to supervisors.</td>
+            <td><input type="radio" name="topic-check-23"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="form-section image-upload no-pdf">
+      <h2>Photo</h2>
+      <input type="file" id="image-upload" accept="image/*">
+      <div class="image-preview" id="image-preview">
+        <span>Upload an image (4:3 aspect ratio preferred)</span>
+      </div>
+    </div>
+    
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+  </div>
+  
+  <script>
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+    
+    // Set up signature pad
+    document.addEventListener('DOMContentLoaded', function() {
+      const canvas = document.getElementById('signature-canvas');
+      const signaturePad = setupSignaturePad(canvas);
+      
+      document.getElementById('clear-sig').addEventListener('click', function() {
+        signaturePad.clear();
+      });
+    });
+    
+    function setupSignaturePad(canvas) {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      const ctx = canvas.getContext('2d');
+      let drawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+      
+      // Touch events
+      canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousedown', {
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+      });
+      
+      canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousemove', {
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+      });
+      
+      canvas.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent('mouseup');
+        canvas.dispatchEvent(mouseEvent);
+      });
+      
+      function startDrawing(e) {
+        drawing = true;
+        const rect = canvas.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+      }
+      
+      function draw(e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        
+        lastX = x;
+        lastY = y;
+      }
+      
+      function stopDrawing() {
+        drawing = false;
+      }
+      
+      return {
+        clear: function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        },
+        getData: function() {
+          return canvas.toDataURL();
+        }
+      };
+    }
+    
+    // Add attendee row
+    function addAttendeeRow() {
+      const table = document.getElementById('attendees-table').getElementsByTagName('tbody')[0];
+      const rowCount = table.rows.length;
+      const newRow = table.insertRow();
+      
+      // S/N cell
+      const cell1 = newRow.insertCell(0);
+      cell1.textContent = rowCount + 1;
+      
+      // Name cell
+      const cell2 = newRow.insertCell(1);
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.name = 'attendee-name[]';
+      cell2.appendChild(nameInput);
+      
+      // ID cell
+      const cell3 = newRow.insertCell(2);
+      const idInput = document.createElement('input');
+      idInput.type = 'text';
+      idInput.name = 'attendee-id[]';
+      cell3.appendChild(idInput);
+    }
+    
+    // Handle image upload and add timestamp
+    document.getElementById('image-upload').addEventListener('change', function(e) {
+      const preview = document.getElementById('image-preview');
+      preview.innerHTML = '';
+      
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          preview.appendChild(img);
+          
+          // Add timestamp
+          const timestamp = document.createElement('div');
+          timestamp.className = 'timestamp';
+          const now = new Date();
+          timestamp.textContent = now.toLocaleString();
+          preview.appendChild(timestamp);
+        }
+        
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Download as PDF
+    function downloadPDF() {
+      // Create a clone of the form for PDF generation
+      const formContainer = document.getElementById('form-container');
+      const pdfContent = formContainer.cloneNode(true);
+      
+      // Add PDF-specific styles
+      pdfContent.classList.add('pdf-content');
+      
+      // Remove elements with no-pdf class
+      const noPdfElements = pdfContent.querySelectorAll('.no-pdf');
+      noPdfElements.forEach(el => el.remove());
+      
+      // Capture signature if exists
+      const signatureCanvas = document.getElementById('signature-canvas');
+      if (signatureCanvas) {
+        const signatureImage = document.createElement('img');
+        signatureImage.src = signatureCanvas.toDataURL();
+        signatureImage.style.maxWidth = '100%';
+        signatureImage.style.maxHeight = '100%';
+        
+        const signaturePad = pdfContent.querySelector('#signature-pad');
+        if (signaturePad) {
+          signaturePad.innerHTML = '';
+          signaturePad.appendChild(signatureImage.cloneNode(true));
+        }
+      }
+      
+      // Generate PDF
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: 'Toolbox_Meeting_' + new Date().toISOString().split('T')[0] + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      
+      // Create a temporary container
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
+      tempContainer.appendChild(pdfContent);
+      document.body.appendChild(tempContainer);
+      
+      // Generate PDF
+      html2pdf().from(pdfContent).set(opt).save().then(() => {
+        // Remove temporary container after PDF generation
+        document.body.removeChild(tempContainer);
+      });
+    }
+  </script>
+</body>
+</html>
