@@ -77,12 +77,13 @@
             />
           </div>
           <div class="input-group">
-            <label for="attendee-id-1">ID:</label>
+            <label for="attendee-id-1">WP/SP/IC:</label>
             <input
               type="text"
               id="attendee-id-1"
               name="attendee-id[]"
               class="form-input"
+              placeholder="****123A"
             />
           </div>
         </div>
@@ -109,12 +110,13 @@
             />
           </div>
           <div class="input-group">
-            <label for="attendee-id-2">ID:</label>
+            <label for="attendee-id-2">WP/SP/IC:</label>
             <input
               type="text"
               id="attendee-id-2"
               name="attendee-id[]"
               class="form-input"
+              placeholder="****123A"
             />
           </div>
         </div>
@@ -140,12 +142,13 @@
             />
           </div>
           <div class="input-group">
-            <label for="attendee-id-3">ID:</label>
+            <label for="attendee-id-3">WP/SP/IC:</label>
             <input
               type="text"
               id="attendee-id-3"
               name="attendee-id[]"
               class="form-input"
+              placeholder="****123A"
             />
           </div>
         </div>
@@ -173,7 +176,7 @@
               <input type="radio" name="stf2" />
             </div>
             <div class="topic-item">
-              <span>Keep walkways clear of obstacles</span>
+              <span>Keep walkways clear of clutters</span>
               <input type="radio" name="stf3" />
             </div>
           </div>
@@ -181,19 +184,23 @@
 
         <!-- PPE -->
         <div class="topic-group">
-          <div class="topic-header">Personal Protective Equipment</div>
+          <div class="topic-header">Personal Protective Equipment (PPE)</div>
           <div class="topic-items">
             <div class="topic-item">
-              <span>Wear appropriate PPE for tasks</span>
+              <span>Wear N95 mask for dusty works</span>
               <input type="radio" name="ppe1" />
             </div>
             <div class="topic-item">
-              <span>Inspect PPE before use</span>
+              <span>Wear anticut gloves for works that has rough surface and / or with sharp edges</span>
               <input type="radio" name="ppe2" />
             </div>
             <div class="topic-item">
-              <span>Report damaged PPE immediately</span>
+              <span>Wear safety shoes</span>
               <input type="radio" name="ppe3" />
+            </div>
+            <div class="topic-item">
+              <span>Wear any other PPE as per RA of specific work</span>
+              <input type="radio" name="ppe4" />
             </div>
           </div>
         </div>
@@ -222,7 +229,7 @@
           <div class="topic-header">Electrical Safety</div>
           <div class="topic-items">
             <div class="topic-item">
-              <span>Check cords for damage</span>
+              <span>Check that extension cords have no damage</span>
               <input type="radio" name="elec1" />
             </div>
             <div class="topic-item">
@@ -230,26 +237,30 @@
               <input type="radio" name="elec2" />
             </div>
             <div class="topic-item">
-              <span>Report electrical hazards</span>
+              <span>Use ELCB when using power points for drills, power tools etc...</span>
               <input type="radio" name="elec3" />
+            </div>
+            <div class="topic-item">
+              <span>Avoid overloading electrical outlets by using hi jet or pressure washer on ordinary power points (13A</span>
+              <input type="radio" name="elec4" />
             </div>
           </div>
         </div>
 
         <!-- Health Safety -->
         <div class="topic-group">
-          <div class="topic-header">Health Safety</div>
+          <div class="topic-header">Health & Well-being</div>
           <div class="topic-items">
             <div class="topic-item">
-              <span>Proper lifting techniques</span>
+              <span>Take regular breaks to reduce stress</span>
               <input type="radio" name="health1" />
             </div>
             <div class="topic-item">
-              <span>Report any injuries immediately</span>
+              <span>Stay hydrated throughout the workday</span>
               <input type="radio" name="health2" />
             </div>
             <div class="topic-item">
-              <span>Maintain good housekeeping</span>
+              <span>***Report concerns about mental health to supervisors</span>
               <input type="radio" name="health3" />
             </div>
           </div>
@@ -260,16 +271,39 @@
           <div class="topic-header">Machine Safety</div>
           <div class="topic-items">
             <div class="topic-item">
-              <span>Check machine guards before use</span>
+              <span>Follow lockout/tagout procedures during maintenance</span>
               <input type="radio" name="machine1" />
             </div>
             <div class="topic-item">
-              <span>Follow lockout procedures</span>
+              <span>Wear personal protective equipment (PPE) specific to the machine</span>
               <input type="radio" name="machine2" />
             </div>
             <div class="topic-item">
               <span>Report machine malfunctions</span>
               <input type="radio" name="machine3" />
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Work at Height -->
+        <div class="topic-group">
+          <div class="topic-header">Work at Height</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Be aware of any contractors that are doing WAH to ask them if they applied ePTW. If no ePTW ask to stop and feedback to supervisor</span>
+              <input type="radio" name="machine1" />
+            </div>
+            <div class="topic-item">
+              <span>Ensure ladders are securely positioned before going up on it</span>
+              <input type="radio" name="machine2" />
+            </div>
+            <div class="topic-item">
+              <span>Maintain three points of contact on ladders</span>
+              <input type="radio" name="machine3" />
+            </div>
+            <div class="topic-item">
+              <span>Ensure to use ladders that are EN 131 standard. Look for the sticker at the ladder to confirm</span>
+              <input type="radio" name="machine4" />
             </div>
           </div>
         </div>
