@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TBM Form</title>
+    <link rel="stylesheet" href="tbm.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Add the html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  </head>
+  <body>
+    <div id="form-container">
+      <a href="../index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>Back
+      </a>
+
+      <h3>Daily Toolbox Meeting for Summit</h3>
+
+      <!-- Form Header Section -->
+      <div class="form-section-date">
+        <div class="input-group-date">
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date" class="form-input" />
+        </div>
+      </div>
+
+      <!-- Conductor Section -->
+      <div class="form-section">
+        <div class="section-title">Briefing Conducted By:</div>
+        <div class="input-group">
+          <label for="conductor">Name:</label>
+          <input
+            type="text"
+            id="conductor"
+            name="conductor"
+            class="form-input"
+          />
+        </div>
+        <div class="input-group">
+          <label for="designation">Designation:</label>
+          <input
+            type="text"
+            id="designation"
+            name="designation"
+            class="form-input"
+          />
+        </div>
+      </div>
+
+      <!-- Attendees Section -->
+      <div class="form-section">
+        <div class="section-title">Attendees</div>
+
+        <!-- Attendee 1 -->
+        <div class="attendee-group">
+          <div class="input-group">
+            <label>S/N:</label>
+            <input
+              type="text"
+              id="serial-1"
+              class="form-input"
+              value="1"
+              readonly
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-name-1">Name:</label>
+            <input
+              type="text"
+              id="attendee-name-1"
+              name="attendee-name[]"
+              class="form-input"
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-id-1">WP/SP/IC:</label>
+            <input
+              type="text"
+              id="attendee-id-1"
+              name="attendee-id[]"
+              class="form-input"
+              placeholder="****123A"
+            />
+          </div>
+        </div>
+
+        <!-- Attendee 2 -->
+        <div class="attendee-group">
+          <div class="input-group">
+            <label>S/N:</label>
+            <input
+              type="text"
+              id="serial-2"
+              class="form-input"
+              value="2"
+              readonly
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-name-2">Name:</label>
+            <input
+              type="text"
+              id="attendee-name-2"
+              name="attendee-name[]"
+              class="form-input"
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-id-2">WP/SP/IC:</label>
+            <input
+              type="text"
+              id="attendee-id-2"
+              name="attendee-id[]"
+              class="form-input"
+              placeholder="****123A"
+            />
+          </div>
+        </div>
+        <!-- Attendee 3 -->
+        <div class="attendee-group">
+          <div class="input-group">
+            <label>S/N:</label>
+            <input
+              type="text"
+              id="serial-3"
+              class="form-input"
+              value="3"
+              readonly
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-name-3">Name:</label>
+            <input
+              type="text"
+              id="attendee-name-3"
+              name="attendee-name[]"
+              class="form-input"
+            />
+          </div>
+          <div class="input-group">
+            <label for="attendee-id-3">WP/SP/IC:</label>
+            <input
+              type="text"
+              id="attendee-id-3"
+              name="attendee-id[]"
+              class="form-input"
+              placeholder="****123A"
+            />
+          </div>
+        </div>
+
+        <!-- Add Attendee Button -->
+        <!-- <button type="button" class="add-attendee-btn" onclick="addAttendee()">
+          <i class="fas fa-plus"></i> Add Attendee
+        </button>
+      </div> -->
+
+      <!-- Topics Section -->
+      <div class="form-section">
+        <div class="section-title">Topics Discussed</div>
+
+        <!-- Slips, Trips, and Falls -->
+        <div class="topic-group">
+          <div class="topic-header">Slips, Trips, and Falls</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Clean up spills immediately</span>
+              <input type="radio" name="stf1" />
+            </div>
+            <div class="topic-item">
+              <span>Use warning signs for wet floors</span>
+              <input type="radio" name="stf2" />
+            </div>
+            <div class="topic-item">
+              <span>Keep walkways clear of clutters</span>
+              <input type="radio" name="stf3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- PPE -->
+        <div class="topic-group">
+          <div class="topic-header">Personal Protective Equipment (PPE)</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Wear N95 mask for dusty works</span>
+              <input type="radio" name="ppe1" />
+            </div>
+            <div class="topic-item">
+              <span>Wear anticut gloves for works that has rough surface and / or with sharp edges</span>
+              <input type="radio" name="ppe2" />
+            </div>
+            <div class="topic-item">
+              <span>Wear safety shoes</span>
+              <input type="radio" name="ppe3" />
+            </div>
+            <div class="topic-item">
+              <span>Wear any other PPE as per RA of specific work</span>
+              <input type="radio" name="ppe4" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Fire Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Fire Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Make sure you know your role in any fire emergency</span>
+              <input type="radio" name="fire1" />
+            </div>
+            <div class="topic-item">
+              <span>Keep fire exits clear</span>
+              <input type="radio" name="fire2" />
+            </div>
+            <div class="topic-item">
+              <span>Report any fire hazard you observe during duty to your supervisor</span>
+              <input type="radio" name="fire3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Electrical Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Electrical Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Check that extension cords have no damage</span>
+              <input type="radio" name="elec1" />
+            </div>
+            <div class="topic-item">
+              <span>Use proper lockout/tagout procedure</span>
+              <input type="radio" name="elec2" />
+            </div>
+            <div class="topic-item">
+              <span>Use ELCB when using power points for drills, power tools etc...</span>
+              <input type="radio" name="elec3" />
+            </div>
+            <div class="topic-item">
+              <span>Avoid overloading electrical outlets by using hi jet or pressure washer on ordinary power points (13A)</span>
+              <input type="radio" name="elec4" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Health & Well-being</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Take regular breaks to reduce stress</span>
+              <input type="radio" name="health1" />
+            </div>
+            <div class="topic-item">
+              <span>Stay hydrated throughout the workday</span>
+              <input type="radio" name="health2" />
+            </div>
+            <div class="topic-item">
+              <span>Maintain positive connections with colleagues and friends</span>
+              <input type="radio" name="health3" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Machine Safety -->
+        <div class="topic-group">
+          <div class="topic-header">Machine Safety</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Follow lockout/tagout procedure during maintenance</span>
+              <input type="radio" name="machine1" />
+            </div>
+            <div class="topic-item">
+              <span>Wear personal protective equipment (PPE) specific to the machine</span>
+              <input type="radio" name="machine2" />
+            </div>
+            <div class="topic-item">
+              <span>Report machine malfunctions</span>
+              <input type="radio" name="machine3" />
+            </div>
+          </div>
+        </div>
+      </div>
+        <!-- Work at Height -->
+        <div class="topic-group">
+          <div class="topic-header">Work at Height</div>
+          <div class="topic-items">
+            <div class="topic-item">
+              <span>Be aware of any contractors that are doing WAH to ask them if they applied ePTW. If none, ask to stop and feedback to supervisor</span>
+              <input type="radio" name="machine1" />
+            </div>
+            <div class="topic-item">
+              <span>Ensure ladders are securely positioned before going up on it</span>
+              <input type="radio" name="machine2" />
+            </div>
+            <div class="topic-item">
+              <span>Maintain three points contact on ladders</span>
+              <input type="radio" name="machine3" />
+            </div>
+            <div class="topic-item">
+              <span>Ensure to use ladders that are EN 131 standard. Look for the sticker at the ladder to confirm</span>
+              <input type="radio" name="machine4" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Upload Section -->
+      <div class="form-section no-pdf">
+        <div class="section-title">Photo of attendees</div>
+        <div class="image-upload">
+          <input type="file" id="image-upload" accept="image/*" />
+          <div id="image-preview" class="image-preview"></div>
+        </div>
+      </div>
+
+      <!-- Download Button -->
+      <button class="download-btn" onclick="generatePDF()">
+        <i class="fas fa-download"></i> Download PDF
+      </button>
+    </div>
+
+    <script src="tbm.js"></script>
+  </body>
+</html>

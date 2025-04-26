@@ -1,0 +1,213 @@
+/* Reset Styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+/* Main Container */
+#form-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Back Button (First element) */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.back-btn i {
+  margin-right: 5px;
+}
+
+/* Page Title */
+h3 {
+  text-align: center;
+  color: #333;
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+.form-section-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  margin-top: 10px;
+}
+.input-group-date label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 20px;
+}
+/* Form Sections - Common Styles */
+.form-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.section-title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Input Groups - Used in Date and Conductor sections */
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  width: 100px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Attendee Section */
+.attendee-group {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* Topics Section */
+.topic-group {
+  margin-bottom: 15px;
+}
+
+.topic-header {
+  font-weight: bold;
+  background-color: #eee;
+  padding: 8px 12px;
+  border-radius: 4px 4px 0 0;
+}
+
+.topic-items {
+  padding: 8px 0;
+}
+
+.topic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.topic-item:last-child {
+  border-bottom: none;
+}
+
+/* Image Upload Section */
+.image-upload {
+  margin-top: 10px;
+}
+
+.image-preview {
+  margin-top: 10px;
+  width: 100%;
+  height: 200px;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #f9f9f9;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.timestamp {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 3px 6px;
+  font-size: 12px;
+  border-radius: 3px;
+}
+
+/* Download Button (Last element) */
+.download-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.download-btn:hover {
+  background-color: #45a049;
+}
+
+.download-btn i {
+  margin-right: 8px;
+}
+
+/* Media Queries - Always at the end */
+@media print {
+  body { font-size: 10px; }
+  h3 { font-size: 12px; margin: 5px 0; }
+  .section-title { font-size: 11px; }
+  .topic-header { font-size: 10px; }
+  .topic-item { font-size: 9px; }
+  .back-btn,
+  .download-btn,
+  .no-pdf { display: none; }
+}
+
+@media screen and (max-width: 600px) {
+  .input-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .input-group label {
+    margin-bottom: 5px;
+    width: 100%;
+  }
+  .form-input {
+    width: 100%;
+  }
+}
