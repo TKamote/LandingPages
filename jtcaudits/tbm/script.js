@@ -1,8 +1,14 @@
 // Set current date and time on page load
 document.addEventListener("DOMContentLoaded", function () {
   const now = new Date();
-  const dateTimeStr = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDThh:mm
-  document.getElementById("date").value = dateTimeStr;
+  // Format: YYYY-MM-DD HH:mm
+  const dateStr = now.toLocaleDateString("en-CA"); // YYYY-MM-DD
+  const timeStr = now.toLocaleTimeString("en-US", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  document.getElementById("date").value = `${dateStr} ${timeStr}`;
 });
 
 // Handle image upload and preview

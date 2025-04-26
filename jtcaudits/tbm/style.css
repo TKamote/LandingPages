@@ -11,7 +11,7 @@ body {
 }
 
 #form-container {
-  max-width: 1280px; 
+  max-width: 1280px;
   /* change from 800px */
   margin: 0 auto;
   background: white;
@@ -130,35 +130,42 @@ h3 {
   flex: 1;
 }
 
-.image-upload {
-  margin-top: 10px;
-}
-
+/* Image Upload Styling */
 .image-preview {
+  width: 100%;
+  max-height: 300px;
+  border: 1px dashed #ccc;
   margin-top: 10px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .image-preview img {
   max-width: 100%;
-  max-height: 300px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 .timestamp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
   font-size: 12px;
-  color: #666;
-  text-align: right;
-  margin-top: 5px;
-  font-style: italic;
+  z-index: 1;
 }
 
 .download-btn {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
