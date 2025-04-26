@@ -1,6 +1,8 @@
-// Set current date on page load
+// Set current date and time on page load
 document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("date").valueAsDate = new Date();
+  const now = new Date();
+  const dateTimeStr = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDThh:mm
+  document.getElementById("date").value = dateTimeStr;
 });
 
 // Handle image upload and preview
@@ -11,14 +13,32 @@ document
     const preview = document.getElementById("image-preview");
     preview.innerHTML = "";
 
-    if (file) {
+    // Check if file is an image
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = function (e) {
         const img = document.createElement("img");
         img.src = e.target.result;
         preview.appendChild(img);
+
+        // Add timestamp with date and time
+        const timestamp = document.createElement("div");
+        timestamp.className = "timestamp";
+        const now = new Date();
+        timestamp.textContent = now.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        preview.appendChild(timestamp);
       };
       reader.readAsDataURL(file);
+    } else {
+      alert("Please select an image file only");
     }
   });
 

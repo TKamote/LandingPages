@@ -26,7 +26,12 @@
       <div class="form-section-date">
         <div class="input-group-date">
           <label for="date">Date:</label>
-          <input type="date" id="date" name="date" class="form-input" />
+          <input
+            type="datetime-local"
+            id="date"
+            name="date"
+            class="form-input"
+          />
         </div>
       </div>
 
@@ -332,7 +337,13 @@
       <div class="form-section no-pdf">
         <div class="section-title">Photo of attendees</div>
         <div class="image-upload">
-          <input type="file" id="image-upload" accept="image/*" />
+          <input
+            type="file"
+            id="image-upload"
+            accept="image/*"
+            capture="environment"
+            class="form-input"
+          />
           <div id="image-preview" class="image-preview"></div>
         </div>
       </div>
