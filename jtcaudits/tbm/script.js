@@ -80,8 +80,10 @@ function generatePDF() {
       scale: 1.5,
       useCORS: true,
       scrollY: 0,
-      width: 794,
-      windowWidth: 794,
+      // width: 794,
+      width: 1240,
+      // windowWidth: 794,
+      windowWidth: 1240,
     },
     jsPDF: {
       unit: "mm",
