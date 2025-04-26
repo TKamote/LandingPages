@@ -68,6 +68,10 @@ function generatePDF() {
       min-width: 0 !important;
       background-color: green !important; 
     }
+    .attendee {
+      width: 20% !important;
+      background-color: blue !important;
+      } 
     .form-input {
       width: 100% !important;
       background-color: red !important;
