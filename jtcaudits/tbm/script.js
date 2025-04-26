@@ -42,10 +42,15 @@ function generatePDF() {
   // Add PDF-specific styles
   const styleElement = document.createElement("style");
   styleElement.textContent = `
-    #form-container {
-      max-width: 100% !important;
-      // padding: 15mm !important;
+    body {
+    margin: 0 !important; /* Remove body margin to prevent interference */
+    padding: 0 !important;
+}
+  #form-container {
+      max-width: 210mm !important; /* A4 width */
+      margin: 0 auto !important;   /* Center the form */
       padding: 10mm !important;
+      box-sizing: border-box !important; /* Include padding in width */
     }
     .attendee-group {
       display: flex !important;
@@ -54,7 +59,7 @@ function generatePDF() {
       margin-bottom: 8px !important;
       padding: 8px !important;
       background-color: yellow !important; 
-      //i added above this
+      width: 100% !important; /* Ensure full width within container */
     }
     .input-group {
       flex: 1 !important;
