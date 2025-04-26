@@ -11,7 +11,8 @@ body {
 }
 
 #form-container {
-  max-width: 1200px;
+  max-width: 1280px; 
+  /* change from 800px */
   margin: 0 auto;
   background: white;
   padding: 20px;
@@ -100,6 +101,7 @@ h3 {
 
 .topic-header {
   font-weight: bold;
+  font-size: large;
   padding: 5px 0;
   margin-bottom: 5px;
   border-bottom: 1px solid #eee;

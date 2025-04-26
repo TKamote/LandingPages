@@ -60,25 +60,20 @@ function generatePDF() {
       gap: 10px !important;
       margin-bottom: 8px !important;
       padding: 10px !important;
-      background-color: yellow !important; 
       width: 100% !important; /* Ensure full width within container */
     }
     .input-group {
       flex: 1 !important;
       min-width: 0 !important;
-      background-color: green !important; 
     }
     .attendee {
       width: 20px !important;
-      background-color: blue !important;
       } 
     .form-input {
       width: 100% !important;
-      background-color: red !important;
     }
     .topic-group {
       margin-right: 0 !important;
-      //background-color: brown !important; 
     }
   `;
   document.head.appendChild(styleElement);
