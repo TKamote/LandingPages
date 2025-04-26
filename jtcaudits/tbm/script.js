@@ -45,19 +45,21 @@ function generatePDF() {
     body {
     margin: 0 !important; /* Remove body margin to prevent interference */
     padding: 0 !important;
+    font-size: 11pt !important; /* Increased font size slightly */
+    line-height: 1.5 !important; /* Increased line height for vertical space 
 }
   #form-container {
-      max-width: 210mm !important; /* A4 width */
+      max-width: 250mm !important; /* A4 width */
       margin: 0 auto !important;   /* Center the form */
-      padding: 10mm !important;
+      padding: 15mm !important;
       box-sizing: border-box !important; /* Include padding in width */
     }
     .attendee-group {
       display: flex !important;
       flex-direction: row !important;
-      gap: 10px !important;
+      gap: 12px !important;
       margin-bottom: 8px !important;
-      padding: 8px !important;
+      padding: 10px !important;
       background-color: yellow !important; 
       width: 100% !important; /* Ensure full width within container */
     }
@@ -68,6 +70,7 @@ function generatePDF() {
     }
     .form-input {
       width: 100% !important;
+      background-color: red !important;
     }
     .topic-group {
       margin-right: 0 !important;
@@ -86,9 +89,9 @@ function generatePDF() {
       useCORS: true,
       scrollY: 0,
       width: 794,
-      // width: 1654,
+      // width: 654,
       windowWidth: 794,
-      // windowWidth: 1654,
+      // windowWidth: 654,
     },
     jsPDF: {
       unit: "mm",
