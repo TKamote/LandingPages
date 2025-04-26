@@ -44,7 +44,8 @@ function generatePDF() {
   styleElement.textContent = `
     #form-container {
       max-width: 100% !important;
-      padding: 15mm !important;
+      // padding: 15mm !important;
+      padding: 10mm !important;
     }
     .attendee-group {
       display: flex !important;
@@ -52,16 +53,20 @@ function generatePDF() {
       gap: 10px !important;
       margin-bottom: 8px !important;
       padding: 8px !important;
+      background-color: yellow !important; 
+      //i added above this
     }
     .input-group {
       flex: 1 !important;
       min-width: 0 !important;
+      background-color: green !important; 
     }
     .form-input {
       width: 100% !important;
     }
     .topic-group {
       margin-right: 0 !important;
+      background-color: brown !important; 
     }
   `;
   document.head.appendChild(styleElement);
@@ -72,14 +77,11 @@ function generatePDF() {
     filename: `TBM_Report_${new Date().toISOString().split("T")[0]}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      // scale: 1.5,
-      scale: 1.8,
+      scale: 1.5,
       useCORS: true,
       scrollY: 0,
-      // width: 794,
-      width: 850,
-      // windowWidth: 794,
-      windowWidth: 850,
+      width: 794,
+      windowWidth: 794,
     },
     jsPDF: {
       unit: "mm",
