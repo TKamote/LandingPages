@@ -72,11 +72,14 @@ function generatePDF() {
     filename: `TBM_Report_${new Date().toISOString().split("T")[0]}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 1.5,
+      // scale: 1.5,
+      scale: 1.8,
       useCORS: true,
       scrollY: 0,
-      width: 794,
-      windowWidth: 794,
+      // width: 794,
+      width: 850,
+      // windowWidth: 794,
+      windowWidth: 850,
     },
     jsPDF: {
       unit: "mm",
