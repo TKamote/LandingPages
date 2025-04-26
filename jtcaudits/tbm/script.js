@@ -45,8 +45,8 @@ function generatePDF() {
     body {
     margin: 0 !important; /* Remove body margin to prevent interference */
     padding: 0 !important;
-    font-size: 11pt !important; /* Increased font size slightly */
-    line-height: 1.5 !important; /* Increased line height for vertical space 
+    font-size: 10pt !important; /* Increased font size slightly */
+    line-height: 1.1 !important; /* Increased line height for vertical space 
 }
   #form-container {
       max-width: 250mm !important; /* A4 width */
@@ -57,7 +57,7 @@ function generatePDF() {
     .attendee-group {
       display: flex !important;
       flex-direction: row !important;
-      gap: 12px !important;
+      gap: 10px !important;
       margin-bottom: 8px !important;
       padding: 10px !important;
       background-color: yellow !important; 
