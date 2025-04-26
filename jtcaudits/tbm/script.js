@@ -45,7 +45,7 @@ function generatePDF() {
     body {
     margin: 0 !important; /* Remove body margin to prevent interference */
     padding: 0 !important;
-    font-size: 10pt !important; /* Increased font size slightly */
+    font-size: 8pt !important; /* Increased font size slightly */
     line-height: 1.1 !important; /* Increased line height for vertical space 
 }
   #form-container {
@@ -78,7 +78,7 @@ function generatePDF() {
     }
     .topic-group {
       margin-right: 0 !important;
-      background-color: brown !important; 
+      //background-color: brown !important; 
     }
   `;
   document.head.appendChild(styleElement);
