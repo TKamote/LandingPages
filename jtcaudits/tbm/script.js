@@ -57,10 +57,10 @@ function generatePDF() {
 
   // Hide elements not needed in PDF
   const backBtn = document.querySelector(".back-btn");
-  const imageUploadContainer = document.querySelector(".image-upload-container");
+  const uploadBtn = document.querySelector(".upload-btn");
   const downloadBtnTemp = document.querySelector(".download-btn");
   backBtn.style.display = "none";
-  imageUploadContainer.style.display = "none";
+  uploadBtn.style.display = "none";
   downloadBtnTemp.style.display = "none";
 
   // Add PDF-specific styles
