@@ -2,9 +2,43 @@
 document.addEventListener("DOMContentLoaded", function () {
   const addButton = document.getElementById("add-inspection-btn");
   const inspectionContainer = document.getElementById("inspection");
-  let cardCount = 0; // Start from 0 for first card
+  let cardCount = 0;
 
-  // Setup initial card's photo functionality
+  // Create initial card HTML
+  const initialCard = document.createElement("div");
+  initialCard.className = "inspection-card";
+  initialCard.innerHTML = `
+    <div class="location">
+      <label for="location-0">Location:</label>
+      <select id="location-0">
+        <option value="" disabled selected>Select location</option>
+        <option value="B3">B3</option>
+        <option value="B2">B2</option>
+        <option value="B1">B1</option>
+        <option value="L1">L1</option>
+        <option value="L3">L3</option>
+        <option value="L4">L4</option>
+        <option value="L13">L13</option>
+        <option value="Roof">Roof</option>
+      </select>
+    </div>
+    <div class="photo" id="photo-0">
+      <label for="photo-0">Photo</label>
+      <button type="button" id="upload-btn-0" class="upload-btn">
+        <i class="fas fa-camera"></i> Take Photo or Choose from Gallery
+      </button>
+      <input type="file" id="photo-input-0" accept="image/*" style="display: none;" />
+      <div class="photo-preview" id="photo-preview-0" style="display: none;">
+        <div class="preview-container">
+          <img id="preview-image-0" src="" alt="Preview" />
+          <div id="timestamp-0" class="timestamp"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Add initial card
+  inspectionContainer.appendChild(initialCard);
   setupPhotoUpload(0);
 
   addButton.addEventListener("click", function () {

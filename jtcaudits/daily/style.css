@@ -56,22 +56,19 @@ h3 {
 
 /* Inspection cards container */
 .inspection {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Forces 2 columns */
   gap: 10px;
   width: 100%;
 }
 
 /* Card styling */
 .inspection-card {
-  flex: 0 1 calc(50% - 5px);
+  width: 100%;
   padding: 12px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   background: white;
-  min-width: 0;
-  max-width: calc(50% - 5px); /* Force two columns */
-  box-sizing: border-box;
 }
 
 /* Location select */
