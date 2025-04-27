@@ -1,0 +1,256 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* Container styling */
+#form-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Back button styling */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  color: #003e51;
+  border: 1px solid #003e51;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #003e51;
+  color: white;
+}
+
+.back-btn i {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+/* Header */
+h3 {
+  color: #003e51;
+  margin-bottom: 24px;
+  font-size: 24px;
+}
+
+/* Inspection container and cards */
+.inspection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.inspection-card {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  min-width: 250px;
+}
+
+/* Media query for tablets and larger screens */
+@media (min-width: 768px) {
+  .inspection {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .inspection-card {
+    flex: 0 1 calc(50% - 10px); /* 50% width minus gap */
+  }
+}
+
+/* Location select */
+.location {
+  margin-bottom: 20px;
+}
+
+.location label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.location select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+}
+
+/* Photo section */
+.photo {
+  margin-bottom: 20px;
+}
+
+.photo label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.photo input[type="file"] {
+  display: none;
+}
+
+.photo-preview {
+  margin-top: 10px;
+}
+
+#remove-photo {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#remove-photo:hover {
+  background-color: #c82333;
+}
+
+/* Content wrapper for sticky footer effect */
+.content-wrapper {
+  min-height: calc(100vh - 160px); /* Adjust based on your header height */
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* Bottom buttons container */
+.bottom-buttons {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-inspection-btn,
+.download-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.add-inspection-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.add-inspection-btn:hover {
+  background-color: #218838;
+}
+
+.download-btn {
+  background-color: #003e51;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #002a38;
+}
+
+.download-btn i {
+  font-size: 18px;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  background-color: #003e51;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+  background-color: #002a38;
+}
+
+.preview-container {
+  position: relative;
+  width: 175px;
+  height: 175px;
+  margin-bottom: 10px;
+}
+
+.preview-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.timestamp {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  padding: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #form-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+}

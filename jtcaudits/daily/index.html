@@ -1,17 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+
     <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    rel="stylesheet"
-  />
-    <title>HOTO-Form2</title>
-</head>
-<body>
-  <a class="back-btn" href="../index.html"><i class="fa-circle-arrow-left"></i>Back</a>
-    <h1>02 [FORM2] PICTORIAL INSPECTION REPOORT</h1>
-</body>
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <title>Daily Inspection</title>
+  </head>
+
+  <body>
+    <div id="form-container">
+      <a href="../index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>Back
+      </a>
+
+      <h3>Daily Inspection for Summit</h3>
+
+      <!-- Main content wrapper -->
+      <div class="content-wrapper">
+        <!-- Inspection date and cards -->
+        <div class="main-content">
+          <div class="inspection-date">
+            <label for="inspection-date">Inspection Date:</label>
+            <input type="date" id="inspection-date" />
+          </div>
+
+          <div class="inspection" id="inspection">
+            <div class="inspection-card" id="inspection-card">
+              <div class="location">
+                <label for="location">Location:</label>
+                <select id="location">
+                  <option value="" disabled selected>Select location</option>
+                  <option value="B3">B3</option>
+                  <option value="B2">B2</option>
+                  <option value="B1">B1</option>
+                  <option value="L1">L1</option>
+                  <option value="L3">L3</option>
+                  <option value="L4">L4</option>
+                  <option value="L13">L13</option>
+                  <option value="Roof">Roof</option>
+                </select>
+              </div>
+              <div class="photo" id="photo">
+                <label for="photo">Photo</label>
+                <button type="button" id="upload-btn" class="upload-btn">
+                  <i class="fas fa-camera"></i> Take Photo or Choose from
+                  Gallery
+                </button>
+                <input
+                  type="file"
+                  id="photo-input"
+                  accept="image/*"
+                  style="display: none"
+                />
+                <div
+                  class="photo-preview"
+                  id="photo-preview"
+                  style="display: none"
+                >
+                  <div class="preview-container">
+                    <img id="preview-image" src="" alt="Preview" />
+                    <div id="timestamp" class="timestamp">
+                      <!-- Timestamp will be added dynamically -->
+                    </div>
+                  </div>
+                  <button id="remove-photo" onclick="removePhoto()">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="inspection-card" id="inspection-card">
+              <div class="location">
+                <label for="location">Location:</label>
+                <select id="location">
+                  <option value="" disabled selected>Select location</option>
+                  <option value="B3">B3</option>
+                  <option value="B2">B2</option>
+                  <option value="B1">B1</option>
+                  <option value="L1">L1</option>
+                  <option value="L3">L3</option>
+                  <option value="L4">L4</option>
+                  <option value="L13">L13</option>
+                  <option value="Roof">Roof</option>
+                </select>
+              </div>
+              <div class="photo" id="photo">
+                <label for="photo">Photo</label>
+                <button type="button" id="upload-btn" class="upload-btn">
+                  <i class="fas fa-camera"></i> Take Photo or Choose from
+                  Gallery
+                </button>
+                <input
+                  type="file"
+                  id="photo-input"
+                  accept="image/*"
+                  style="display: none"
+                />
+                <div
+                  class="photo-preview"
+                  id="photo-preview"
+                  style="display: none"
+                >
+                  <div class="preview-container">
+                    <img id="preview-image" src="" alt="Preview" />
+                    <div id="timestamp" class="timestamp">
+                      <!-- Timestamp will be added dynamically -->
+                    </div>
+                  </div>
+                  <button id="remove-photo" onclick="removePhoto()">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom buttons container -->
+        <div class="bottom-buttons">
+          <button class="add-inspection-btn" id="add-inspection-btn">
+            <i class="fas fa-plus"></i> Add Inspection
+          </button>
+          <button class="download-btn" onclick="generatePDF()">
+            <i class="fas fa-download"></i> Download PDF
+          </button>
+        </div>
+      </div>
+
+      <script src="script.js"></script>
+    </div>
+  </body>
 </html>
