@@ -1,54 +1,21 @@
-// Handle photo upload and preview
 document.addEventListener("DOMContentLoaded", function () {
+  // Set today's date by default
+  const dateInput = document.getElementById("inspection-date");
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.value = today;
+
   const addButton = document.getElementById("add-inspection-btn");
   const inspectionContainer = document.getElementById("inspection");
   let cardCount = 0;
 
-  // Create initial card HTML
-  const initialCard = document.createElement("div");
-  initialCard.className = "inspection-card";
-  initialCard.innerHTML = `
-    <div class="location">
-      <label for="location-0">Location:</label>
-      <select id="location-0">
-        <option value="" disabled selected>Select location</option>
-        <option value="B3">B3</option>
-        <option value="B2">B2</option>
-        <option value="B1">B1</option>
-        <option value="L1">L1</option>
-        <option value="L3">L3</option>
-        <option value="L4">L4</option>
-        <option value="L13">L13</option>
-        <option value="Roof">Roof</option>
-      </select>
-    </div>
-    <div class="photo" id="photo-0">
-      <label for="photo-0">Photo</label>
-      <button type="button" id="upload-btn-0" class="upload-btn">
-        <i class="fas fa-camera"></i> Take Photo or Choose from Gallery
-      </button>
-      <input type="file" id="photo-input-0" accept="image/*" style="display: none;" />
-      <div class="photo-preview" id="photo-preview-0" style="display: none;">
-        <div class="preview-container">
-          <img id="preview-image-0" src="" alt="Preview" />
-          <div id="timestamp-0" class="timestamp"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Add initial card
-  inspectionContainer.appendChild(initialCard);
-  setupPhotoUpload(0);
-
+  // Add inspection card handler
   addButton.addEventListener("click", function () {
-    cardCount++;
     const newCard = document.createElement("div");
     newCard.className = "inspection-card";
     newCard.innerHTML = `
-            <div class="location">
-                <label for="location-${cardCount}">Location:</label>
-                <select id="location-${cardCount}">
+            <div class="select-group">
+                <label for="location-${cardCount}">Location</label>
+                <select id="location-${cardCount}" required>
                     <option value="" disabled selected>Select location</option>
                     <option value="B3">B3</option>
                     <option value="B2">B2</option>
@@ -60,8 +27,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     <option value="Roof">Roof</option>
                 </select>
             </div>
-            <div class="photo" id="photo-${cardCount}">
-                <label for="photo-${cardCount}">Photo</label>
+
+            <div class="select-group">
+                <label for="status-${cardCount}">Status</label>
+                <select id="status-${cardCount}" required>
+                    <option value="" disabled selected>Select status</option>
+                    <option value="Good">Good</option>
+                    <option value="Need Repair">Need Repair</option>
+                    <option value="Under Repair">Under Repair</option>
+                    <option value="Critical">Critical</option>
+                </select>
+            </div>
+
+            <div class="photo-section">
+                <label>Photo Evidence</label>
                 <button type="button" id="upload-btn-${cardCount}" class="upload-btn">
                     <i class="fas fa-camera"></i> Take Photo or Choose from Gallery
                 </button>
@@ -77,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     inspectionContainer.appendChild(newCard);
     setupPhotoUpload(cardCount);
+    cardCount++;
   });
 
   function setupPhotoUpload(id) {
@@ -85,18 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const preview = document.getElementById(`photo-preview-${id}`);
     const previewImage = document.getElementById(`preview-image-${id}`);
     const timestamp = document.getElementById(`timestamp-${id}`);
-
-    if (!uploadBtn || !fileInput) return; // Guard clause
-
-    // Add capture attribute dynamically for mobile
-    fileInput.setAttribute("capture", "environment");
-    fileInput.setAttribute("accept", "image/*");
-
-    // Handle both touch and click events
-    uploadBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      fileInput.click();
-    });
 
     uploadBtn.addEventListener("click", (e) => {
       e.preventDefault();

@@ -22,103 +22,14 @@
 
       <!-- Main content wrapper -->
       <div class="content-wrapper">
-        <!-- Inspection date and cards -->
         <div class="main-content">
           <div class="inspection-date">
             <label for="inspection-date">Inspection Date:</label>
             <input type="date" id="inspection-date" />
           </div>
 
-          <div class="inspection" id="inspection">
-            <div class="inspection-card" id="inspection-card">
-              <div class="location">
-                <label for="location">Location:</label>
-                <select id="location">
-                  <option value="" disabled selected>Select location</option>
-                  <option value="B3">B3</option>
-                  <option value="B2">B2</option>
-                  <option value="B1">B1</option>
-                  <option value="L1">L1</option>
-                  <option value="L3">L3</option>
-                  <option value="L4">L4</option>
-                  <option value="L13">L13</option>
-                  <option value="Roof">Roof</option>
-                </select>
-              </div>
-              <div class="photo" id="photo">
-                <label for="photo">Photo</label>
-                <button type="button" id="upload-btn" class="upload-btn">
-                  <i class="fas fa-camera"></i> Take Photo or Choose from
-                  Gallery
-                </button>
-                <input
-                  type="file"
-                  id="photo-input"
-                  accept="image/*"
-                  style="display: none"
-                />
-                <div
-                  class="photo-preview"
-                  id="photo-preview"
-                  style="display: none"
-                >
-                  <div class="preview-container">
-                    <img id="preview-image" src="" alt="Preview" />
-                    <div id="timestamp" class="timestamp">
-                      <!-- Timestamp will be added dynamically -->
-                    </div>
-                  </div>
-                  <button id="remove-photo" onclick="removePhoto()">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="inspection-card" id="inspection-card">
-              <div class="location">
-                <label for="location">Location:</label>
-                <select id="location">
-                  <option value="" disabled selected>Select location</option>
-                  <option value="B3">B3</option>
-                  <option value="B2">B2</option>
-                  <option value="B1">B1</option>
-                  <option value="L1">L1</option>
-                  <option value="L3">L3</option>
-                  <option value="L4">L4</option>
-                  <option value="L13">L13</option>
-                  <option value="Roof">Roof</option>
-                </select>
-              </div>
-              <div class="photo" id="photo">
-                <label for="photo">Photo</label>
-                <button type="button" id="upload-btn" class="upload-btn">
-                  <i class="fas fa-camera"></i> Take Photo or Choose from
-                  Gallery
-                </button>
-                <input
-                  type="file"
-                  id="photo-input"
-                  accept="image/*"
-                  style="display: none"
-                />
-                <div
-                  class="photo-preview"
-                  id="photo-preview"
-                  style="display: none"
-                >
-                  <div class="preview-container">
-                    <img id="preview-image" src="" alt="Preview" />
-                    <div id="timestamp" class="timestamp">
-                      <!-- Timestamp will be added dynamically -->
-                    </div>
-                  </div>
-                  <button id="remove-photo" onclick="removePhoto()">
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <!-- Empty container for inspection cards -->
+          <div class="inspection" id="inspection"></div>
         </div>
 
         <!-- Bottom buttons container -->
