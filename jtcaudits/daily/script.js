@@ -2,9 +2,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   const addButton = document.getElementById("add-inspection-btn");
   const inspectionContainer = document.getElementById("inspection");
-  let cardCount = 1;
+  let cardCount = 0; // Start from 0 for first card
+
+  // Setup initial card's photo functionality
+  setupPhotoUpload(0);
 
   addButton.addEventListener("click", function () {
+    cardCount++;
     const newCard = document.createElement("div");
     newCard.className = "inspection-card";
     newCard.innerHTML = `
@@ -38,10 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 
     inspectionContainer.appendChild(newCard);
-
-    // Set up photo upload functionality for new card
     setupPhotoUpload(cardCount);
-    cardCount++;
   });
 
   function setupPhotoUpload(id) {
@@ -50,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const preview = document.getElementById(`photo-preview-${id}`);
     const previewImage = document.getElementById(`preview-image-${id}`);
     const timestamp = document.getElementById(`timestamp-${id}`);
+
+    if (!uploadBtn || !fileInput) return; // Guard clause
 
     // Add capture attribute dynamically for mobile
     fileInput.setAttribute("capture", "environment");
@@ -92,7 +95,4 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-
-  // Setup initial card
-  setupPhotoUpload(0);
 });

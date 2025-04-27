@@ -64,12 +64,14 @@ h3 {
 
 /* Card styling */
 .inspection-card {
-  flex: 0 1 calc(50% - 5px); /* 50% width minus half of gap */
+  flex: 0 1 calc(50% - 5px);
   padding: 12px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   background: white;
-  min-width: 0; /* Prevents overflow on small screens */
+  min-width: 0;
+  max-width: calc(50% - 5px); /* Force two columns */
+  box-sizing: border-box;
 }
 
 /* Location select */
