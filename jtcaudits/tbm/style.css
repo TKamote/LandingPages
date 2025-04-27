@@ -24,15 +24,20 @@ h3 {
   text-align: center;
   margin-bottom: 20px;
   color: #333;
+  font-size: 1.25rem;
 }
 
 .back-btn {
   display: inline-flex;
   align-items: center;
   margin-bottom: 15px;
-  color: #555;
+  color: #fff;
   text-decoration: none;
   font-size: 14px;
+  background-color: #003E51;
+  padding: 5px 10px;
+  font-weight: bold;
+  border-radius: 5px;
 }
 
 .back-btn i {
@@ -56,14 +61,19 @@ h3 {
 .input-group-date {
   display: flex;
   align-items: center;
-}
 
+}
+.input-group-date label {
+  font-weight: bold;
+  margin-right: 8px;
+}
 .section-title {
   font-weight: bold;
   margin-bottom: 10px;
   padding-bottom: 5px;
   border-bottom: 1px solid #eee;
   color: #333;
+  font-size: larger;
 }
 
 .input-group {
@@ -74,7 +84,7 @@ h3 {
 
 .input-group label {
   min-width: 100px;
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .form-input {
@@ -124,11 +134,9 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 3px 0;
+  margin-right: 10px;
 }
 
-.topic-item span {
-  flex: 1;
-}
 
 /* Image Upload Styling */
 .image-preview {
@@ -165,7 +173,7 @@ h3 {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #4caf50;
+  background-color: #003E51;
   color: white;
   border: none;
   border-radius: 4px;
