@@ -52,19 +52,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // PDF Generation
 function generatePDF() {
-  // Get and modify download button
-  const downloadBtn = document.querySelector(".download-btn");
-  downloadBtn.innerHTML =
-    '<i class="fas fa-spinner fa-spin"></i> Generating...';
-  downloadBtn.disabled = true;
-
   // Get the form container
   const element = document.getElementById("form-container");
 
   // Hide elements not needed in PDF
   const backBtn = document.querySelector(".back-btn");
+  const imageUploadContainer = document.querySelector(".image-upload-container");
   const downloadBtnTemp = document.querySelector(".download-btn");
   backBtn.style.display = "none";
+  imageUploadContainer.style.display = "none";
   downloadBtnTemp.style.display = "none";
 
   // Add PDF-specific styles
