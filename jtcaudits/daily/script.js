@@ -51,7 +51,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const previewImage = document.getElementById(`preview-image-${id}`);
     const timestamp = document.getElementById(`timestamp-${id}`);
 
-    uploadBtn.addEventListener("click", () => fileInput.click());
+    // Add capture attribute dynamically for mobile
+    fileInput.setAttribute("capture", "environment");
+    fileInput.setAttribute("accept", "image/*");
+
+    // Handle both touch and click events
+    uploadBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      fileInput.click();
+    });
+
+    uploadBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      fileInput.click();
+    });
 
     fileInput.addEventListener("change", function (e) {
       const file = e.target.files[0];
