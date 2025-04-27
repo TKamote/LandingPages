@@ -9,14 +9,15 @@ document.addEventListener("DOMContentLoaded", function () {
     minute: "2-digit",
   });
   document.getElementById("date").value = `${dateStr} ${timeStr}`;
-});
 
-// Handle image upload and preview
-document
-  .getElementById("image-upload")
-  .addEventListener("change", function (e) {
+  const uploadBtn = document.getElementById("upload-btn");
+  const fileInput = document.getElementById("image-upload");
+  const preview = document.getElementById("image-preview");
+
+  uploadBtn.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", function (e) {
     const file = e.target.files[0];
-    const preview = document.getElementById("image-preview");
     preview.innerHTML = "";
 
     // Check if file is an image
@@ -47,6 +48,7 @@ document
       alert("Please select an image file only");
     }
   });
+});
 
 // PDF Generation
 function generatePDF() {
@@ -100,6 +102,10 @@ function generatePDF() {
     }
     .topic-group {
       margin-right: 0 !important;
+    }
+    .topic-item {
+      font-size: 8pt !important;  /* Match the body font size */
+      line-height: 1.1 !important;
     }
   `;
   document.head.appendChild(styleElement);

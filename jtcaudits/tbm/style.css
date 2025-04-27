@@ -34,7 +34,7 @@ h3 {
   color: #fff;
   text-decoration: none;
   font-size: 14px;
-  background-color: #003E51;
+  background-color: #003e51;
   padding: 5px 10px;
   font-weight: bold;
   border-radius: 5px;
@@ -61,7 +61,6 @@ h3 {
 .input-group-date {
   display: flex;
   align-items: center;
-
 }
 .input-group-date label {
   font-weight: bold;
@@ -137,7 +136,6 @@ h3 {
   margin-right: 10px;
 }
 
-
 /* Image Upload Styling */
 .image-preview {
   width: 100%;
@@ -173,7 +171,7 @@ h3 {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #003E51;
+  background-color: #003e51;
   color: white;
   border: none;
   border-radius: 4px;
@@ -202,4 +200,33 @@ h3 {
   margin-top: 5px;
   border-radius: 4px;
   background-color: #f9f9f9;
+}
+
+/* Add these styles */
+.image-upload-container {
+  margin-top: 10px;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  background-color: #003e51;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+  background-color: #002a38;
+}
+
+.upload-btn i {
+  font-size: 16px;
 }

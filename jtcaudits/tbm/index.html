@@ -358,14 +358,15 @@
       <!-- Image Upload Section -->
       <div class="form-section no-pdf">
         <div class="section-title">Photo of attendees</div>
-
-        <div class="image-upload">
+        <div class="image-upload-container">
+          <button type="button" id="upload-btn" class="upload-btn">
+            <i class="fas fa-camera"></i> Take Photo or Choose from Gallery
+          </button>
           <input
             type="file"
             id="image-upload"
             accept="image/*"
-            capture="environment"
-            class="form-input"
+            style="display: none"
           />
           <div id="image-preview" class="image-preview"></div>
         </div>
