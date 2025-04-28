@@ -62,6 +62,50 @@ function generatePDF() {
     noPdfElements[0].parentNode.removeChild(noPdfElements[0]);
   }
 
+  // Add PDF-specific styles
+  const styleElement = document.createElement("style");
+  styleElement.textContent = `
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      font-size: 8pt !important;
+      line-height: 1.1 !important;
+    }
+    #form-container {
+      max-width: 250mm !important;
+      margin: 0 auto !important;
+      padding: 15mm !important;
+      box-sizing: border-box !important;
+    }
+    .form-section {
+      margin-bottom: 10pt !important;
+      padding: 10pt !important;
+    }
+    .input-group {
+      margin-bottom: 5pt !important;
+    }
+    .topic-group {
+      margin-bottom: 8pt !important;
+    }
+    .topic-item {
+      font-size: 8pt !important;
+      line-height: 1.1 !important;
+    }
+    .topic-header {
+      font-weight: bold !important;
+      margin-bottom: 5pt !important;
+    }
+    .form-input {
+      border: 1px solid #ccc !important;
+      padding: 2pt !important;
+    }
+    .signature-field {
+      height: 60pt !important;
+      border: 1px dashed #ccc !important;
+    }
+  `;
+  document.head.appendChild(styleElement);
+
   // Generate PDF options
   const opt = {
     margin: [15, 15, 15, 15],
@@ -79,11 +123,13 @@ function generatePDF() {
     .then(() => {
       downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
       downloadBtn.disabled = false;
+      document.head.removeChild(styleElement); // Clean up styles
     })
     .catch((err) => {
       console.error("PDF generation failed:", err);
       downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
       downloadBtn.disabled = false;
+      document.head.removeChild(styleElement); // Clean up styles
       alert("Failed to generate PDF. Please try again.");
     });
 }
