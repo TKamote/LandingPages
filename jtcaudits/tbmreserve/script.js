@@ -62,6 +62,32 @@ function generatePDF() {
     noPdfElements[0].parentNode.removeChild(noPdfElements[0]);
   }
 
+  // Remove the back button
+  const backButton = pdfContent.querySelector(".back-btn");
+  if (backButton) {
+    backButton.parentNode.removeChild(backButton);
+  }
+
+  // Style attendees in a row
+  const attendeeGroups = pdfContent.querySelectorAll(".attendee-group");
+  attendeeGroups.forEach((group) => {
+    group.style.display = "flex";
+    group.style.flexDirection = "row";
+    group.style.alignItems = "center";
+    group.style.marginBottom = "5px";
+  });
+
+  // Style input groups in attendee groups
+  const inputGroups = pdfContent.querySelectorAll(
+    ".attendee-group .input-group"
+  );
+  inputGroups.forEach((group) => {
+    group.style.display = "flex";
+    group.style.flexDirection = "row";
+    group.style.alignItems = "center";
+    group.style.marginRight = "10px";
+  });
+
   // Add PDF-specific styles
   const styleElement = document.createElement("style");
   styleElement.textContent = `
@@ -110,13 +136,6 @@ function generatePDF() {
     }
     .topic-item {
       margin-bottom: 5pt;
-    }
-    .signature-container {
-      margin-top: 15pt;
-    }
-    .signature-field {
-      height: 80pt;
-      border: 1px dashed #ccc;
     }
     .image-preview img {
       max-width: 100%;

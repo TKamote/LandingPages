@@ -17,11 +17,12 @@ body {
   max-width: 800px;
   margin: 0 auto;
   background: white;
-  padding: 20px;
+  padding: 10px; /* Reduced padding to 10px */
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Back button styling */
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -29,6 +30,15 @@ body {
   color: #555;
   text-decoration: none;
   font-size: 14px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #E0C6AD;
+  font-weight: 900;
+}
+
+.back-btn:hover {
+  background-color: #eee;
 }
 
 .back-btn i {
@@ -45,7 +55,7 @@ h3 {
 .form-section {
   margin-bottom: 20px;
   border: 1px solid #ddd;
-  padding: 15px;
+  padding: 10px; /* Reduced padding to 10px */
   border-radius: 5px;
 }
 
@@ -89,19 +99,6 @@ h3 {
   border-radius: 4px;
 }
 
-/* Signature section */
-.signature-container {
-  margin-top: 10px;
-}
-
-.signature-field {
-  height: 80px;
-  border: 1px dashed #ccc;
-  margin-top: 5px;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-}
-
 /* Attendees section */
 .attendee-group {
   display: flex;
@@ -143,6 +140,7 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 3px 0;
+  margin-right: 12px;
 }
 
 .topic-item span {
@@ -150,19 +148,49 @@ h3 {
 }
 
 /* Image upload section */
-.image-upload {
+.image-upload-container {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-btn {
+  width: 50%;
+  padding: 10px;
+  background-color: #003e51;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-self: center;
+}
+
+.upload-btn:hover {
+  background-color: #002a38;
+}
+
+.image-preview-container {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
 }
 
 .image-preview {
-  margin-top: 10px;
+  margin-top: 0;
   text-align: center;
 }
 
 .image-preview img {
   max-width: 100%;
   max-height: 300px;
-  border: 1px solid #ddd;
   border-radius: 4px;
 }
 
@@ -179,10 +207,11 @@ h3 {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #4caf50;
+  background-color: #BCDEE6;
   color: white;
   border: none;
   border-radius: 4px;
+  color: #003e51;
   font-size: 16px;
   cursor: pointer;
   text-align: center;
