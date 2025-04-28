@@ -111,8 +111,20 @@ function generatePDF() {
     margin: [15, 15, 15, 15],
     filename: `TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 1.5, useCORS: true },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    html2canvas: {
+      scale: 1.5,
+      useCORS: true,
+      width: 794, // A4 width in pixels at 96 DPI
+      windowWidth: 794,
+      scrollX: 0,
+      scrollY: 0,
+      logging: true, // Helps debug rendering issues
+    },
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
+    },
   };
 
   // Generate PDF
