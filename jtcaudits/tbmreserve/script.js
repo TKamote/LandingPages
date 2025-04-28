@@ -166,6 +166,8 @@ function generatePDF() {
       logging: true,
       letterRendering: true,
       useCanvas: true,
+      // Add a timeout to wait for the image to load
+      timeout: 60000, // 60 seconds
     },
     jsPDF: {
       unit: "mm",
@@ -186,39 +188,40 @@ function generatePDF() {
     imgData = canvas.toDataURL("image/jpeg", 0.9);
   }
 
-  // Add a delay before generating the PDF to allow the image to load
-  setTimeout(() => {
-    html2pdf()
-      .from(pdfContent)
-      .set(opt)
-      .outputPdf()
-      .then((pdf) => {
-        // Add the image to the PDF
-        if (imgData) {
-          try {
-            pdf.addImage(
-              imgData,
-              "JPEG",
-              10,
-              10,
-              img.width / 10,
-              img.height / 10
-            );
-          } catch (e) {
-            console.error("Error adding image to PDF:", e);
-          }
+  // Generate PDF
+  html2pdf()
+    .from(pdfContent)
+    .set(opt)
+    .toPdf()
+    .get("pdf")
+    .then(function (pdf) {
+      if (imgData) {
+        try {
+          // Add the image to the PDF
+          pdf.addImage(
+            imgData,
+            "JPEG",
+            10,
+            10,
+            img.width / 10,
+            img.height / 10
+          );
+        } catch (e) {
+          console.error("Error adding image to PDF:", e);
         }
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-        downloadBtn.disabled = false;
-        document.head.removeChild(styleElement);
-        pdf.save(`TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`);
-      })
-      .catch((err) => {
-        console.error("PDF generation failed:", err);
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-        downloadBtn.disabled = false;
-        document.head.removeChild(styleElement);
-        alert("Failed to generate PDF. Please try again.");
-      });
-  }, 3000);
+      }
+    })
+    .then(function (pdf) {
+      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+      downloadBtn.disabled = false;
+      document.head.removeChild(styleElement);
+      pdf.save(`TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`);
+    })
+    .catch((err) => {
+      console.error("PDF generation failed:", err);
+      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+      downloadBtn.disabled = false;
+      document.head.removeChild(styleElement);
+      alert("Failed to generate PDF. Please try again.");
+    });
 }
