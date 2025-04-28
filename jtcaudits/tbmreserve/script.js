@@ -178,7 +178,10 @@ async function generatePDF() {
   console.log("Button state changed to 'Generating...'");
 
   // --- Prepare Content for PDF (using the clone) ---
-  const noPdfElements = pdfContent.querySelectorAll(".no-pdf, .back-btn");
+  // Add .download-btn to the selector
+  const noPdfElements = pdfContent.querySelectorAll(
+    ".no-pdf, .back-btn, .download-btn"
+  );
   noPdfElements.forEach((el) => el.remove());
 
   const uploadedImageElement = document.querySelector("#image-preview img"); // Get from original DOM for data
