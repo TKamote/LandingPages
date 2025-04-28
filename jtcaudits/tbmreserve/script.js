@@ -189,39 +189,27 @@ function generatePDF() {
   }
 
   // Generate PDF
-  html2pdf()
-    .from(pdfContent)
-    .set(opt)
-    .toPdf()
-    .get("pdf")
-    .then(function (pdf) {
-      if (imgData) {
-        try {
-          // Add the image to the PDF
-          pdf.addImage(
-            imgData,
-            "JPEG",
-            10,
-            10,
-            img.width / 10,
-            img.height / 10
-          );
-        } catch (e) {
-          console.error("Error adding image to PDF:", e);
-        }
-      }
-    })
-    .then(function (pdf) {
-      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-      downloadBtn.disabled = false;
-      document.head.removeChild(styleElement);
-      pdf.save(`TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`);
-    })
-    .catch((err) => {
-      console.error("PDF generation failed:", err);
-      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-      downloadBtn.disabled = false;
-      document.head.removeChild(styleElement);
-      alert("Failed to generate PDF. Please try again.");
+  html2canvas(pdfContent, opt.html2canvas).then((canvas) => {
+    const imgData = canvas.toDataURL("image/jpeg");
+
+    const pdf = new jsPDF({
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
     });
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    let position = 0;
+    const heightLeft = pdfHeight;
+
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+
+    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+    downloadBtn.disabled = false;
+    document.head.removeChild(styleElement);
+    pdf.save(`TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`);
+  });
 }
