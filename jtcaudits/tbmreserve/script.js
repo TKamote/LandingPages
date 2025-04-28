@@ -21,43 +21,101 @@ document.addEventListener("DOMContentLoaded", function () {
     preview.innerHTML = ""; // Clear previous preview
 
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = function (readerEvent) {
-        const img = document.createElement("img");
-        // Use an object URL for preview to avoid long data URLs in the DOM initially
-        const objectURL = URL.createObjectURL(file);
-        img.src = objectURL;
-        // Store the file itself for later conversion if needed, or read data URL here
-        img.dataset.file = file; // Keep track of the file if needed
-        img.dataset.dataUrl = readerEvent.target.result; // Store data URL directly
+      // Read EXIF data first
+      EXIF.getData(file, function () {
+        const orientation = EXIF.getTag(this, "Orientation");
+        console.log("Image Orientation:", orientation);
 
-        img.style.maxWidth = "100%";
-        img.style.maxHeight = "200pt";
-        // Optional: Revoke object URL when image is loaded to free memory
-        img.onload = () => {
-          URL.revokeObjectURL(objectURL);
+        const reader = new FileReader();
+        reader.onload = function (readerEvent) {
+          const img = document.createElement("img");
+          const objectURL = URL.createObjectURL(file);
+          img.src = objectURL;
+          img.dataset.dataUrl = readerEvent.target.result; // Store data URL
+          img.dataset.orientation = orientation || 1; // Store orientation (default to 1 if undefined)
+
+          img.style.maxWidth = "100%";
+          img.style.maxHeight = "200pt";
+          img.onload = () => {
+            URL.revokeObjectURL(objectURL);
+          };
+          preview.appendChild(img);
+
+          const timestamp = document.createElement("div");
+          timestamp.className = "timestamp";
+          const now = new Date();
+          timestamp.textContent = now.toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          preview.appendChild(timestamp);
         };
-        preview.appendChild(img);
-
-        const timestamp = document.createElement("div");
-        timestamp.className = "timestamp";
-        const now = new Date();
-        timestamp.textContent = now.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        preview.appendChild(timestamp);
-      };
-      // Read the file as Data URL for PDF embedding
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // Read file content after getting EXIF
+      });
     }
   });
 });
+
+// Helper function to rotate image based on EXIF orientation
+async function rotateImage(imageDataUrl, orientation) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      let width = img.width;
+      let height = img.height;
+
+      // Set canvas dimensions based on orientation
+      if (orientation >= 5 && orientation <= 8) {
+        // Rotated 90 or 270 degrees
+        canvas.width = height;
+        canvas.height = width;
+      } else {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      // Apply transformations
+      switch (orientation) {
+        case 2:
+          ctx.transform(-1, 0, 0, 1, width, 0);
+          break; // flip horizontal
+        case 3:
+          ctx.transform(-1, 0, 0, -1, width, height);
+          break; // rotate 180
+        case 4:
+          ctx.transform(1, 0, 0, -1, 0, height);
+          break; // flip vertical
+        case 5:
+          ctx.transform(0, 1, 1, 0, 0, 0);
+          break; // transpose
+        case 6:
+          ctx.transform(0, 1, -1, 0, height, 0);
+          break; // rotate 90 CW
+        case 7:
+          ctx.transform(0, -1, -1, 0, height, width);
+          break; // transverse
+        case 8:
+          ctx.transform(0, -1, 1, 0, 0, width);
+          break; // rotate 270 CW
+        default:
+          break; // case 1: no transformation
+      }
+
+      // Draw the image onto the transformed canvas
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL("image/jpeg", 0.95)); // Return rotated image data URL
+    };
+    img.onerror = (err) => reject(err);
+    img.src = imageDataUrl;
+  });
+}
 
 async function generatePDF() {
   const downloadBtn = document.querySelector(".download-btn");
@@ -73,16 +131,18 @@ async function generatePDF() {
   noPdfElements.forEach((el) => el.remove());
 
   const uploadedImageElement = document.querySelector("#image-preview img");
-  const imageDataUrl = uploadedImageElement
+  const originalImageDataUrl = uploadedImageElement
     ? uploadedImageElement.dataset.dataUrl
-    : null; // Get stored Data URL
+    : null;
+  const imageOrientation = uploadedImageElement
+    ? parseInt(uploadedImageElement.dataset.orientation || "1")
+    : 1;
 
   // --- Add PDF-specific Styles ---
   const styleElement = document.createElement("style");
-  // Styles remain largely the same as before
   styleElement.textContent = `
     body { font-family: Arial, sans-serif; font-size: 6pt; margin: 0; padding: 0; background-color: white; }
-    #form-container { width: 794px; padding: 20px; margin: 0; background: white; box-sizing: border-box; border: none; box-shadow: none; }
+    #form-container { width: 794px; padding: 20px; margin: 0; background: white; box-sizing: border-box; border: none; box-shadow: none; overflow: hidden; /* Prevent potential scrollbars during capture */ }
     .form-section { margin-bottom: 10pt; padding: 8pt; border: 1px solid #ddd; page-break-inside: avoid; }
     .section-title, .topic-header { font-size: 8pt; font-weight: bold; margin-bottom: 6pt; }
     .attendee-group { display: flex; flex-direction: row; align-items: center; margin-bottom: 4px; }
@@ -90,11 +150,7 @@ async function generatePDF() {
     .attendee-group .input-group label { margin-right: 4px; }
     .topic-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .topic-item span { flex-grow: 1; margin-right: 10px; }
-    /* Ensure radio buttons/checkboxes render state if possible (often tricky with html2canvas) */
-    input[type="radio"], input[type="checkbox"] { /* Basic appearance */
-        width: 10px; height: 10px; margin-left: 5px;
-    }
-    /* Add any other necessary styles */
+    input[type="radio"], input[type="checkbox"] { width: 10px; height: 10px; margin-left: 5px; }
   `;
   document.head.appendChild(styleElement);
 
@@ -116,7 +172,7 @@ async function generatePDF() {
       scrollX: 0,
       scrollY: 0,
       windowWidth: pdfContent.scrollWidth,
-      windowHeight: pdfContent.scrollHeight,
+      windowHeight: pdfContent.scrollHeight, // Capture full height
     });
     console.log("Canvas created from form content.");
 
@@ -130,15 +186,13 @@ async function generatePDF() {
 
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-    const margin = 15; // Page margin in mm
+    const margin = 15;
     const contentWidth = pdfWidth - 2 * margin;
-    const pageInnerHeight = pdfHeight - 2 * margin; // Usable height per page
+    const pageInnerHeight = pdfHeight - 2 * margin;
 
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
     const canvasAspectRatio = canvasWidth / canvasHeight;
-
-    // Calculate total height the canvas image will take in the PDF
     const totalPdfImageHeight = contentWidth / canvasAspectRatio;
 
     console.log(
@@ -149,44 +203,50 @@ async function generatePDF() {
     );
 
     // --- Add Form Content Pages (Corrected Pagination) ---
-    let position = 0; // This is the Y position *within the source canvas image*
+    let position = 0; // Y position in PDF mm units for the top of the current slice
+    let sourceY_px = 0; // Y position in source canvas pixels
     let currentPage = 1;
+
     while (position < totalPdfImageHeight) {
-      // Add a new page if this isn't the first page
       if (currentPage > 1) {
         pdf.addPage();
       }
-      // Calculate the height of the slice to add for this page
-      let sliceHeight = Math.min(
+
+      // Calculate the height of the slice for this page (in PDF mm)
+      let sliceHeight_mm = Math.min(
         pageInnerHeight,
         totalPdfImageHeight - position
       );
+      // Calculate the corresponding height in source canvas pixels
+      let sliceHeight_px =
+        (sliceHeight_mm / totalPdfImageHeight) * canvasHeight;
 
-      // Add the image slice
-      // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
-      // We need to use the version that allows specifying source coordinates (sx, sy, sw, sh)
-      // However, jsPDF's addImage doesn't directly support slicing from a single data URL easily.
-      // A workaround is to draw the slice onto a temporary canvas and add that.
+      // Ensure sliceHeight_px is not zero or negative
+      if (sliceHeight_px <= 0) {
+        console.warn(
+          "Calculated slice height in pixels is zero or negative. Breaking loop."
+        );
+        break;
+      }
 
       // --- Workaround: Draw slice to temp canvas ---
       const tempCanvas = document.createElement("canvas");
-      // Calculate source dimensions in canvas pixels
-      const sourceY = (position / totalPdfImageHeight) * canvasHeight;
-      const sourceHeight = (sliceHeight / totalPdfImageHeight) * canvasHeight;
       tempCanvas.width = canvasWidth;
-      tempCanvas.height = sourceHeight;
+      tempCanvas.height = sliceHeight_px; // Use calculated pixel height
       const tempCtx = tempCanvas.getContext("2d");
+
       // Draw the slice from the original canvas onto the temporary one
+      // Parameters: sourceImage, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight
       tempCtx.drawImage(
         canvas,
         0,
-        sourceY,
+        sourceY_px, // sx, sy (source top-left corner in pixels)
         canvasWidth,
-        sourceHeight,
+        sliceHeight_px, // sWidth, sHeight (source dimensions in pixels)
         0,
-        0,
+        0, // dx, dy (destination top-left corner)
         canvasWidth,
-        sourceHeight
+        sliceHeight_px // dWidth, dHeight (destination dimensions)
       );
       const sliceImgData = tempCanvas.toDataURL("image/jpeg", 0.95);
       // --- End Workaround ---
@@ -198,49 +258,50 @@ async function generatePDF() {
         margin,
         margin,
         contentWidth,
-        sliceHeight
+        sliceHeight_mm
       );
       console.log(
-        `Added page ${currentPage}, Slice Height: ${sliceHeight}mm, Position: ${position}mm`
+        `Added page ${currentPage}, Slice Height: ${sliceHeight_mm}mm, Source Y: ${sourceY_px}px`
       );
 
-      position += sliceHeight; // Move to the next position in the source image
+      // Update positions for the next iteration
+      position += sliceHeight_mm;
+      sourceY_px += sliceHeight_px;
       currentPage++;
     }
 
     // --- Add Uploaded Image Conditionally ---
     let finalYOnLastPage = margin + (totalPdfImageHeight % pageInnerHeight);
-    // If it perfectly filled the last page, the position is the bottom margin
-    if (finalYOnLastPage === margin && totalPdfImageHeight > 0) {
+    if (
+      totalPdfImageHeight % pageInnerHeight === 0 &&
+      totalPdfImageHeight > 0
+    ) {
+      // If it perfectly filled the last page
       finalYOnLastPage = pdfHeight - margin;
+    } else if (totalPdfImageHeight < pageInnerHeight) {
+      // If content is less than one page
+      finalYOnLastPage = margin + totalPdfImageHeight;
     }
     console.log(
       `Content ends at y=${finalYOnLastPage}mm on page ${pdf.internal.getNumberOfPages()}`
     );
 
-    if (imageDataUrl) {
-      console.log("Processing uploaded image...");
+    if (originalImageDataUrl) {
+      console.log("Processing uploaded image (Rotation aware)...");
       try {
-        const imgProps = pdf.getImageProperties(imageDataUrl);
+        // Rotate the image data based on orientation BEFORE getting properties
+        const rotatedImageDataUrl = await rotateImage(
+          originalImageDataUrl,
+          imageOrientation
+        );
+        console.log("Image rotated if necessary.");
+
+        const imgProps = pdf.getImageProperties(rotatedImageDataUrl); // Use rotated data
+        // Recalculate aspect ratio based on potentially rotated dimensions
         const imgAspectRatio = imgProps.width / imgProps.height;
 
-        // --- Rotation Heuristic ---
-        let imgPdfWidth = contentWidth; // Assume portrait initially fits width
+        let imgPdfWidth = contentWidth;
         let imgPdfHeight = imgPdfWidth / imgAspectRatio;
-        let isRotated = false;
-
-        // Basic check: If original width > height, it might be landscape
-        if (imgProps.width > imgProps.height) {
-          console.warn(
-            "Image dimensions suggest landscape. PDF output might appear rotated."
-          );
-          // If it's landscape, maybe scale based on height instead?
-          // This is just a guess, EXIF data is needed for accuracy.
-          // imgPdfHeight = pageInnerHeight * 0.5; // Example: Limit height
-          // imgPdfWidth = imgPdfHeight * imgAspectRatio;
-          isRotated = true; // Flag for potential rotation issue
-        }
-        // --- End Rotation Heuristic ---
 
         // Ensure scaled height doesn't exceed max possible height
         const maxImgHeight = pageInnerHeight;
@@ -254,35 +315,34 @@ async function generatePDF() {
           imgPdfHeight = imgPdfWidth / imgAspectRatio;
         }
 
-        // Calculate remaining space on the current last page
-        const remainingSpace = pdfHeight - finalYOnLastPage - margin; // Space below content to bottom margin
+        const remainingSpace = pdfHeight - finalYOnLastPage - margin;
         console.log(
           `Required image height: ${imgPdfHeight}mm, Remaining space: ${remainingSpace}mm`
         );
 
         let imageYPos = 0;
-        if (imgPdfHeight <= remainingSpace) {
-          // Fits on the current page
-          imageYPos = finalYOnLastPage + 5; // Add some padding
-          pdf.setPage(pdf.internal.getNumberOfPages()); // Ensure we're on the last page
+        let targetPage = pdf.internal.getNumberOfPages();
+
+        if (imgPdfHeight + 5 <= remainingSpace) {
+          // Add 5mm padding check
+          imageYPos = finalYOnLastPage + 5;
+          pdf.setPage(targetPage);
           console.log(
-            `Adding image to current page ${pdf.internal.getNumberOfPages()} at y=${imageYPos}`
+            `Adding image to current page ${targetPage} at y=${imageYPos}`
           );
         } else {
-          // Doesn't fit, add a new page
           pdf.addPage();
-          imageYPos = margin; // Place at top margin on new page
+          targetPage++;
+          imageYPos = margin;
           console.log(
-            `Adding image to new page ${pdf.internal.getNumberOfPages()} at y=${imageYPos}`
+            `Adding image to new page ${targetPage} at y=${imageYPos}`
           );
         }
 
-        // Center the image horizontally
         const imageXPos = margin + (contentWidth - imgPdfWidth) / 2;
 
-        // Add the image (rotation parameter is not standard in jsPDF addImage like this)
         pdf.addImage(
-          imageDataUrl,
+          rotatedImageDataUrl,
           imgProps.fileType,
           imageXPos,
           imageYPos,
@@ -291,7 +351,7 @@ async function generatePDF() {
         );
         console.log("Uploaded image added.");
       } catch (imgError) {
-        console.error("Error adding uploaded image:", imgError);
+        console.error("Error processing or adding uploaded image:", imgError);
         alert(
           "Could not add the uploaded image to the PDF. Please check console."
         );
