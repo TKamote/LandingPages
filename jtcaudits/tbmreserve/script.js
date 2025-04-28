@@ -63,8 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Helper function to rotate image based on EXIF orientation
 async function rotateImage(imageDataUrl, orientation) {
-  console.log(`rotateImage called with orientation: ${orientation}`);
-  // If orientation is 1 (normal) or undefined/invalid, return original immediately
+  console.log(`>>> rotateImage called with orientation: ${orientation} <<<`);
   if (!orientation || orientation === 1 || orientation < 1 || orientation > 8) {
     console.log("No rotation needed or invalid orientation.");
     return imageDataUrl;
@@ -78,6 +77,7 @@ async function rotateImage(imageDataUrl, orientation) {
       const ctx = canvas.getContext("2d");
       let width = img.width;
       let height = img.height;
+      let transformApplied = "None";
 
       // Set canvas dimensions based on orientation
       if (orientation >= 5 && orientation <= 8) {
@@ -96,35 +96,63 @@ async function rotateImage(imageDataUrl, orientation) {
       }
 
       // Apply transformations based on orientation
-      console.log(`Applying transform for orientation ${orientation}`);
+      console.log(`Applying transform for orientation ${orientation}...`);
+      ctx.save(); // Save context state before transform
       switch (orientation) {
         case 2:
           ctx.transform(-1, 0, 0, 1, width, 0);
-          break; // flip horizontal
+          transformApplied = "Flip H";
+          break;
         case 3:
           ctx.transform(-1, 0, 0, -1, width, height);
-          break; // rotate 180
+          transformApplied = "Rotate 180";
+          break;
         case 4:
           ctx.transform(1, 0, 0, -1, 0, height);
-          break; // flip vertical
+          transformApplied = "Flip V";
+          break;
         case 5:
           ctx.transform(0, 1, 1, 0, 0, 0);
-          break; // transpose
+          transformApplied = "Transpose";
+          break;
         case 6:
           ctx.transform(0, 1, -1, 0, height, 0);
-          break; // rotate 90 CW
+          transformApplied = "Rotate 90 CW";
+          break;
         case 7:
           ctx.transform(0, -1, -1, 0, height, width);
-          break; // transverse
+          transformApplied = "Transverse";
+          break;
         case 8:
+          console.log(`--- Applying Orientation 8 Transform ---`);
+          // Rotate 270 CW / 90 CCW
+          // Translate origin to corner, rotate, then draw image at new origin
+          // ctx.translate(0, width); // Move origin to bottom-left
+          // ctx.rotate(-Math.PI / 2); // Rotate -90 degrees (90 CCW)
+          // transformApplied = 'Rotate 270 CW (90 CCW) - Method A';
+          // Alternative using transform matrix:
           ctx.transform(0, -1, 1, 0, 0, width);
-          break; // rotate 270 CW (90 CCW)
-        // default case 1 handled by initial check
+          transformApplied = "Rotate 270 CW (90 CCW) - Method B (Matrix)";
+          console.log(`--- Transform for Orientation 8 applied ---`);
+          break;
       }
+      console.log(`Transform applied: ${transformApplied}`);
 
       // Draw the image onto the transformed canvas
-      ctx.drawImage(img, 0, 0);
-      console.log("Image drawn onto rotated canvas.");
+      try {
+        console.log(
+          `Drawing image at (0, 0) on canvas ${canvas.width}x${canvas.height}`
+        );
+        ctx.drawImage(img, 0, 0);
+        console.log("Image drawn onto rotated canvas.");
+      } catch (drawError) {
+        console.error("Error during ctx.drawImage:", drawError);
+        ctx.restore(); // Restore context if draw failed
+        reject(drawError);
+        return;
+      }
+      ctx.restore(); // Restore context state
+
       resolve(canvas.toDataURL("image/jpeg", 0.95)); // Return rotated image data URL
     };
     img.onerror = (err) => {
@@ -137,7 +165,7 @@ async function rotateImage(imageDataUrl, orientation) {
 
 async function generatePDF() {
   const downloadBtn = document.querySelector(".download-btn");
-  const formContainer = document.getElementById("form-container"); // Get container reference
+  const formContainer = document.getElementById("form-container");
 
   // --- Clone content BEFORE changing button ---
   const pdfContent = formContainer.cloneNode(true);
@@ -149,11 +177,11 @@ async function generatePDF() {
   downloadBtn.disabled = true;
   console.log("Button state changed to 'Generating...'");
 
-  // --- Prepare Content for PDF ---
+  // --- Prepare Content for PDF (using the clone) ---
   const noPdfElements = pdfContent.querySelectorAll(".no-pdf, .back-btn");
   noPdfElements.forEach((el) => el.remove());
 
-  const uploadedImageElement = document.querySelector("#image-preview img");
+  const uploadedImageElement = document.querySelector("#image-preview img"); // Get from original DOM for data
   const originalImageDataUrl = uploadedImageElement
     ? uploadedImageElement.dataset.dataUrl
     : null;
@@ -173,11 +201,11 @@ async function generatePDF() {
     .attendee-group .input-group label { margin-right: 4px; }
     .topic-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .topic-item span { flex-grow: 1; margin-right: 10px; }
-    input[type="radio"], input[type="checkbox"] { width: 10px; height: 10px; margin-left: 5px; }
+    input[type="radio"], input[type="checkbox"] { width: 10px; height: 10px; margin-left: 5px; vertical-align: middle; }
   `;
   document.head.appendChild(styleElement);
 
-  // Temporarily append for rendering
+  // Temporarily append clone for rendering
   pdfContent.style.position = "absolute";
   pdfContent.style.left = "-9999px";
   pdfContent.style.top = "0";
@@ -185,205 +213,205 @@ async function generatePDF() {
 
   console.log("Starting PDF generation process...");
 
-  try {
-    // --- Generate Canvas from Form Content ---
-    console.log("Starting html2canvas...");
-    const canvas = await html2canvas(pdfContent, {
-      scale: 2,
-      useCORS: true,
-      logging: true,
-      letterRendering: true,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: pdfContent.scrollWidth,
-      windowHeight: pdfContent.scrollHeight,
-    });
-    console.log("html2canvas finished.");
+  // --- Use setTimeout for explicit delay ---
+  setTimeout(async () => {
+    try {
+      // --- Generate Canvas from Form Content ---
+      console.log("Starting html2canvas after delay...");
+      const canvas = await html2canvas(pdfContent, {
+        scale: 2,
+        useCORS: true,
+        logging: true,
+        letterRendering: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: pdfContent.scrollWidth,
+        windowHeight: pdfContent.scrollHeight,
+      });
+      console.log("html2canvas finished.");
 
-    // --- Create PDF Document ---
-    const formImgData = canvas.toDataURL("image/jpeg", 0.95);
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
+      // --- Create PDF Document ---
+      const formImgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const margin = 15;
-    const contentWidth = pdfWidth - 2 * margin;
-    const pageInnerHeight = pdfHeight - 2 * margin;
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const margin = 15;
+      const contentWidth = pdfWidth - 2 * margin;
+      const pageInnerHeight = pdfHeight - 2 * margin;
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    const canvasAspectRatio = canvasWidth / canvasHeight;
-    const totalPdfImageHeight = contentWidth / canvasAspectRatio;
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const canvasAspectRatio = canvasWidth / canvasHeight;
+      const totalPdfImageHeight = contentWidth / canvasAspectRatio;
 
-    console.log(
-      `PDF Page: ${pdfWidth}x${pdfHeight}mm, Content Width: ${contentWidth}mm, Page Inner Height: ${pageInnerHeight}mm`
-    );
-    console.log(
-      `Canvas: ${canvasWidth}x${canvasHeight}px, Total PDF Image Height: ${totalPdfImageHeight}mm`
-    );
-
-    // --- Add Form Content Pages ---
-    let position = 0;
-    let sourceY_px = 0;
-    let currentPage = 1;
-
-    while (position < totalPdfImageHeight) {
-      if (currentPage > 1) {
-        pdf.addPage();
-      }
-      let sliceHeight_mm = Math.min(
-        pageInnerHeight,
-        totalPdfImageHeight - position
-      );
-      let sliceHeight_px =
-        (sliceHeight_mm / totalPdfImageHeight) * canvasHeight;
-
-      if (sliceHeight_px <= 0) {
-        console.warn("Slice height <= 0 px. Breaking loop.");
-        break;
-      }
-
-      const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = canvasWidth;
-      tempCanvas.height = sliceHeight_px;
-      const tempCtx = tempCanvas.getContext("2d");
-      tempCtx.drawImage(
-        canvas,
-        0,
-        sourceY_px,
-        canvasWidth,
-        sliceHeight_px,
-        0,
-        0,
-        canvasWidth,
-        sliceHeight_px
-      );
-      const sliceImgData = tempCanvas.toDataURL("image/jpeg", 0.95);
-
-      pdf.addImage(
-        sliceImgData,
-        "JPEG",
-        margin,
-        margin,
-        contentWidth,
-        sliceHeight_mm
+      console.log(
+        `PDF Page: ${pdfWidth}x${pdfHeight}mm, Content Width: ${contentWidth}mm, Page Inner Height: ${pageInnerHeight}mm`
       );
       console.log(
-        `Added page ${currentPage}, Slice Height: ${sliceHeight_mm}mm, Source Y: ${sourceY_px}px`
+        `Canvas: ${canvasWidth}x${canvasHeight}px, Total PDF Image Height: ${totalPdfImageHeight}mm`
       );
 
-      position += sliceHeight_mm;
-      sourceY_px += sliceHeight_px;
-      currentPage++;
-    }
+      // --- Add Form Content Pages ---
+      let position = 0;
+      let sourceY_px = 0;
+      let currentPage = 1;
 
-    // --- Add Uploaded Image Conditionally ---
-    let finalYOnLastPage = margin + (totalPdfImageHeight % pageInnerHeight);
-    if (
-      totalPdfImageHeight > 0 &&
-      totalPdfImageHeight % pageInnerHeight < 0.01
-    ) {
-      // Check if it perfectly filled (within tolerance)
-      finalYOnLastPage = pdfHeight - margin;
-    } else if (totalPdfImageHeight < pageInnerHeight) {
-      finalYOnLastPage = margin + totalPdfImageHeight;
-    }
-    console.log(
-      `Content ends at y=${finalYOnLastPage}mm on page ${pdf.internal.getNumberOfPages()}`
-    );
-
-    if (originalImageDataUrl) {
-      console.log("Processing uploaded image (Rotation aware)...");
-      try {
-        const rotatedImageDataUrl = await rotateImage(
-          originalImageDataUrl,
-          imageOrientation
-        );
-        console.log("Image rotation processing complete.");
-
-        const imgProps = pdf.getImageProperties(rotatedImageDataUrl);
-        const imgAspectRatio = imgProps.width / imgProps.height;
-
-        let imgPdfWidth = contentWidth;
-        let imgPdfHeight = imgPdfWidth / imgAspectRatio;
-
-        const maxImgHeight = pageInnerHeight;
-        if (imgPdfHeight > maxImgHeight) {
-          imgPdfHeight = maxImgHeight;
-          imgPdfWidth = imgPdfHeight * imgAspectRatio;
-        }
-        if (imgPdfWidth > contentWidth) {
-          imgPdfWidth = contentWidth;
-          imgPdfHeight = imgPdfWidth / imgAspectRatio;
-        }
-
-        const remainingSpace = pdfHeight - finalYOnLastPage - margin;
-        console.log(
-          `Required image height: ${imgPdfHeight}mm, Remaining space: ${remainingSpace}mm`
-        );
-
-        let imageYPos = 0;
-        let targetPage = pdf.internal.getNumberOfPages();
-
-        if (imgPdfHeight + 5 <= remainingSpace) {
-          imageYPos = finalYOnLastPage + 5;
-          pdf.setPage(targetPage);
-          console.log(
-            `Adding image to current page ${targetPage} at y=${imageYPos}`
-          );
-        } else {
+      while (position < totalPdfImageHeight) {
+        if (currentPage > 1) {
           pdf.addPage();
-          targetPage++;
-          imageYPos = margin;
-          console.log(
-            `Adding image to new page ${targetPage} at y=${imageYPos}`
-          );
+        }
+        let sliceHeight_mm = Math.min(
+          pageInnerHeight,
+          totalPdfImageHeight - position
+        );
+        let sliceHeight_px =
+          (sliceHeight_mm / totalPdfImageHeight) * canvasHeight;
+
+        if (sliceHeight_px <= 0) {
+          console.warn("Slice height <= 0 px. Breaking loop.");
+          break;
         }
 
-        const imageXPos = margin + (contentWidth - imgPdfWidth) / 2;
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = canvasWidth;
+        tempCanvas.height = sliceHeight_px;
+        const tempCtx = tempCanvas.getContext("2d");
+        tempCtx.drawImage(
+          canvas,
+          0,
+          sourceY_px,
+          canvasWidth,
+          sliceHeight_px,
+          0,
+          0,
+          canvasWidth,
+          sliceHeight_px
+        );
+        const sliceImgData = tempCanvas.toDataURL("image/jpeg", 0.95);
 
         pdf.addImage(
-          rotatedImageDataUrl,
-          imgProps.fileType,
-          imageXPos,
-          imageYPos,
-          imgPdfWidth,
-          imgPdfHeight
+          sliceImgData,
+          "JPEG",
+          margin,
+          margin,
+          contentWidth,
+          sliceHeight_mm
         );
-        console.log("Uploaded image added.");
-      } catch (imgError) {
-        console.error("Error processing or adding uploaded image:", imgError);
-        alert(
-          "Could not add the uploaded image to the PDF. Please check console."
+        console.log(
+          `Added page ${currentPage}, Slice Height: ${sliceHeight_mm}mm, Source Y: ${sourceY_px}px`
         );
-      }
-    } else {
-      console.log("No uploaded image found to add.");
-    }
 
-    // --- Save the PDF ---
-    console.log("Saving PDF...");
-    pdf.save(`TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`);
-    console.log("PDF Saved.");
-  } catch (error) {
-    console.error("PDF generation failed:", error);
-    alert("Failed to generate PDF. Please check the console for errors.");
-  } finally {
-    // --- Cleanup ---
-    console.log("Cleaning up...");
-    // Reset button state regardless of success/failure
-    downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-    downloadBtn.disabled = false;
-    if (document.head.contains(styleElement)) {
-      document.head.removeChild(styleElement);
+        position += sliceHeight_mm;
+        sourceY_px += sliceHeight_px;
+        currentPage++;
+      }
+
+      // --- Add Uploaded Image Conditionally ---
+      let finalYOnLastPage = margin + (totalPdfImageHeight % pageInnerHeight);
+      if (
+        totalPdfImageHeight > 0 &&
+        Math.abs(totalPdfImageHeight % pageInnerHeight) < 0.01
+      ) {
+        finalYOnLastPage = pdfHeight - margin;
+      } else if (totalPdfImageHeight < pageInnerHeight) {
+        finalYOnLastPage = margin + totalPdfImageHeight;
+      }
+      console.log(
+        `Content ends at y=${finalYOnLastPage}mm on page ${pdf.internal.getNumberOfPages()}`
+      );
+
+      if (originalImageDataUrl) {
+        console.log("Processing uploaded image (Rotation aware)...");
+        try {
+          const rotatedImageDataUrl = await rotateImage(
+            originalImageDataUrl,
+            imageOrientation
+          );
+          console.log("Image rotation processing complete.");
+
+          const imgProps = pdf.getImageProperties(rotatedImageDataUrl);
+          const imgAspectRatio = imgProps.width / imgProps.height;
+
+          let imgPdfWidth = contentWidth;
+          let imgPdfHeight = imgPdfWidth / imgAspectRatio;
+
+          const maxImgHeight = pageInnerHeight;
+          if (imgPdfHeight > maxImgHeight) {
+            imgPdfHeight = maxImgHeight;
+            imgPdfWidth = imgPdfHeight * imgAspectRatio;
+          }
+          if (imgPdfWidth > contentWidth) {
+            imgPdfWidth = contentWidth;
+            imgPdfHeight = imgPdfWidth / imgAspectRatio;
+          }
+
+          const remainingSpace = pdfHeight - finalYOnLastPage - margin;
+          console.log(
+            `Required image height: ${imgPdfHeight}mm, Remaining space: ${remainingSpace}mm`
+          );
+
+          let imageYPos = 0;
+          let targetPage = pdf.internal.getNumberOfPages();
+
+          if (imgPdfHeight + 5 <= remainingSpace) {
+            imageYPos = finalYOnLastPage + 5;
+            pdf.setPage(targetPage);
+            console.log(
+              `Adding image to current page ${targetPage} at y=${imageYPos}`
+            );
+          } else {
+            pdf.addPage();
+            targetPage++;
+            imageYPos = margin;
+            console.log(
+              `Adding image to new page ${targetPage} at y=${imageYPos}`
+            );
+          }
+
+          const imageXPos = margin + (contentWidth - imgPdfWidth) / 2;
+          pdf.addImage(
+            rotatedImageDataUrl,
+            imgProps.fileType,
+            imageXPos,
+            imageYPos,
+            imgPdfWidth,
+            imgPdfHeight
+          );
+          console.log("Uploaded image added.");
+        } catch (imgError) {
+          console.error("Error processing or adding uploaded image:", imgError);
+          alert(
+            "Could not add the uploaded image to the PDF. Please check console."
+          );
+        }
+      } else {
+        console.log("No uploaded image found to add.");
+      }
+
+      // --- Save the PDF ---
+      console.log("Saving PDF...");
+      pdf.save(`TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`);
+      console.log("PDF Saved.");
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      alert("Failed to generate PDF. Please check the console for errors.");
+    } finally {
+      // --- Cleanup ---
+      console.log("Cleaning up...");
+      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+      downloadBtn.disabled = false;
+      if (document.head.contains(styleElement)) {
+        document.head.removeChild(styleElement);
+      }
+      if (document.body.contains(pdfContent)) {
+        document.body.removeChild(pdfContent);
+      }
+      console.log("Cleanup complete.");
     }
-    if (document.body.contains(pdfContent)) {
-      document.body.removeChild(pdfContent);
-    }
-    console.log("Cleanup complete.");
-  }
+  }, 100); // 100ms delay before starting html2canvas
 }
