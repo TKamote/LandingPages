@@ -68,25 +68,18 @@ function generatePDF() {
     backButton.parentNode.removeChild(backButton);
   }
 
-  // Style attendees in a row
-  const attendeeGroups = pdfContent.querySelectorAll(".attendee-group");
-  attendeeGroups.forEach((group) => {
-    group.style.display = "flex";
-    group.style.flexDirection = "row";
-    group.style.alignItems = "center";
-    group.style.marginBottom = "5px";
+  // Convert the form content to HTML table
+  let tableHTML = "<table style='width: 100%; border-collapse: collapse;'>";
+
+  // Iterate through each form section
+  const formSections = pdfContent.querySelectorAll(".form-section");
+  formSections.forEach((section) => {
+    tableHTML += "<tr><td style='padding: 8px; border: 1px solid #ddd;'>";
+    tableHTML += section.innerHTML;
+    tableHTML += "</td></tr>";
   });
 
-  // Style input groups in attendee groups
-  const inputGroups = pdfContent.querySelectorAll(
-    ".attendee-group .input-group"
-  );
-  inputGroups.forEach((group) => {
-    group.style.display = "flex";
-    group.style.flexDirection = "row";
-    group.style.alignItems = "center";
-    group.style.marginRight = "10px";
-  });
+  tableHTML += "</table>";
 
   // Add PDF-specific styles
   const styleElement = document.createElement("style");
@@ -103,20 +96,14 @@ function generatePDF() {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
-    #form-container {
-      width: 210mm;
-      min-height: 297mm;
-      padding: 20mm;
-      margin: 0;
-      background: white;
-      box-sizing: border-box;
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
-    .form-section {
-      margin-bottom: 15pt;
-      padding: 10pt;
+    th, td {
       border: 1px solid #ddd;
-      page-break-inside: avoid;
-      page-break-after: always;
+      padding: 8px;
+      text-align: left;
     }
      .section-title {
       font-size: 8pt; /* Increased section title font size */
@@ -126,70 +113,23 @@ function generatePDF() {
       font-weight: bold;
       margin-bottom: 8pt;
     }
-    .input-group {
-      margin-bottom: 10pt;
-    }
-    .input-group label {
-      display: block;
-      margin-bottom: 5pt;
-    }
-    .form-input {
-      width: 100%;
-      padding: 8pt;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    .topic-group {
-      margin-bottom: 15pt;
-    }
-    .topic-item {
-      margin-bottom: 5pt;
-    }
-    .image-preview img {
-      max-width: 100%;
-      max-height: 200pt;
-    }
   `;
   document.head.appendChild(styleElement);
 
-  const opt = {
-    margin: 0,
-    filename: `TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2 /* Changed scale to 2 */,
-      useCORS: true,
-      width: 794,
-      windowWidth: 794,
-      scrollX: 0,
-      scrollY: 0,
-      logging: true,
-      letterRendering: true,
-      useCanvas: true,
-      // Add a timeout to wait for the image to load
-      timeout: 60000, // 60 seconds
-    },
-    jsPDF: {
-      unit: "mm",
-      format: "a4",
-      orientation: "portrait",
-    },
-  };
-
-  // Convert image to base64
-  let imgData = null;
-  const img = document.querySelector(".image-preview img");
-  if (img) {
-    const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    imgData = canvas.toDataURL("image/jpeg", 0.9);
-  }
-
   // Generate PDF
-  html2canvas(pdfContent, opt.html2canvas).then((canvas) => {
+  html2canvas(pdfContent, {
+    scale: 2,
+    useCORS: true,
+    width: 794,
+    windowWidth: 794,
+    scrollX: 0,
+    scrollY: 0,
+    logging: true,
+    letterRendering: true,
+    useCanvas: true,
+    // Add a timeout to wait for the image to load
+    timeout: 60000, // 60 seconds
+  }).then((canvas) => {
     const imgData = canvas.toDataURL("image/jpeg");
 
     const pdf = new jsPDF({
@@ -202,10 +142,7 @@ function generatePDF() {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    let position = 0;
-    const heightLeft = pdfHeight;
-
-    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
     downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
     downloadBtn.disabled = false;
