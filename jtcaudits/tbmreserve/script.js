@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Read EXIF data first
       EXIF.getData(file, function () {
         const orientation = EXIF.getTag(this, "Orientation");
-        console.log("Image Orientation:", orientation);
+        console.log("Image Orientation Read:", orientation); // Log orientation read
 
         const reader = new FileReader();
         reader.onload = function (readerEvent) {
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const objectURL = URL.createObjectURL(file);
           img.src = objectURL;
           img.dataset.dataUrl = readerEvent.target.result; // Store data URL
-          img.dataset.orientation = orientation || 1; // Store orientation (default to 1 if undefined)
+          img.dataset.orientation = orientation || 1; // Store orientation
 
           img.style.maxWidth = "100%";
           img.style.maxHeight = "200pt";
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
           preview.appendChild(timestamp);
         };
-        reader.readAsDataURL(file); // Read file content after getting EXIF
+        reader.readAsDataURL(file);
       });
     }
   });
@@ -63,9 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Helper function to rotate image based on EXIF orientation
 async function rotateImage(imageDataUrl, orientation) {
+  console.log(`rotateImage called with orientation: ${orientation}`);
+  // If orientation is 1 (normal) or undefined/invalid, return original immediately
+  if (!orientation || orientation === 1 || orientation < 1 || orientation > 8) {
+    console.log("No rotation needed or invalid orientation.");
+    return imageDataUrl;
+  }
+
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
+      console.log(`Original image dimensions: ${img.width}x${img.height}`);
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       let width = img.width;
@@ -76,12 +84,19 @@ async function rotateImage(imageDataUrl, orientation) {
         // Rotated 90 or 270 degrees
         canvas.width = height;
         canvas.height = width;
+        console.log(
+          `Canvas dimensions set for 90/270 rotation: ${canvas.width}x${canvas.height}`
+        );
       } else {
         canvas.width = width;
         canvas.height = height;
+        console.log(
+          `Canvas dimensions set for 0/180 rotation: ${canvas.width}x${canvas.height}`
+        );
       }
 
-      // Apply transformations
+      // Apply transformations based on orientation
+      console.log(`Applying transform for orientation ${orientation}`);
       switch (orientation) {
         case 2:
           ctx.transform(-1, 0, 0, 1, width, 0);
@@ -103,28 +118,36 @@ async function rotateImage(imageDataUrl, orientation) {
           break; // transverse
         case 8:
           ctx.transform(0, -1, 1, 0, 0, width);
-          break; // rotate 270 CW
-        default:
-          break; // case 1: no transformation
+          break; // rotate 270 CW (90 CCW)
+        // default case 1 handled by initial check
       }
 
       // Draw the image onto the transformed canvas
       ctx.drawImage(img, 0, 0);
+      console.log("Image drawn onto rotated canvas.");
       resolve(canvas.toDataURL("image/jpeg", 0.95)); // Return rotated image data URL
     };
-    img.onerror = (err) => reject(err);
+    img.onerror = (err) => {
+      console.error("Error loading image in rotateImage:", err);
+      reject(err);
+    };
     img.src = imageDataUrl;
   });
 }
 
 async function generatePDF() {
   const downloadBtn = document.querySelector(".download-btn");
+  const formContainer = document.getElementById("form-container"); // Get container reference
+
+  // --- Clone content BEFORE changing button ---
+  const pdfContent = formContainer.cloneNode(true);
+  console.log("Form content cloned.");
+
+  // Now change button state
   downloadBtn.innerHTML =
     '<i class="fas fa-spinner fa-spin"></i> Generating...';
   downloadBtn.disabled = true;
-
-  const formContainer = document.getElementById("form-container");
-  const pdfContent = formContainer.cloneNode(true);
+  console.log("Button state changed to 'Generating...'");
 
   // --- Prepare Content for PDF ---
   const noPdfElements = pdfContent.querySelectorAll(".no-pdf, .back-btn");
@@ -142,7 +165,7 @@ async function generatePDF() {
   const styleElement = document.createElement("style");
   styleElement.textContent = `
     body { font-family: Arial, sans-serif; font-size: 6pt; margin: 0; padding: 0; background-color: white; }
-    #form-container { width: 794px; padding: 20px; margin: 0; background: white; box-sizing: border-box; border: none; box-shadow: none; overflow: hidden; /* Prevent potential scrollbars during capture */ }
+    #form-container { width: 794px; padding: 20px; margin: 0; background: white; box-sizing: border-box; border: none; box-shadow: none; overflow: hidden; }
     .form-section { margin-bottom: 10pt; padding: 8pt; border: 1px solid #ddd; page-break-inside: avoid; }
     .section-title, .topic-header { font-size: 8pt; font-weight: bold; margin-bottom: 6pt; }
     .attendee-group { display: flex; flex-direction: row; align-items: center; margin-bottom: 4px; }
@@ -160,10 +183,11 @@ async function generatePDF() {
   pdfContent.style.top = "0";
   document.body.appendChild(pdfContent);
 
-  console.log("Starting PDF generation...");
+  console.log("Starting PDF generation process...");
 
   try {
     // --- Generate Canvas from Form Content ---
+    console.log("Starting html2canvas...");
     const canvas = await html2canvas(pdfContent, {
       scale: 2,
       useCORS: true,
@@ -172,9 +196,9 @@ async function generatePDF() {
       scrollX: 0,
       scrollY: 0,
       windowWidth: pdfContent.scrollWidth,
-      windowHeight: pdfContent.scrollHeight, // Capture full height
+      windowHeight: pdfContent.scrollHeight,
     });
-    console.log("Canvas created from form content.");
+    console.log("html2canvas finished.");
 
     // --- Create PDF Document ---
     const formImgData = canvas.toDataURL("image/jpeg", 0.95);
@@ -202,56 +226,44 @@ async function generatePDF() {
       `Canvas: ${canvasWidth}x${canvasHeight}px, Total PDF Image Height: ${totalPdfImageHeight}mm`
     );
 
-    // --- Add Form Content Pages (Corrected Pagination) ---
-    let position = 0; // Y position in PDF mm units for the top of the current slice
-    let sourceY_px = 0; // Y position in source canvas pixels
+    // --- Add Form Content Pages ---
+    let position = 0;
+    let sourceY_px = 0;
     let currentPage = 1;
 
     while (position < totalPdfImageHeight) {
       if (currentPage > 1) {
         pdf.addPage();
       }
-
-      // Calculate the height of the slice for this page (in PDF mm)
       let sliceHeight_mm = Math.min(
         pageInnerHeight,
         totalPdfImageHeight - position
       );
-      // Calculate the corresponding height in source canvas pixels
       let sliceHeight_px =
         (sliceHeight_mm / totalPdfImageHeight) * canvasHeight;
 
-      // Ensure sliceHeight_px is not zero or negative
       if (sliceHeight_px <= 0) {
-        console.warn(
-          "Calculated slice height in pixels is zero or negative. Breaking loop."
-        );
+        console.warn("Slice height <= 0 px. Breaking loop.");
         break;
       }
 
-      // --- Workaround: Draw slice to temp canvas ---
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = canvasWidth;
-      tempCanvas.height = sliceHeight_px; // Use calculated pixel height
+      tempCanvas.height = sliceHeight_px;
       const tempCtx = tempCanvas.getContext("2d");
-
-      // Draw the slice from the original canvas onto the temporary one
-      // Parameters: sourceImage, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight
       tempCtx.drawImage(
         canvas,
         0,
-        sourceY_px, // sx, sy (source top-left corner in pixels)
+        sourceY_px,
         canvasWidth,
-        sliceHeight_px, // sWidth, sHeight (source dimensions in pixels)
+        sliceHeight_px,
         0,
-        0, // dx, dy (destination top-left corner)
+        0,
         canvasWidth,
-        sliceHeight_px // dWidth, dHeight (destination dimensions)
+        sliceHeight_px
       );
       const sliceImgData = tempCanvas.toDataURL("image/jpeg", 0.95);
-      // --- End Workaround ---
 
-      // Add the slice image data to the PDF page
       pdf.addImage(
         sliceImgData,
         "JPEG",
@@ -264,7 +276,6 @@ async function generatePDF() {
         `Added page ${currentPage}, Slice Height: ${sliceHeight_mm}mm, Source Y: ${sourceY_px}px`
       );
 
-      // Update positions for the next iteration
       position += sliceHeight_mm;
       sourceY_px += sliceHeight_px;
       currentPage++;
@@ -273,13 +284,12 @@ async function generatePDF() {
     // --- Add Uploaded Image Conditionally ---
     let finalYOnLastPage = margin + (totalPdfImageHeight % pageInnerHeight);
     if (
-      totalPdfImageHeight % pageInnerHeight === 0 &&
-      totalPdfImageHeight > 0
+      totalPdfImageHeight > 0 &&
+      totalPdfImageHeight % pageInnerHeight < 0.01
     ) {
-      // If it perfectly filled the last page
+      // Check if it perfectly filled (within tolerance)
       finalYOnLastPage = pdfHeight - margin;
     } else if (totalPdfImageHeight < pageInnerHeight) {
-      // If content is less than one page
       finalYOnLastPage = margin + totalPdfImageHeight;
     }
     console.log(
@@ -289,27 +299,23 @@ async function generatePDF() {
     if (originalImageDataUrl) {
       console.log("Processing uploaded image (Rotation aware)...");
       try {
-        // Rotate the image data based on orientation BEFORE getting properties
         const rotatedImageDataUrl = await rotateImage(
           originalImageDataUrl,
           imageOrientation
         );
-        console.log("Image rotated if necessary.");
+        console.log("Image rotation processing complete.");
 
-        const imgProps = pdf.getImageProperties(rotatedImageDataUrl); // Use rotated data
-        // Recalculate aspect ratio based on potentially rotated dimensions
+        const imgProps = pdf.getImageProperties(rotatedImageDataUrl);
         const imgAspectRatio = imgProps.width / imgProps.height;
 
         let imgPdfWidth = contentWidth;
         let imgPdfHeight = imgPdfWidth / imgAspectRatio;
 
-        // Ensure scaled height doesn't exceed max possible height
         const maxImgHeight = pageInnerHeight;
         if (imgPdfHeight > maxImgHeight) {
           imgPdfHeight = maxImgHeight;
           imgPdfWidth = imgPdfHeight * imgAspectRatio;
         }
-        // Ensure scaled width doesn't exceed content width
         if (imgPdfWidth > contentWidth) {
           imgPdfWidth = contentWidth;
           imgPdfHeight = imgPdfWidth / imgAspectRatio;
@@ -324,7 +330,6 @@ async function generatePDF() {
         let targetPage = pdf.internal.getNumberOfPages();
 
         if (imgPdfHeight + 5 <= remainingSpace) {
-          // Add 5mm padding check
           imageYPos = finalYOnLastPage + 5;
           pdf.setPage(targetPage);
           console.log(
@@ -370,6 +375,7 @@ async function generatePDF() {
   } finally {
     // --- Cleanup ---
     console.log("Cleaning up...");
+    // Reset button state regardless of success/failure
     downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
     downloadBtn.disabled = false;
     if (document.head.contains(styleElement)) {
