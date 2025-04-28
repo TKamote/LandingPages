@@ -175,8 +175,8 @@ function generatePDF() {
   };
 
   // Convert image to base64
-  const img = document.querySelector(".image-preview img");
   let imgData = null;
+  const img = document.querySelector(".image-preview img");
   if (img) {
     const canvas = document.createElement("canvas");
     canvas.width = img.width;
@@ -193,16 +193,20 @@ function generatePDF() {
       .set(opt)
       .outputPdf()
       .then((pdf) => {
+        // Add the image to the PDF
         if (imgData) {
-          // Add the image to the PDF
-          pdf.addImage(
-            imgData,
-            "JPEG",
-            10,
-            10,
-            img.width / 10,
-            img.height / 10
-          );
+          try {
+            pdf.addImage(
+              imgData,
+              "JPEG",
+              10,
+              10,
+              img.width / 10,
+              img.height / 10
+            );
+          } catch (e) {
+            console.error("Error adding image to PDF:", e);
+          }
         }
         downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
         downloadBtn.disabled = false;
