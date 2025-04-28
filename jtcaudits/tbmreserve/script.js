@@ -65,60 +65,80 @@ function generatePDF() {
   // Add PDF-specific styles
   const styleElement = document.createElement("style");
   styleElement.textContent = `
+    @page {
+      size: A4;
+      margin: 0;
+    }
     body {
-      margin: 0 !important;
-      padding: 0 !important;
-      font-size: 8pt !important;
-      line-height: 1.1 !important;
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      margin: 0;
+      padding: 0;
     }
     #form-container {
-      max-width: 250mm !important;
-      margin: 0 auto !important;
-      padding: 15mm !important;
-      box-sizing: border-box !important;
+      width: 210mm;
+      min-height: 297mm;
+      padding: 20mm;
+      margin: 0;
+      background: white;
+      box-sizing: border-box;
     }
     .form-section {
-      margin-bottom: 10pt !important;
-      padding: 10pt !important;
+      margin-bottom: 15pt;
+      padding: 10pt;
+      border: 1px solid #ddd;
     }
     .input-group {
-      margin-bottom: 5pt !important;
+      margin-bottom: 10pt;
     }
-    .topic-group {
-      margin-bottom: 8pt !important;
-    }
-    .topic-item {
-      font-size: 8pt !important;
-      line-height: 1.1 !important;
-    }
-    .topic-header {
-      font-weight: bold !important;
-      margin-bottom: 5pt !important;
+    .input-group label {
+      display: block;
+      margin-bottom: 5pt;
     }
     .form-input {
-      border: 1px solid #ccc !important;
-      padding: 2pt !important;
+      width: 100%;
+      padding: 8pt;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .topic-group {
+      margin-bottom: 15pt;
+    }
+    .topic-header {
+      font-weight: bold;
+      margin-bottom: 8pt;
+    }
+    .topic-item {
+      margin-bottom: 5pt;
+    }
+    .signature-container {
+      margin-top: 15pt;
     }
     .signature-field {
-      height: 60pt !important;
-      border: 1px dashed #ccc !important;
+      height: 80pt;
+      border: 1px dashed #ccc;
+    }
+    .image-preview img {
+      max-width: 100%;
+      max-height: 200pt;
     }
   `;
   document.head.appendChild(styleElement);
 
-  // Generate PDF options
   const opt = {
-    margin: [15, 15, 15, 15],
+    margin: 0,
     filename: `TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 1.5,
+      scale: 2,
       useCORS: true,
-      width: 794, // A4 width in pixels at 96 DPI
+      width: 794,
       windowWidth: 794,
       scrollX: 0,
       scrollY: 0,
-      logging: true, // Helps debug rendering issues
+      logging: true,
+      letterRendering: true,
+      useCanvas: true,
     },
     jsPDF: {
       unit: "mm",
@@ -127,7 +147,6 @@ function generatePDF() {
     },
   };
 
-  // Generate PDF
   html2pdf()
     .from(pdfContent)
     .set(opt)
@@ -135,13 +154,13 @@ function generatePDF() {
     .then(() => {
       downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
       downloadBtn.disabled = false;
-      document.head.removeChild(styleElement); // Clean up styles
+      document.head.removeChild(styleElement);
     })
     .catch((err) => {
       console.error("PDF generation failed:", err);
       downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
       downloadBtn.disabled = false;
-      document.head.removeChild(styleElement); // Clean up styles
+      document.head.removeChild(styleElement);
       alert("Failed to generate PDF. Please try again.");
     });
 }
