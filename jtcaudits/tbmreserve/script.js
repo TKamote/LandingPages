@@ -97,7 +97,7 @@ function generatePDF() {
     }
     body {
       font-family: Arial, sans-serif;
-      font-size: 10pt;
+      font-size: 8pt; /* Changed font size to 8pt */
       margin: 0;
       padding: 0;
     }
@@ -158,6 +158,8 @@ function generatePDF() {
       logging: true,
       letterRendering: true,
       useCanvas: true,
+      // Add a timeout to wait for the image to load
+      timeout: 60000, // 60 seconds
     },
     jsPDF: {
       unit: "mm",
