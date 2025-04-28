@@ -105,7 +105,7 @@ function generatePDF() {
     }
     body {
       font-family: Arial, sans-serif;
-      font-size: 7pt; /* Changed font size to 7pt */
+      font-size: 6pt; /* Changed font size to 6pt */
       margin: 0;
       padding: 0;
     }
@@ -123,10 +123,10 @@ function generatePDF() {
       border: 1px solid #ddd;
     }
      .section-title {
-      font-size: 9pt; /* Increased section title font size */
+      font-size: 8pt; /* Increased section title font size */
     }
     .topic-header {
-      font-size: 9pt; /* Increased topic header font size */
+      font-size: 8pt; /* Increased topic header font size */
       font-weight: bold;
       margin-bottom: 8pt;
     }
@@ -161,7 +161,7 @@ function generatePDF() {
     filename: `TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 1.8 /* Changed scale to 1.8 */,
+      scale: 2 /* Changed scale to 2 */,
       useCORS: true,
       width: 794,
       windowWidth: 794,
@@ -170,6 +170,8 @@ function generatePDF() {
       logging: true,
       letterRendering: true,
       useCanvas: true,
+      // Add a timeout to wait for the image to load
+      timeout: 60000, // 60 seconds
     },
     jsPDF: {
       unit: "mm",
@@ -180,21 +182,33 @@ function generatePDF() {
 
   // Add a delay before generating the PDF to allow the image to load
   setTimeout(() => {
-    html2pdf()
-      .from(pdfContent)
-      .set(opt)
-      .save()
-      .then(() => {
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-        downloadBtn.disabled = false;
-        document.head.removeChild(styleElement);
-      })
-      .catch((err) => {
-        console.error("PDF generation failed:", err);
-        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-        downloadBtn.disabled = false;
-        document.head.removeChild(styleElement);
-        alert("Failed to generate PDF. Please try again.");
-      });
-  }, 1000); // Delay of 1 second
+    // Check if the image is loaded
+    const img = document.querySelector(".image-preview img");
+    if (img && img.complete) {
+      html2pdf()
+        .from(pdfContent)
+        .set(opt)
+        .save()
+        .then(() => {
+          downloadBtn.innerHTML =
+            '<i class="fas fa-download"></i> Download PDF';
+          downloadBtn.disabled = false;
+          document.head.removeChild(styleElement);
+        })
+        .catch((err) => {
+          console.error("PDF generation failed:", err);
+          downloadBtn.innerHTML =
+            '<i class="fas fa-download"></i> Download PDF';
+          downloadBtn.disabled = false;
+          document.head.removeChild(styleElement);
+          alert("Failed to generate PDF. Please try again.");
+        });
+    } else {
+      console.log("Image not loaded yet, retrying...");
+      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+      downloadBtn.disabled = false;
+      document.head.removeChild(styleElement);
+      alert("Failed to generate PDF. Please try again.");
+    }
+  }, 3000); // Delay of 3 seconds
 }
