@@ -24,10 +24,19 @@ document.addEventListener("DOMContentLoaded", function () {
       const reader = new FileReader();
       reader.onload = function (readerEvent) {
         const img = document.createElement("img");
-        img.src = readerEvent.target.result;
+        // Use an object URL for preview to avoid long data URLs in the DOM initially
+        const objectURL = URL.createObjectURL(file);
+        img.src = objectURL;
+        // Store the file itself for later conversion if needed, or read data URL here
+        img.dataset.file = file; // Keep track of the file if needed
+        img.dataset.dataUrl = readerEvent.target.result; // Store data URL directly
+
         img.style.maxWidth = "100%";
         img.style.maxHeight = "200pt";
-        img.setAttribute("data-pdf-src", readerEvent.target.result); // Store data URL for PDF use
+        // Optional: Revoke object URL when image is loaded to free memory
+        img.onload = () => {
+          URL.revokeObjectURL(objectURL);
+        };
         preview.appendChild(img);
 
         const timestamp = document.createElement("div");
@@ -44,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         preview.appendChild(timestamp);
       };
+      // Read the file as Data URL for PDF embedding
       reader.readAsDataURL(file);
     }
   });
@@ -59,28 +69,31 @@ async function generatePDF() {
   const pdfContent = formContainer.cloneNode(true);
 
   // --- Prepare Content for PDF ---
-  // Remove elements not needed in PDF (including the original image upload section)
   const noPdfElements = pdfContent.querySelectorAll(".no-pdf, .back-btn");
   noPdfElements.forEach((el) => el.remove());
 
-  // Get image data URL if image was uploaded
   const uploadedImageElement = document.querySelector("#image-preview img");
   const imageDataUrl = uploadedImageElement
-    ? uploadedImageElement.getAttribute("data-pdf-src")
-    : null;
+    ? uploadedImageElement.dataset.dataUrl
+    : null; // Get stored Data URL
 
   // --- Add PDF-specific Styles ---
   const styleElement = document.createElement("style");
+  // Styles remain largely the same as before
   styleElement.textContent = `
     body { font-family: Arial, sans-serif; font-size: 6pt; margin: 0; padding: 0; background-color: white; }
     #form-container { width: 794px; padding: 20px; margin: 0; background: white; box-sizing: border-box; border: none; box-shadow: none; }
-    .form-section { margin-bottom: 10pt; padding: 8pt; border: 1px solid #ddd; page-break-inside: avoid; } /* Reduced margins/padding slightly */
+    .form-section { margin-bottom: 10pt; padding: 8pt; border: 1px solid #ddd; page-break-inside: avoid; }
     .section-title, .topic-header { font-size: 8pt; font-weight: bold; margin-bottom: 6pt; }
     .attendee-group { display: flex; flex-direction: row; align-items: center; margin-bottom: 4px; }
     .attendee-group .input-group { display: flex; flex-direction: row; align-items: center; margin-right: 8px; margin-bottom: 0; }
     .attendee-group .input-group label { margin-right: 4px; }
     .topic-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .topic-item span { flex-grow: 1; margin-right: 10px; }
+    /* Ensure radio buttons/checkboxes render state if possible (often tricky with html2canvas) */
+    input[type="radio"], input[type="checkbox"] { /* Basic appearance */
+        width: 10px; height: 10px; margin-left: 5px;
+    }
     /* Add any other necessary styles */
   `;
   document.head.appendChild(styleElement);
@@ -94,7 +107,7 @@ async function generatePDF() {
   console.log("Starting PDF generation...");
 
   try {
-    // --- Generate Canvas from Form Content (excluding image section) ---
+    // --- Generate Canvas from Form Content ---
     const canvas = await html2canvas(pdfContent, {
       scale: 2,
       useCORS: true,
@@ -119,79 +132,160 @@ async function generatePDF() {
     const pdfHeight = pdf.internal.pageSize.getHeight();
     const margin = 15; // Page margin in mm
     const contentWidth = pdfWidth - 2 * margin;
-    // const contentHeight = pdfHeight - 2 * margin; // Not directly used for image height calculation
+    const pageInnerHeight = pdfHeight - 2 * margin; // Usable height per page
 
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
     const canvasAspectRatio = canvasWidth / canvasHeight;
 
-    // Calculate image dimensions to fit content width
-    const imgWidth = contentWidth;
-    const imgHeight = imgWidth / canvasAspectRatio;
-
-    let position = 0;
-    let heightLeft = imgHeight;
+    // Calculate total height the canvas image will take in the PDF
+    const totalPdfImageHeight = contentWidth / canvasAspectRatio;
 
     console.log(
-      `PDF Page: ${pdfWidth}x${pdfHeight}mm, Content Width: ${contentWidth}mm`
+      `PDF Page: ${pdfWidth}x${pdfHeight}mm, Content Width: ${contentWidth}mm, Page Inner Height: ${pageInnerHeight}mm`
     );
     console.log(
-      `Canvas: ${canvasWidth}x${canvasHeight}px, Calculated PDF Image Height: ${imgHeight}mm`
+      `Canvas: ${canvasWidth}x${canvasHeight}px, Total PDF Image Height: ${totalPdfImageHeight}mm`
     );
 
-    // --- Add Form Content Pages ---
-    pdf.addImage(
-      formImgData,
-      "JPEG",
-      margin,
-      margin + position,
-      imgWidth,
-      imgHeight
-    );
-    heightLeft -= pdfHeight - 2 * margin; // Subtract usable page height
-    console.log(`Added first page. Height left: ${heightLeft}mm`);
+    // --- Add Form Content Pages (Corrected Pagination) ---
+    let position = 0; // This is the Y position *within the source canvas image*
+    let currentPage = 1;
+    while (position < totalPdfImageHeight) {
+      // Add a new page if this isn't the first page
+      if (currentPage > 1) {
+        pdf.addPage();
+      }
+      // Calculate the height of the slice to add for this page
+      let sliceHeight = Math.min(
+        pageInnerHeight,
+        totalPdfImageHeight - position
+      );
 
-    while (heightLeft > 0) {
-      position -= pdfHeight - 2 * margin; // Move the slice window up
-      pdf.addPage();
+      // Add the image slice
+      // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+      // We need to use the version that allows specifying source coordinates (sx, sy, sw, sh)
+      // However, jsPDF's addImage doesn't directly support slicing from a single data URL easily.
+      // A workaround is to draw the slice onto a temporary canvas and add that.
+
+      // --- Workaround: Draw slice to temp canvas ---
+      const tempCanvas = document.createElement("canvas");
+      // Calculate source dimensions in canvas pixels
+      const sourceY = (position / totalPdfImageHeight) * canvasHeight;
+      const sourceHeight = (sliceHeight / totalPdfImageHeight) * canvasHeight;
+      tempCanvas.width = canvasWidth;
+      tempCanvas.height = sourceHeight;
+      const tempCtx = tempCanvas.getContext("2d");
+      // Draw the slice from the original canvas onto the temporary one
+      tempCtx.drawImage(
+        canvas,
+        0,
+        sourceY,
+        canvasWidth,
+        sourceHeight,
+        0,
+        0,
+        canvasWidth,
+        sourceHeight
+      );
+      const sliceImgData = tempCanvas.toDataURL("image/jpeg", 0.95);
+      // --- End Workaround ---
+
+      // Add the slice image data to the PDF page
       pdf.addImage(
-        formImgData,
+        sliceImgData,
         "JPEG",
         margin,
-        margin + position,
-        imgWidth,
-        imgHeight
+        margin,
+        contentWidth,
+        sliceHeight
       );
-      heightLeft -= pdfHeight - 2 * margin;
-      console.log(`Added new page. Height left: ${heightLeft}mm`);
+      console.log(
+        `Added page ${currentPage}, Slice Height: ${sliceHeight}mm, Position: ${position}mm`
+      );
+
+      position += sliceHeight; // Move to the next position in the source image
+      currentPage++;
     }
 
-    // --- Add Uploaded Image (if exists) on a new page ---
+    // --- Add Uploaded Image Conditionally ---
+    let finalYOnLastPage = margin + (totalPdfImageHeight % pageInnerHeight);
+    // If it perfectly filled the last page, the position is the bottom margin
+    if (finalYOnLastPage === margin && totalPdfImageHeight > 0) {
+      finalYOnLastPage = pdfHeight - margin;
+    }
+    console.log(
+      `Content ends at y=${finalYOnLastPage}mm on page ${pdf.internal.getNumberOfPages()}`
+    );
+
     if (imageDataUrl) {
-      console.log("Adding uploaded image to PDF...");
+      console.log("Processing uploaded image...");
       try {
         const imgProps = pdf.getImageProperties(imageDataUrl);
         const imgAspectRatio = imgProps.width / imgProps.height;
-        let imgPdfWidth = contentWidth;
-        let imgPdfHeight = imgPdfWidth / imgAspectRatio;
 
-        // Check if height exceeds available space, if so, scale by height
-        const maxImgHeight = pdfHeight - 2 * margin;
+        // --- Rotation Heuristic ---
+        let imgPdfWidth = contentWidth; // Assume portrait initially fits width
+        let imgPdfHeight = imgPdfWidth / imgAspectRatio;
+        let isRotated = false;
+
+        // Basic check: If original width > height, it might be landscape
+        if (imgProps.width > imgProps.height) {
+          console.warn(
+            "Image dimensions suggest landscape. PDF output might appear rotated."
+          );
+          // If it's landscape, maybe scale based on height instead?
+          // This is just a guess, EXIF data is needed for accuracy.
+          // imgPdfHeight = pageInnerHeight * 0.5; // Example: Limit height
+          // imgPdfWidth = imgPdfHeight * imgAspectRatio;
+          isRotated = true; // Flag for potential rotation issue
+        }
+        // --- End Rotation Heuristic ---
+
+        // Ensure scaled height doesn't exceed max possible height
+        const maxImgHeight = pageInnerHeight;
         if (imgPdfHeight > maxImgHeight) {
           imgPdfHeight = maxImgHeight;
           imgPdfWidth = imgPdfHeight * imgAspectRatio;
         }
+        // Ensure scaled width doesn't exceed content width
+        if (imgPdfWidth > contentWidth) {
+          imgPdfWidth = contentWidth;
+          imgPdfHeight = imgPdfWidth / imgAspectRatio;
+        }
 
-        // Center the image
-        const xPos = margin + (contentWidth - imgPdfWidth) / 2;
-        const yPos = margin; // Place at top margin
+        // Calculate remaining space on the current last page
+        const remainingSpace = pdfHeight - finalYOnLastPage - margin; // Space below content to bottom margin
+        console.log(
+          `Required image height: ${imgPdfHeight}mm, Remaining space: ${remainingSpace}mm`
+        );
 
-        pdf.addPage();
+        let imageYPos = 0;
+        if (imgPdfHeight <= remainingSpace) {
+          // Fits on the current page
+          imageYPos = finalYOnLastPage + 5; // Add some padding
+          pdf.setPage(pdf.internal.getNumberOfPages()); // Ensure we're on the last page
+          console.log(
+            `Adding image to current page ${pdf.internal.getNumberOfPages()} at y=${imageYPos}`
+          );
+        } else {
+          // Doesn't fit, add a new page
+          pdf.addPage();
+          imageYPos = margin; // Place at top margin on new page
+          console.log(
+            `Adding image to new page ${pdf.internal.getNumberOfPages()} at y=${imageYPos}`
+          );
+        }
+
+        // Center the image horizontally
+        const imageXPos = margin + (contentWidth - imgPdfWidth) / 2;
+
+        // Add the image (rotation parameter is not standard in jsPDF addImage like this)
         pdf.addImage(
           imageDataUrl,
           imgProps.fileType,
-          xPos,
-          yPos,
+          imageXPos,
+          imageYPos,
           imgPdfWidth,
           imgPdfHeight
         );
