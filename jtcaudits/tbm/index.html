@@ -3,14 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TBM Form</title>
+    <title>Reserve TBM Form</title>
     <link rel="stylesheet" href="style.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
-    <!-- Add the html2pdf library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Add EXIF-JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+    <!-- Add jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Add html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
       /* Add additional styling for better form appearance */
     </style>
@@ -26,13 +30,7 @@
       <div class="form-section-date">
         <div class="input-group-date">
           <label for="date">Date:</label>
-          <input
-            type="datetime-local"
-            id="date"
-            name="date"
-            class="form-input"
-            pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}"
-          />
+          <input type="date" id="date" name="date" class="form-input" />
         </div>
       </div>
 
@@ -57,10 +55,6 @@
             class="form-input"
           />
         </div>
-        <div class="signature-container">
-          <label for="signature">Signature:</label>
-          <div class="signature-field" id="signature"></div>
-        </div>
       </div>
 
       <!-- Attendees Section -->
@@ -69,7 +63,7 @@
 
         <!-- Attendee 1 -->
         <div class="attendee-group">
-          <div class="input-group attendee">
+          <div class="input-group">
             <label>S/N:</label>
             <input
               type="text"
@@ -89,21 +83,11 @@
               class="form-input"
             />
           </div>
-          <div class="input-group">
-            <label for="attendee-id-1">WP/SP/IC:</label>
-            <input
-              type="text"
-              id="attendee-id-1"
-              name="attendee-id[]"
-              class="form-input"
-              placeholder="****123A"
-            />
-          </div>
         </div>
 
         <!-- Attendee 2 -->
         <div class="attendee-group">
-          <div class="input-group attendee">
+          <div class="input-group">
             <label>S/N:</label>
             <input
               type="text"
@@ -123,20 +107,10 @@
               class="form-input"
             />
           </div>
-          <div class="input-group">
-            <label for="attendee-id-2">WP/SP/IC:</label>
-            <input
-              type="text"
-              id="attendee-id-2"
-              name="attendee-id[]"
-              class="form-input"
-              placeholder="****123A"
-            />
-          </div>
         </div>
         <!-- Attendee 3 -->
         <div class="attendee-group">
-          <div class="input-group attendee">
+          <div class="input-group">
             <label>S/N:</label>
             <input
               type="text"
@@ -156,16 +130,6 @@
               class="form-input"
             />
           </div>
-          <div class="input-group">
-            <label for="attendee-id-3">WP/SP/IC:</label>
-            <input
-              type="text"
-              id="attendee-id-3"
-              name="attendee-id[]"
-              class="form-input"
-              placeholder="****123A"
-            />
-          </div>
         </div>
       </div>
 
@@ -179,15 +143,15 @@
           <div class="topic-items">
             <div class="topic-item">
               <span>Clean up spills immediately.</span>
-              <input type="radio" name="stf1" />
+              <input type="checkbox" name="stf1" />
             </div>
             <div class="topic-item">
               <span>Use warning signs for wet floors.</span>
-              <input type="radio" name="stf2" />
+              <input type="checkbox" name="stf2" />
             </div>
             <div class="topic-item">
               <span>Keep walkways clear of clutters.</span>
-              <input type="radio" name="stf3" />
+              <input type="checkbox" name="stf3" />
             </div>
           </div>
         </div>
@@ -198,22 +162,22 @@
           <div class="topic-items">
             <div class="topic-item">
               <span>Wear N95 mask for dusty works.</span>
-              <input type="radio" name="ppe1" />
+              <input type="checkbox" name="ppe1" />
             </div>
             <div class="topic-item">
               <span
                 >Wear anticut gloves for works that has rough surface and / or
                 with sharp edges.</span
               >
-              <input type="radio" name="ppe2" />
+              <input type="checkbox" name="ppe2" />
             </div>
             <div class="topic-item">
               <span>Wear safety shoes.</span>
-              <input type="radio" name="ppe3" />
+              <input type="checkbox" name="ppe3" />
             </div>
             <div class="topic-item">
               <span>Wear any other PPE as per RA of specific work.</span>
-              <input type="radio" name="ppe4" />
+              <input type="checkbox" name="ppe4" />
             </div>
           </div>
         </div>
@@ -226,25 +190,25 @@
               <span
                 >Check that extension cords have no damage before using.</span
               >
-              <input type="radio" name="elec1" />
+              <input type="checkbox" name="elec1" />
             </div>
             <div class="topic-item">
               <span
                 >Avoid overloading electrical outlets by using hi jet or
                 pressure washer on ordinary power points (13A).</span
               >
-              <input type="radio" name="elec2" />
+              <input type="checkbox" name="elec2" />
             </div>
             <div class="topic-item">
               <span
                 >Use ELCB when plugging drills, power tools to power points
                 etc...</span
               >
-              <input type="radio" name="elec3" />
+              <input type="checkbox" name="elec3" />
             </div>
             <div class="topic-item">
               <span>Keep electrical equipment away from water.</span>
-              <input type="radio" name="elec4" />
+              <input type="checkbox" name="elec4" />
             </div>
           </div>
         </div>
@@ -259,11 +223,11 @@
                 Special attention to spaces not available to most building
                 users.</span
               >
-              <input type="radio" name="fire1" />
+              <input type="checkbox" name="fire1" />
             </div>
             <div class="topic-item">
               <span>Keep flammable materials away from heat sources.</span>
-              <input type="radio" name="fire2" />
+              <input type="checkbox" name="fire2" />
             </div>
             <div class="topic-item">
               <span
@@ -271,7 +235,7 @@
                 on standby, on 2nd alarm evacuate or as your pre-defined
                 role.</span
               >
-              <input type="radio" name="fire3" />
+              <input type="checkbox" name="fire3" />
             </div>
           </div>
         </div>
@@ -286,46 +250,45 @@
                 they applied ePTW. If no ePTW, ask to stop and feedback to
                 supervisor.</span
               >
-              <input type="radio" name="wah1" />
+              <input type="checkbox" name="wah1" />
             </div>
             <div class="topic-item">
               <span
                 >Ensure ladders are securely positioned before going up.</span
               >
-              <input type="radio" name="wah2" />
+              <input type="checkbox" name="wah2" />
             </div>
             <div class="topic-item">
               <span>Maintain three points contact on ladders.</span>
-              <input type="radio" name="wah3" />
+              <input type="checkbox" name="wah3" />
             </div>
             <div class="topic-item">
               <span
                 >Ensure to use ladders that are EN 131 standard compliance. Look
                 for the sticker at the ladder to confirm.</span
               >
-              <input type="radio" name="wah4" />
+              <input type="checkbox" name="wah4" />
             </div>
           </div>
         </div>
 
-        <!-- Machine Safety -->
+        <!-- Machinery Safety -->
         <div class="topic-group">
           <div class="topic-header">Machinery Safety</div>
           <div class="topic-items">
             <div class="topic-item">
               <span>Follow lockout/tagout procedure during maintenance.</span>
-              <input type="radio" name="machine1" />
+              <input type="checkbox" name="machine1" />
             </div>
             <div class="topic-item">
               <span
                 >Wear personal protective equipment (PPE) specific to the
                 machine.</span
               >
-              <input type="radio" name="machine2" />
+              <input type="checkbox" name="machine2" />
             </div>
           </div>
         </div>
-
         <!-- Mental Well-being -->
         <div class="topic-group">
           <div class="topic-header">Mental Well-being</div>
@@ -334,22 +297,22 @@
               <span
                 >Take regular breaks to reduce stress and stay refreshed.</span
               >
-              <input type="radio" name="mental1" />
+              <input type="checkbox" name="mental1" />
             </div>
             <div class="topic-item">
               <span>Stay hydrated throughout the day.</span>
-              <input type="radio" name="mental2" />
+              <input type="checkbox" name="mental2" />
             </div>
             <div class="topic-item">
               <span
                 >If you're feeling overwhelmed or struggling, don’t hesitate to
                 talk to your supervisor or someone you trust.</span
               >
-              <input type="radio" name="mental3" />
+              <input type="checkbox" name="mental3" />
             </div>
             <div class="topic-item">
               <span>If you're feeling unwell see a doctor.</span>
-              <input type="radio" name="mental4" />
+              <input type="checkbox" name="mental4" />
             </div>
           </div>
         </div>
@@ -377,6 +340,7 @@
         <i class="fas fa-download"></i> Download PDF
       </button>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>

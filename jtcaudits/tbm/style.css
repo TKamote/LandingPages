@@ -1,8 +1,10 @@
+/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -10,47 +12,62 @@ body {
   background-color: #f5f5f5;
 }
 
+/* Main container and header */
 #form-container {
-  max-width: 1280px;
-  /* change from 800px */
+  max-width: 800px;
   margin: 0 auto;
   background: white;
-  padding: 20px;
+  padding: 10px; /* Reduced padding to 10px */
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h3 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-  font-size: 1.25rem;
-}
-
+/* Back button styling */
 .back-btn {
   display: inline-flex;
   align-items: center;
   margin-bottom: 15px;
-  color: #fff;
+  color: white; /* Changed color to white */
   text-decoration: none;
   font-size: 14px;
-  background-color: #003e51;
   padding: 5px 10px;
-  font-weight: bold;
-  border-radius: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #e0c6ad;
+  font-weight: 900;
+}
+
+.back-btn:hover {
+  background-color: #eee;
 }
 
 .back-btn i {
   margin-right: 5px;
 }
 
+h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Form sections common styles */
 .form-section {
   margin-bottom: 20px;
   border: 1px solid #ddd;
-  padding: 15px;
+  padding: 10px; /* Reduced padding to 10px */
   border-radius: 5px;
 }
 
+.section-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+/* Date section */
 .form-section-date {
   display: flex;
   justify-content: flex-start;
@@ -62,19 +79,13 @@ h3 {
   display: flex;
   align-items: center;
 }
+
 .input-group-date label {
-  font-weight: bold;
-  margin-right: 8px;
-}
-.section-title {
-  font-weight: bold;
-  margin-bottom: 10px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #eee;
-  color: #333;
-  font-size: larger;
+  margin-right: 10px; /* Added margin-right */
+  font-weight: 800; /* Added font-weight */
 }
 
+/* Input groups */
 .input-group {
   margin-bottom: 10px;
   display: flex;
@@ -83,7 +94,7 @@ h3 {
 
 .input-group label {
   min-width: 100px;
-  font-weight: bold;
+  font-weight: 800; /* Changed font-weight */
 }
 
 .form-input {
@@ -93,6 +104,7 @@ h3 {
   border-radius: 4px;
 }
 
+/* Attendees section */
 .attendee-group {
   display: flex;
   flex-direction: column;
@@ -104,13 +116,13 @@ h3 {
   margin-bottom: 0;
 }
 
+/* Topics section */
 .topic-group {
   margin-bottom: 15px;
 }
 
 .topic-header {
   font-weight: bold;
-  font-size: large;
   padding: 5px 0;
   margin-bottom: 5px;
   border-bottom: 1px solid #eee;
@@ -133,46 +145,75 @@ h3 {
   justify-content: space-between;
   align-items: center;
   padding: 3px 0;
-  margin-right: 10px;
+  margin-right: 12px;
 }
 
-/* Image Upload Styling */
-.image-preview {
-  width: 100%;
-  max-height: 300px;
-  border: 1px dashed #ccc;
+.topic-item span {
+  flex: 1;
+}
+
+/* Image upload section */
+.image-upload-container {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-btn {
+  width: 50%;
+  padding: 10px;
+  background-color: #003e51;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-self: center;
+}
+
+.upload-btn:hover {
+  background-color: #002a38;
+}
+
+.image-preview-container {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.image-preview {
+  margin-top: 0;
+  text-align: center;
 }
 
 .image-preview img {
   max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  max-height: 300px;
+  border-radius: 4px;
 }
 
 .timestamp {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
   font-size: 12px;
-  z-index: 1;
+  color: #666;
+  text-align: right;
+  margin-top: 5px;
+  font-style: italic;
 }
 
+/* Download button */
 .download-btn {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #003e51;
-  color: white;
+  background-color: #bcdee6;
+  color: #003e51; /* Changed text color */
   border: none;
   border-radius: 4px;
   font-size: 16px;
@@ -187,46 +228,4 @@ h3 {
 
 .download-btn i {
   margin-right: 5px;
-}
-
-/* Style for signature field */
-.signature-container {
-  margin-top: 10px;
-}
-
-.signature-field {
-  height: 80px;
-  border: 1px dashed #ccc;
-  margin-top: 5px;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-}
-
-/* Add these styles */
-.image-upload-container {
-  margin-top: 10px;
-}
-
-.upload-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px;
-  background-color: #003e51;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.upload-btn:hover {
-  background-color: #002a38;
-}
-
-.upload-btn i {
-  font-size: 16px;
 }
