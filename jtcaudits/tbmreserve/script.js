@@ -88,6 +88,14 @@ function generatePDF() {
     group.style.marginRight = "10px";
   });
 
+  // Add page breaks
+  const formSections = pdfContent.querySelectorAll(".form-section");
+  formSections.forEach((section, index) => {
+    if (index > 0) {
+      section.style.pageBreakBefore = "always";
+    }
+  });
+
   // Add PDF-specific styles
   const styleElement = document.createElement("style");
   styleElement.textContent = `
@@ -97,7 +105,7 @@ function generatePDF() {
     }
     body {
       font-family: Arial, sans-serif;
-      font-size: 8pt; /* Changed font size to 8pt */
+      font-size: 7pt; /* Changed font size to 7pt */
       margin: 0;
       padding: 0;
     }
@@ -113,6 +121,14 @@ function generatePDF() {
       margin-bottom: 15pt;
       padding: 10pt;
       border: 1px solid #ddd;
+    }
+     .section-title {
+      font-size: 9pt; /* Increased section title font size */
+    }
+    .topic-header {
+      font-size: 9pt; /* Increased topic header font size */
+      font-weight: bold;
+      margin-bottom: 8pt;
     }
     .input-group {
       margin-bottom: 10pt;
@@ -130,10 +146,6 @@ function generatePDF() {
     .topic-group {
       margin-bottom: 15pt;
     }
-    .topic-header {
-      font-weight: bold;
-      margin-bottom: 8pt;
-    }
     .topic-item {
       margin-bottom: 5pt;
     }
@@ -149,7 +161,7 @@ function generatePDF() {
     filename: `TBM_Report_${new Date().toLocaleDateString("en-CA")}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 2,
+      scale: 1.8 /* Changed scale to 1.8 */,
       useCORS: true,
       width: 794,
       windowWidth: 794,
@@ -158,8 +170,6 @@ function generatePDF() {
       logging: true,
       letterRendering: true,
       useCanvas: true,
-      // Add a timeout to wait for the image to load
-      timeout: 60000, // 60 seconds
     },
     jsPDF: {
       unit: "mm",
@@ -168,20 +178,23 @@ function generatePDF() {
     },
   };
 
-  html2pdf()
-    .from(pdfContent)
-    .set(opt)
-    .save()
-    .then(() => {
-      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-      downloadBtn.disabled = false;
-      document.head.removeChild(styleElement);
-    })
-    .catch((err) => {
-      console.error("PDF generation failed:", err);
-      downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
-      downloadBtn.disabled = false;
-      document.head.removeChild(styleElement);
-      alert("Failed to generate PDF. Please try again.");
-    });
+  // Add a delay before generating the PDF to allow the image to load
+  setTimeout(() => {
+    html2pdf()
+      .from(pdfContent)
+      .set(opt)
+      .save()
+      .then(() => {
+        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+        downloadBtn.disabled = false;
+        document.head.removeChild(styleElement);
+      })
+      .catch((err) => {
+        console.error("PDF generation failed:", err);
+        downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+        downloadBtn.disabled = false;
+        document.head.removeChild(styleElement);
+        alert("Failed to generate PDF. Please try again.");
+      });
+  }, 1000); // Delay of 1 second
 }
