@@ -15,7 +15,7 @@ body {
 /* Main container */
 #form-container {
   max-width: 100%;
-  padding: 16px;
+  padding: 10px; /* Reduced from 16px */
   margin: 0 auto;
 }
 
@@ -24,7 +24,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 32px);
-  gap: 20px;
+  gap: 12px; /* Reduced from 20px */
 }
 
 /* Main content area */
@@ -34,9 +34,9 @@ body {
 
 /* Date input section */
 .inspection-date {
-  margin-bottom: 24px;
+  margin-bottom: 16px; /* Reduced from 24px */
   background: white;
-  padding: 16px;
+  padding: 12px; /* Slightly reduce padding */
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -60,7 +60,7 @@ body {
 .inspection {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  gap: 8px; /* Reduced from 12px or 16px */
   width: 100%;
 }
 
@@ -68,13 +68,13 @@ body {
 .inspection-card {
   background: white;
   border-radius: 8px;
-  padding: 16px;
+  padding: 10px; /* Reduced from 12px or 16px */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Select inputs styling */
 .select-group {
-  margin-bottom: 16px;
+  margin-bottom: 10px; /* Reduced from 16px */
 }
 
 .select-group label {
@@ -95,7 +95,7 @@ body {
 
 /* Photo section */
 .photo-section {
-  margin-top: 16px;
+  margin-top: 10px; /* Reduced from 16px */
 }
 
 .photo-section label {
@@ -139,12 +139,12 @@ body {
 /* Photo upload button */
 .upload-btn {
   width: 100%;
-  padding: 12px;
+  padding: 10px; /* Reduced from 12px */
   background: #003e51;
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 15px;
+  font-size: 13px; /* Reduced from 15px */
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -163,16 +163,16 @@ body {
   position: sticky;
   bottom: 0;
   background: white;
-  padding: 16px;
+  padding: 10px; /* Reduced from 12px or 16px */
   border-top: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; /* Reduced from 12px */
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .add-inspection-btn {
-  padding: 12px;
+  padding: 10px; /* Reduced from 12px */
   background: #28a745;
   color: white;
   border: none;
@@ -192,7 +192,7 @@ body {
 }
 
 .download-btn {
-  padding: 12px;
+  padding: 10px; /* Reduced from 12px */
   background: #003e51;
   color: white;
   border: none;
@@ -213,15 +213,58 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  /* Reduce gap between cards */
   .inspection {
-    gap: 12px;
+    gap: 8px; /* Reduced from 12px or 16px */
   }
 
+  /* Reduce padding inside cards */
   .inspection-card {
-    padding: 12px;
+    padding: 10px; /* Reduced from 12px or 16px */
   }
 
+  /* Reduce padding and gap in bottom buttons container */
   .bottom-buttons {
-    padding: 12px;
+    padding: 10px; /* Reduced from 12px or 16px */
+    gap: 8px; /* Reduced from 12px */
+  }
+
+  /* Reduce padding for individual buttons */
+  .add-inspection-btn,
+  .download-btn,
+  .upload-btn {
+    /* Include upload-btn here */
+    padding: 10px; /* Reduced from 12px */
+  }
+
+  /* Reduce font size for the upload button text */
+  .upload-btn {
+    font-size: 13px; /* Reduced from 15px */
+  }
+
+  /* Reduce vertical margin for select groups */
+  .select-group {
+    margin-bottom: 10px; /* Reduced from 16px */
+  }
+
+  /* Reduce vertical margin for photo section */
+  .photo-section {
+    margin-top: 10px; /* Reduced from 16px */
+  }
+
+  /* Reduce vertical margin for date section */
+  .inspection-date {
+    margin-bottom: 16px; /* Reduced from 24px */
+    padding: 12px; /* Slightly reduce padding */
+  }
+
+  /* Reduce overall container padding */
+  #form-container {
+    padding: 10px; /* Reduced from 16px */
+  }
+
+  /* Reduce gap in content wrapper */
+  .content-wrapper {
+    gap: 12px; /* Reduced from 20px */
   }
 }
