@@ -250,12 +250,18 @@ async function generatePDF() {
     const numCols = 2;
     const numRows = 3;
     const cellPadding = 3; // Padding inside each cell
-    const cellWidth = (contentWidth - (numCols - 1) * cellPadding) / numCols;
-    const cellHeight = (contentHeight - (numRows - 1) * cellPadding) / numRows;
-    const imageSize = Math.min(
-      cellWidth - 2 * cellPadding,
-      cellHeight - 2 * cellPadding - 20
-    ); // Reserve ~20mm for text
+    const rowGap = 5; // Explicit gap between rows instead of relying solely on cellHeight
+    const colGap = 5; // Explicit gap between columns
+
+    // Adjusted cell width/height calculation
+    const cellWidth = (contentWidth - (numCols - 1) * colGap) / numCols;
+    const cellHeight = (contentHeight - (numRows - 1) * rowGap) / numRows;
+
+    // Space reserved for text (Location + Status)
+    const textHeight = 12; // Approx height for 2 lines of text + padding
+    // Max available space for the image within the cell, below the text
+    const maxImageHeight = cellHeight - textHeight - cellPadding * 2;
+    const maxImageWidth = cellWidth - cellPadding * 2;
 
     let pageNum = 1;
     let cardIndex = 0;
@@ -297,9 +303,9 @@ async function generatePDF() {
       const row = Math.floor(indexOnPage / numCols);
       const col = indexOnPage % numCols;
 
-      // Calculate top-left corner (x, y) of the cell
-      const cellX = margin + col * (cellWidth + cellPadding);
-      const cellY = margin + headerHeight + row * (cellHeight + cellPadding);
+      // Calculate top-left corner (x, y) of the cell, including gaps
+      const cellX = margin + col * (cellWidth + colGap);
+      const cellY = margin + headerHeight + row * (cellHeight + rowGap);
 
       // --- Get Data from Card ---
       const locationSelect = card.querySelector(".location-select");
@@ -318,75 +324,98 @@ async function generatePDF() {
         : 1;
 
       console.log(
-        `Processing Card ${i}: Loc=${location}, Status=${status}, Img=${!!originalImageDataUrl}`
+        `Processing Card ${i}: Loc=${location}, Status=${status}, Img=${!!originalImageDataUrl}, Orient=${imageOrientation}`
       );
 
       // --- Add Text to PDF Cell ---
+      const textX = cellX + cellPadding;
+      const textY = cellY + cellPadding;
       pdf.setFontSize(9);
       pdf.setFont(undefined, "bold");
-      pdf.text(`Location:`, cellX + cellPadding, cellY + cellPadding + 3); // +3 for font baseline
+      pdf.text(`Location:`, textX, textY + 3); // +3 for font baseline
       pdf.setFont(undefined, "normal");
-      pdf.text(
-        `${location}`,
-        cellX + cellPadding + 20,
-        cellY + cellPadding + 3
-      );
+      pdf.text(`${location}`, textX + 20, textY + 3);
 
       pdf.setFont(undefined, "bold");
-      pdf.text(`Status:`, cellX + cellPadding, cellY + cellPadding + 8);
+      pdf.text(`Status:`, textX, textY + 8);
       pdf.setFont(undefined, "normal");
-      pdf.text(`${status}`, cellX + cellPadding + 20, cellY + cellPadding + 8);
+      pdf.text(`${status}`, textX + 20, textY + 8);
 
       // --- Add Image to PDF Cell (if exists) ---
+      const imageStartY = textY + textHeight; // Start image below text area
+
       if (originalImageDataUrl) {
         try {
+          console.log(
+            `Card ${i}: Rotating image with orientation ${imageOrientation}`
+          );
           const rotatedImageDataUrl = await rotateImage(
             originalImageDataUrl,
             imageOrientation
           );
           const imgProps = pdf.getImageProperties(rotatedImageDataUrl);
+          console.log(
+            `Card ${i}: Rotated image props W=${imgProps.width}, H=${imgProps.height}`
+          );
 
-          // Calculate position and size for 1:1 aspect ratio
-          const imgX = cellX + cellPadding;
-          const imgY = cellY + cellPadding + 12; // Position below text
-          const targetSize = imageSize; // Use calculated square size
+          // Calculate image dimensions maintaining aspect ratio
+          const aspectRatio = imgProps.width / imgProps.height;
+          let drawWidth = maxImageWidth;
+          let drawHeight = drawWidth / aspectRatio;
 
-          // Calculate cropping from source if needed (simplified: fit within square)
-          let sourceX = 0,
-            sourceY = 0,
-            sourceWidth = imgProps.width,
-            sourceHeight = imgProps.height;
-          let drawWidth = targetSize,
-            drawHeight = targetSize;
+          // If calculated height exceeds max height, recalculate based on height
+          if (drawHeight > maxImageHeight) {
+            drawHeight = maxImageHeight;
+            drawWidth = drawHeight * aspectRatio;
+          }
+          // Ensure width doesn't exceed max width after height adjustment
+          if (drawWidth > maxImageWidth) {
+            drawWidth = maxImageWidth;
+            drawHeight = drawWidth / aspectRatio;
+          }
 
-          // Center the image within the square area
-          let finalImgX = imgX + (cellWidth - 2 * cellPadding - drawWidth) / 2;
-          let finalImgY = imgY; // Align top
+          // Center the image horizontally within the cell's image area
+          const imgX = cellX + cellPadding + (maxImageWidth - drawWidth) / 2;
+          // Position image vertically below text
+          const imgY = imageStartY;
 
           pdf.addImage(
             rotatedImageDataUrl,
             imgProps.fileType,
-            finalImgX,
-            finalImgY,
+            imgX,
+            imgY,
             drawWidth,
             drawHeight
           );
           console.log(
-            `Added image for card ${i} at (${finalImgX.toFixed(
+            `Card ${i}: Added image at (${imgX.toFixed(1)}, ${imgY.toFixed(
               1
-            )}, ${finalImgY.toFixed(1)}) size ${drawWidth.toFixed(
-              1
-            )}x${drawHeight.toFixed(1)}`
+            )}) size ${drawWidth.toFixed(1)}x${drawHeight.toFixed(1)}`
           );
 
-          // Add timestamp below image
-          pdf.setFontSize(7);
-          pdf.text(
-            timestamp,
-            finalImgX + drawWidth / 2,
-            finalImgY + drawHeight + 3,
-            { align: "center" }
-          );
+          // --- Add Timestamp ON the image ---
+          const timestampFontSize = 7;
+          const timestampPadding = 1;
+          const timestampBgHeight =
+            timestampFontSize / 2.5 + timestampPadding * 2; // Approximate height based on font size
+
+          // Position near bottom of image
+          const timestampY =
+            imgY + drawHeight - timestampBgHeight - timestampPadding;
+          const timestampTextY =
+            timestampY + timestampBgHeight / 2 + timestampFontSize / 3; // Center text vertically
+
+          // Draw semi-transparent background
+          pdf.setFillColor(0, 0, 0, 0.5); // Black with 50% opacity
+          pdf.rect(imgX, timestampY, drawWidth, timestampBgHeight, "F"); // 'F' for fill
+
+          // Draw timestamp text
+          pdf.setFontSize(timestampFontSize);
+          pdf.setTextColor(255, 255, 255); // White text
+          pdf.text(timestamp, imgX + drawWidth / 2, timestampTextY, {
+            align: "center",
+          });
+          pdf.setTextColor(0, 0, 0); // Reset text color
         } catch (imgError) {
           console.error(`Error processing image for card ${i}:`, imgError);
           pdf.setFontSize(8);
@@ -394,7 +423,7 @@ async function generatePDF() {
           pdf.text(
             "Error loading image",
             cellX + cellPadding,
-            cellY + cellPadding + 15
+            imageStartY + maxImageHeight / 2
           );
           pdf.setTextColor(0, 0, 0); // Reset color
         }
@@ -404,7 +433,7 @@ async function generatePDF() {
         pdf.text(
           "[No Photo]",
           cellX + cellWidth / 2,
-          cellY + cellPadding + 12 + imageSize / 2,
+          imageStartY + maxImageHeight / 2,
           { align: "center" }
         );
         pdf.setTextColor(0, 0, 0); // Reset color
