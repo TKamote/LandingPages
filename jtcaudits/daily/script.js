@@ -121,16 +121,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // --- Helper function to rotate image based on EXIF orientation ---
 async function rotateImage(imageDataUrl, orientation) {
-  console.log(`>>> rotateImage called with orientation: ${orientation} <<<`);
-  if (!orientation || orientation === 1 || orientation < 1 || orientation > 8) {
-    console.log("No rotation needed or invalid orientation.");
+  console.log(
+    `>>> rotateImage called with orientation: ${orientation} (Type: ${typeof orientation}) <<<`
+  ); // Log type
+  // Ensure orientation is a number
+  const numericOrientation = parseInt(orientation, 10);
+  if (
+    isNaN(numericOrientation) ||
+    numericOrientation === 1 ||
+    numericOrientation < 1 ||
+    numericOrientation > 8
+  ) {
+    console.log("No rotation needed or invalid/missing orientation value.");
     return imageDataUrl;
   }
+  console.log(`>>> Processing numericOrientation: ${numericOrientation} <<<`); // Log numeric value
 
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      console.log(`Original image dimensions: ${img.width}x${img.height}`);
+      console.log(
+        `RotateImage: Original image dimensions: ${img.width}x${img.height}`
+      );
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
       let width = img.width;
@@ -138,25 +150,29 @@ async function rotateImage(imageDataUrl, orientation) {
       let transformApplied = "None";
 
       // Set canvas dimensions based on orientation
-      if (orientation >= 5 && orientation <= 8) {
+      if (numericOrientation >= 5 && numericOrientation <= 8) {
         // Rotated 90 or 270 degrees
         canvas.width = height;
         canvas.height = width;
         console.log(
-          `Canvas dimensions set for 90/270 rotation: ${canvas.width}x${canvas.height}`
+          `RotateImage: Canvas dimensions set for 90/270 rotation: ${canvas.width}x${canvas.height}`
         );
       } else {
         canvas.width = width;
         canvas.height = height;
         console.log(
-          `Canvas dimensions set for 0/180 rotation: ${canvas.width}x${canvas.height}`
+          `RotateImage: Canvas dimensions set for 0/180 rotation: ${canvas.width}x${canvas.height}`
         );
       }
 
       // Apply transformations based on orientation
-      console.log(`Applying transform for orientation ${orientation}...`);
+      console.log(
+        `RotateImage: Applying transform for orientation ${numericOrientation}...`
+      );
       ctx.save(); // Save context state before transform
-      switch (orientation) {
+      switch (
+        numericOrientation // Use numericOrientation here
+      ) {
         case 2:
           ctx.transform(-1, 0, 0, 1, width, 0);
           transformApplied = "Flip H";
@@ -185,17 +201,22 @@ async function rotateImage(imageDataUrl, orientation) {
           ctx.transform(0, -1, 1, 0, 0, width);
           transformApplied = "Rotate 270 CW (90 CCW)";
           break;
+        default:
+          console.warn(
+            `RotateImage: Unexpected orientation value: ${numericOrientation}`
+          );
+          break; // Add default case
       }
-      console.log(`Transform applied: ${transformApplied}`);
+      console.log(`RotateImage: Transform applied: ${transformApplied}`);
 
       try {
         console.log(
-          `Drawing image at (0, 0) on canvas ${canvas.width}x${canvas.height}`
+          `RotateImage: Drawing image at (0, 0) on canvas ${canvas.width}x${canvas.height}`
         );
         ctx.drawImage(img, 0, 0);
-        console.log("Image drawn onto rotated canvas.");
+        console.log("RotateImage: Image drawn onto rotated canvas.");
       } catch (drawError) {
-        console.error("Error during ctx.drawImage:", drawError);
+        console.error("RotateImage: Error during ctx.drawImage:", drawError);
         ctx.restore();
         reject(drawError);
         return;
@@ -205,7 +226,7 @@ async function rotateImage(imageDataUrl, orientation) {
       resolve(canvas.toDataURL("image/jpeg", 0.95));
     };
     img.onerror = (err) => {
-      console.error("Error loading image in rotateImage:", err);
+      console.error("RotateImage: Error loading image:", err);
       reject(err);
     };
     img.src = imageDataUrl;
@@ -240,7 +261,7 @@ async function generatePDF() {
   try {
     const pageHeight = pdf.internal.pageSize.getHeight();
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const margin = 15;
+    const margin = 18; // Increased margin
     const headerHeight = 15; // Space for title + date
     const footerHeight = 10; // Space for page number
     const contentWidth = pageWidth - 2 * margin;
@@ -250,8 +271,8 @@ async function generatePDF() {
     const numCols = 2;
     const numRows = 3;
     const cellPadding = 3; // Padding inside each cell
-    const rowGap = 5; // Explicit gap between rows instead of relying solely on cellHeight
-    const colGap = 5; // Explicit gap between columns
+    const rowGap = 7; // Increased gap between rows
+    const colGap = 7; // Increased gap between columns
 
     // Adjusted cell width/height calculation
     const cellWidth = (contentWidth - (numCols - 1) * colGap) / numCols;
@@ -319,13 +340,14 @@ async function generatePDF() {
       const originalImageDataUrl = previewImage
         ? previewImage.dataset.dataUrl
         : null;
+      // Ensure orientation is read as a number
       const imageOrientation = previewImage
-        ? parseInt(previewImage.dataset.orientation || "1")
+        ? parseInt(previewImage.dataset.orientation || "1", 10)
         : 1;
 
       console.log(
-        `Processing Card ${i}: Loc=${location}, Status=${status}, Img=${!!originalImageDataUrl}, Orient=${imageOrientation}`
-      );
+        `Processing Card ${i}: Loc=${location}, Status=${status}, Img=${!!originalImageDataUrl}, Orient=${imageOrientation} (Type: ${typeof imageOrientation})`
+      ); // Log type
 
       // --- Add Text to PDF Cell ---
       const textX = cellX + cellPadding;
@@ -347,11 +369,11 @@ async function generatePDF() {
       if (originalImageDataUrl) {
         try {
           console.log(
-            `Card ${i}: Rotating image with orientation ${imageOrientation}`
-          );
+            `Card ${i}: Calling rotateImage with orientation ${imageOrientation}`
+          ); // Log before call
           const rotatedImageDataUrl = await rotateImage(
             originalImageDataUrl,
-            imageOrientation
+            imageOrientation // Pass the numeric orientation
           );
           const imgProps = pdf.getImageProperties(rotatedImageDataUrl);
           console.log(
@@ -394,16 +416,15 @@ async function generatePDF() {
           );
 
           // --- Add Timestamp ON the image ---
-          const timestampFontSize = 7;
-          const timestampPadding = 1;
+          const timestampFontSize = 10; // Increased font size (approx 7 * 1.5)
+          const timestampPadding = 1.5; // Slightly increased padding
+          // Recalculate background height and text position
           const timestampBgHeight =
-            timestampFontSize / 2.5 + timestampPadding * 2; // Approximate height based on font size
-
-          // Position near bottom of image
+            timestampFontSize / 2.5 + timestampPadding * 2;
           const timestampY =
             imgY + drawHeight - timestampBgHeight - timestampPadding;
           const timestampTextY =
-            timestampY + timestampBgHeight / 2 + timestampFontSize / 3; // Center text vertically
+            timestampY + timestampBgHeight / 2 + timestampFontSize / 3.5; // Adjusted baseline factor
 
           // Draw semi-transparent background
           pdf.setFillColor(0, 0, 0, 0.5); // Black with 50% opacity
