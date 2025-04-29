@@ -139,12 +139,12 @@ body {
 /* Photo upload button */
 .upload-btn {
   width: 100%;
-  padding: 10px; /* Reduced from 12px */
+  padding: 8px 12px; /* Reduced vertical and horizontal padding */
   background: #003e51;
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 13px; /* Reduced from 15px */
+  font-size: 15px; /* Keep text size or adjust as needed */
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -152,6 +152,12 @@ body {
   justify-content: center;
   gap: 8px;
   transition: background-color 0.2s;
+}
+
+/* Increase icon size within upload button */
+.upload-btn i {
+  font-size: 2em; /* Make icon roughly 2x the button's text size */
+  line-height: 1; /* Ensure icon aligns well vertically */
 }
 
 .upload-btn:hover {
