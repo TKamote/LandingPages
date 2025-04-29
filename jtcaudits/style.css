@@ -35,7 +35,10 @@ a {
 ul li a {
     font-size: 20px;
 }
-
+.done {
+  color: #003E51;
+  background-color: #BCDEE6;
+}
 /* Basic Typography */
 body {
   font-family: Arial, sans-serif;
