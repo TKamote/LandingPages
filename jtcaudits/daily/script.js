@@ -48,7 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <div class="photo-section">
-                <!-- <label>Photo</label> Removed as requested -->
+                <!-- Debug Display for Orientation -->
+                <div id="orientation-display-${cardId}" style="font-size: 10px; color: #888; margin-bottom: 4px;">Orientation: ?</div>
+                <!-- End Debug Display -->
+
                 <button type="button" id="upload-btn-${cardId}" class="upload-btn">
                     <i class="fas fa-camera"></i> Take Photo or Choose from Gallery
                 </button>
@@ -70,16 +73,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const photoPreview = newCard.querySelector(`#photo-preview-${cardId}`);
     const previewImage = newCard.querySelector(`#preview-image-${cardId}`);
     const timestampDiv = newCard.querySelector(`#timestamp-${cardId}`);
+    const orientationDisplay = newCard.querySelector(
+      `#orientation-display-${cardId}`
+    ); // Get the debug display div
 
     uploadBtn.addEventListener("click", () => fileInput.click());
 
     fileInput.addEventListener("change", function (e) {
       const file = e.target.files[0];
       if (file && file.type.startsWith("image/")) {
+        // Reset display
+        orientationDisplay.textContent = "Orientation: Reading...";
+        previewImage.removeAttribute("data-orientation"); // Clear previous data
+        previewImage.removeAttribute("data-data-url");
+
         // Read EXIF data first
         EXIF.getData(file, function () {
           const orientation = EXIF.getTag(this, "Orientation");
-          console.log(`Card ${cardId} - Image Orientation Read:`, orientation);
+          console.log(`Card ${cardId} - Image Orientation Read:`, orientation); // Keep console log just in case
+
+          // *** Update the UI display ***
+          orientationDisplay.textContent = `Orientation: ${
+            orientation === undefined ? "Not Found" : orientation
+          }`;
 
           const reader = new FileReader();
           reader.onload = function (readerEvent) {
@@ -87,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
             previewImage.src = objectURL;
             // Store data URL and orientation for PDF generation
             previewImage.dataset.dataUrl = readerEvent.target.result;
+            // Ensure we store the read orientation, default to 1 if undefined
             previewImage.dataset.orientation = orientation || 1;
 
             previewImage.onload = () => {
