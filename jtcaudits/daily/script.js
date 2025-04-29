@@ -136,120 +136,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // addInspectionCard();
 }); // End DOMContentLoaded
 
-// --- Helper function to rotate image based on EXIF orientation ---
-async function rotateImage(imageDataUrl, orientation) {
-  console.log(
-    `>>> rotateImage called with orientation: ${orientation} (Type: ${typeof orientation}) <<<`
-  ); // Log type
-  // Ensure orientation is a number
-  const numericOrientation = parseInt(orientation, 10);
-  if (
-    isNaN(numericOrientation) ||
-    numericOrientation === 1 ||
-    numericOrientation < 1 ||
-    numericOrientation > 8
-  ) {
-    console.log("No rotation needed or invalid/missing orientation value.");
-    return imageDataUrl;
-  }
-  console.log(`>>> Processing numericOrientation: ${numericOrientation} <<<`); // Log numeric value
-
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      console.log(
-        `RotateImage: Original image dimensions: ${img.width}x${img.height}`
-      );
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      let width = img.width;
-      let height = img.height;
-      let transformApplied = "None";
-
-      // Set canvas dimensions based on orientation
-      if (numericOrientation >= 5 && numericOrientation <= 8) {
-        // Rotated 90 or 270 degrees
-        canvas.width = height;
-        canvas.height = width;
-        console.log(
-          `RotateImage: Canvas dimensions set for 90/270 rotation: ${canvas.width}x${canvas.height}`
-        );
-      } else {
-        canvas.width = width;
-        canvas.height = height;
-        console.log(
-          `RotateImage: Canvas dimensions set for 0/180 rotation: ${canvas.width}x${canvas.height}`
-        );
-      }
-
-      // Apply transformations based on orientation
-      console.log(
-        `RotateImage: Applying transform for orientation ${numericOrientation}...`
-      );
-      ctx.save(); // Save context state before transform
-      switch (
-        numericOrientation // Use numericOrientation here
-      ) {
-        case 2:
-          ctx.transform(-1, 0, 0, 1, width, 0);
-          transformApplied = "Flip H";
-          break;
-        case 3:
-          ctx.transform(-1, 0, 0, -1, width, height);
-          transformApplied = "Rotate 180";
-          break;
-        case 4:
-          ctx.transform(1, 0, 0, -1, 0, height);
-          transformApplied = "Flip V";
-          break;
-        case 5:
-          ctx.transform(0, 1, 1, 0, 0, 0);
-          transformApplied = "Transpose";
-          break;
-        case 6:
-          ctx.transform(0, 1, -1, 0, height, 0);
-          transformApplied = "Rotate 90 CW";
-          break;
-        case 7:
-          ctx.transform(0, -1, -1, 0, height, width);
-          transformApplied = "Transverse";
-          break;
-        case 8:
-          ctx.transform(0, -1, 1, 0, 0, width);
-          transformApplied = "Rotate 270 CW (90 CCW)";
-          break;
-        default:
-          console.warn(
-            `RotateImage: Unexpected orientation value: ${numericOrientation}`
-          );
-          break; // Add default case
-      }
-      console.log(`RotateImage: Transform applied: ${transformApplied}`);
-
-      try {
-        console.log(
-          `RotateImage: Drawing image at (0, 0) on canvas ${canvas.width}x${canvas.height}`
-        );
-        ctx.drawImage(img, 0, 0);
-        console.log("RotateImage: Image drawn onto rotated canvas.");
-      } catch (drawError) {
-        console.error("RotateImage: Error during ctx.drawImage:", drawError);
-        ctx.restore();
-        reject(drawError);
-        return;
-      }
-      ctx.restore();
-
-      resolve(canvas.toDataURL("image/jpeg", 0.95));
-    };
-    img.onerror = (err) => {
-      console.error("RotateImage: Error loading image:", err);
-      reject(err);
-    };
-    img.src = imageDataUrl;
-  });
-}
-
 // --- PDF Generation Function ---
 async function generatePDF() {
   const downloadBtn = document.querySelector(".download-btn");
@@ -262,7 +148,6 @@ async function generatePDF() {
     return;
   }
 
-  // Ensure jsPDF is available from the global scope
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({
     orientation: "portrait",
@@ -278,31 +163,27 @@ async function generatePDF() {
   try {
     const pageHeight = pdf.internal.pageSize.getHeight();
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const margin = 18; // Increased margin
-    const headerHeight = 15; // Space for title + date
-    const footerHeight = 10; // Space for page number
+    const margin = 18;
+    const headerHeight = 15;
+    const footerHeight = 10;
     const contentWidth = pageWidth - 2 * margin;
-    const contentHeight = pageHeight - margin - headerHeight - footerHeight; // Available height for grid
+    const contentHeight = pageHeight - margin - headerHeight - footerHeight;
 
-    const cardsPerPage = 6; // 2 columns x 3 rows
+    const cardsPerPage = 6;
     const numCols = 2;
     const numRows = 3;
-    const cellPadding = 3; // Padding inside each cell
-    const rowGap = 7; // Increased gap between rows
-    const colGap = 7; // Increased gap between columns
+    const cellPadding = 3;
+    const rowGap = 7;
+    const colGap = 7;
 
-    // Adjusted cell width/height calculation
     const cellWidth = (contentWidth - (numCols - 1) * colGap) / numCols;
     const cellHeight = (contentHeight - (numRows - 1) * rowGap) / numRows;
 
-    // Space reserved for text (Location + Status)
-    const textHeight = 12; // Approx height for 2 lines of text + padding
-    // Max available space for the image within the cell, below the text
+    const textHeight = 12;
     const maxImageHeight = cellHeight - textHeight - cellPadding * 2;
     const maxImageWidth = cellWidth - cellPadding * 2;
 
     let pageNum = 1;
-    let cardIndex = 0;
 
     // --- Add Header Function ---
     const addHeaderFooter = (pdf, pageNum, totalPages) => {
@@ -312,7 +193,6 @@ async function generatePDF() {
       pdf.setFontSize(10);
       pdf.setFont(undefined, "normal");
       pdf.text(`Inspection Date: ${inspectionDate}`, margin, margin + 7);
-      // Footer (Page Number)
       pdf.text(
         `Page ${pageNum} of ${totalPages}`,
         pageWidth / 2,
@@ -330,9 +210,7 @@ async function generatePDF() {
 
       // Add new page if needed
       if (indexOnPage === 0) {
-        if (pageIndex > 0) {
-          pdf.addPage();
-        }
+        if (pageIndex > 0) pdf.addPage();
         pageNum = pageIndex + 1;
         addHeaderFooter(pdf, pageNum, totalPages);
       }
@@ -357,128 +235,156 @@ async function generatePDF() {
       const originalImageDataUrl = previewImage
         ? previewImage.dataset.dataUrl
         : null;
-      // Ensure orientation is read as a number
       const imageOrientation = previewImage
         ? parseInt(previewImage.dataset.orientation || "1", 10)
         : 1;
 
       console.log(
-        `Processing Card ${i}: Loc=${location}, Status=${status}, Img=${!!originalImageDataUrl}, Orient=${imageOrientation} (Type: ${typeof imageOrientation})`
-      ); // Log type
+        `Processing Card ${i}: Loc=${location}, Status=${status}, Img=${!!originalImageDataUrl}, Orient=${imageOrientation}`
+      );
 
       // --- Add Text to PDF Cell ---
       const textX = cellX + cellPadding;
       const textY = cellY + cellPadding;
       pdf.setFontSize(9);
       pdf.setFont(undefined, "bold");
-      pdf.text(`Location:`, textX, textY + 3); // +3 for font baseline
+      pdf.text(`Location:`, textX, textY + 3);
       pdf.setFont(undefined, "normal");
       pdf.text(`${location}`, textX + 20, textY + 3);
-
       pdf.setFont(undefined, "bold");
       pdf.text(`Status:`, textX, textY + 8);
       pdf.setFont(undefined, "normal");
       pdf.text(`${status}`, textX + 20, textY + 8);
 
       // --- Add Image to PDF Cell (if exists) ---
-      const imageStartY = textY + textHeight; // Start image below text area
+      const imageStartY = textY + textHeight;
 
       if (originalImageDataUrl) {
         try {
+          const imgProps = pdf.getImageProperties(originalImageDataUrl);
           console.log(
-            `Card ${i}: Calling rotateImage with orientation ${imageOrientation}`
-          ); // Log before call
-          const rotatedImageDataUrl = await rotateImage(
-            originalImageDataUrl,
-            imageOrientation // Pass the numeric orientation
-          );
-          const imgProps = pdf.getImageProperties(rotatedImageDataUrl);
-          console.log(
-            `Card ${i}: Rotated image props W=${imgProps.width}, H=${imgProps.height}`
+            `Card ${i}: Original image props W=${imgProps.width}, H=${imgProps.height}`
           );
 
-          // Calculate image dimensions maintaining aspect ratio
-          const aspectRatio = imgProps.width / imgProps.height;
+          let rotationAngle = 0;
+          let effectiveWidth = imgProps.width;
+          let effectiveHeight = imgProps.height;
+
+          // Determine rotation angle and effective dimensions for layout calculation
+          switch (imageOrientation) {
+            case 3: // 180 degrees
+              rotationAngle = 180;
+              break;
+            case 6: // 90 degrees CW
+              rotationAngle = 90;
+              effectiveWidth = imgProps.height; // Swapped for layout
+              effectiveHeight = imgProps.width;
+              break;
+            case 8: // 270 degrees CW
+              rotationAngle = 270;
+              effectiveWidth = imgProps.height; // Swapped for layout
+              effectiveHeight = imgProps.width;
+              break;
+            // Cases 2, 4, 5, 7 involve flips, jsPDF rotation might not handle these directly
+            // We'll treat them as orientation 1 for now, rotation might be incorrect
+            case 2:
+            case 4:
+            case 5:
+            case 7:
+              console.warn(
+                `Card ${i}: Orientation ${imageOrientation} involves flip, jsPDF rotation might be incorrect.`
+              );
+              // Treat as 0 rotation for layout
+              break;
+            case 1: // No rotation
+            default:
+              rotationAngle = 0;
+              break;
+          }
+          console.log(
+            `Card ${i}: Determined rotationAngle=${rotationAngle}, Effective W=${effectiveWidth}, H=${effectiveHeight}`
+          );
+
+          // Calculate draw dimensions based on EFFECTIVE width/height and aspect ratio
+          const aspectRatio = effectiveWidth / effectiveHeight;
           let drawWidth = maxImageWidth;
           let drawHeight = drawWidth / aspectRatio;
 
-          // If calculated height exceeds max height, recalculate based on height
           if (drawHeight > maxImageHeight) {
             drawHeight = maxImageHeight;
             drawWidth = drawHeight * aspectRatio;
           }
-          // Ensure width doesn't exceed max width after height adjustment
           if (drawWidth > maxImageWidth) {
             drawWidth = maxImageWidth;
             drawHeight = drawWidth / aspectRatio;
           }
 
-          // Center the image horizontally within the cell's image area
           const imgX = cellX + cellPadding + (maxImageWidth - drawWidth) / 2;
-          // Position image vertically below text
           const imgY = imageStartY;
 
+          // Add image using jsPDF's rotation parameter
           pdf.addImage(
-            rotatedImageDataUrl,
+            originalImageDataUrl,
             imgProps.fileType,
             imgX,
             imgY,
             drawWidth,
-            drawHeight
+            drawHeight,
+            null, // alias
+            "NONE", // compression
+            rotationAngle // rotation angle in degrees CW
           );
           console.log(
-            `Card ${i}: Added image at (${imgX.toFixed(1)}, ${imgY.toFixed(
+            `Card ${i}: Added image via jsPDF.addImage with rotation ${rotationAngle} at (${imgX.toFixed(
               1
-            )}) size ${drawWidth.toFixed(1)}x${drawHeight.toFixed(1)}`
+            )}, ${imgY.toFixed(1)}) size ${drawWidth.toFixed(
+              1
+            )}x${drawHeight.toFixed(1)}`
           );
 
           // --- Add Timestamp ON the image ---
-          const timestampFontSize = 10; // Increased font size (approx 7 * 1.5)
-          const timestampPadding = 1.5; // Slightly increased padding
-          // Recalculate background height and text position
+          const timestampFontSize = 10;
+          const timestampPadding = 1.5;
           const timestampBgHeight =
             timestampFontSize / 2.5 + timestampPadding * 2;
           const timestampY =
             imgY + drawHeight - timestampBgHeight - timestampPadding;
           const timestampTextY =
-            timestampY + timestampBgHeight / 2 + timestampFontSize / 3.5; // Adjusted baseline factor
+            timestampY + timestampBgHeight / 2 + timestampFontSize / 3.5;
 
-          // Draw semi-transparent background
-          pdf.setFillColor(0, 0, 0, 0.5); // Black with 50% opacity
-          pdf.rect(imgX, timestampY, drawWidth, timestampBgHeight, "F"); // 'F' for fill
+          pdf.setFillColor(0, 0, 0, 0.5);
+          pdf.rect(imgX, timestampY, drawWidth, timestampBgHeight, "F");
 
-          // Draw timestamp text
           pdf.setFontSize(timestampFontSize);
-          pdf.setTextColor(255, 255, 255); // White text
+          pdf.setTextColor(255, 255, 255);
           pdf.text(timestamp, imgX + drawWidth / 2, timestampTextY, {
             align: "center",
           });
-          pdf.setTextColor(0, 0, 0); // Reset text color
+          pdf.setTextColor(0, 0, 0);
         } catch (imgError) {
           console.error(`Error processing image for card ${i}:`, imgError);
           pdf.setFontSize(8);
-          pdf.setTextColor(255, 0, 0); // Red color for error
+          pdf.setTextColor(255, 0, 0);
           pdf.text(
             "Error loading image",
             cellX + cellPadding,
             imageStartY + maxImageHeight / 2
           );
-          pdf.setTextColor(0, 0, 0); // Reset color
+          pdf.setTextColor(0, 0, 0);
         }
       } else {
         pdf.setFontSize(8);
-        pdf.setTextColor(150, 150, 150); // Grey color
+        pdf.setTextColor(150, 150, 150);
         pdf.text(
           "[No Photo]",
           cellX + cellWidth / 2,
           imageStartY + maxImageHeight / 2,
           { align: "center" }
         );
-        pdf.setTextColor(0, 0, 0); // Reset color
+        pdf.setTextColor(0, 0, 0);
       }
     } // End loop through cards
 
-    // --- Save the PDF ---
     const filename = `Daily_Inspection_${
       inspectionDate || yyyy + "-" + mm + "-" + dd
     }.pdf`;
@@ -488,7 +394,6 @@ async function generatePDF() {
     console.error("PDF generation failed:", error);
     alert("Failed to generate PDF. Please check the console for errors.");
   } finally {
-    // --- Cleanup ---
     console.log("Cleaning up...");
     downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
     downloadBtn.disabled = false;
@@ -496,5 +401,4 @@ async function generatePDF() {
   }
 }
 
-// Make generatePDF globally accessible if it's not already
 window.generatePDF = generatePDF;
